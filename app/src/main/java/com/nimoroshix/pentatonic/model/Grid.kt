@@ -4,7 +4,7 @@ package com.nimoroshix.pentatonic.model
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class Grid(private var nbLines: Int, private var nbColumns: Int) {
+class Grid(var nbLines: Int, var nbColumns: Int) {
     lateinit var cells: Array<Array<Cell>>
 
     fun generate() {
