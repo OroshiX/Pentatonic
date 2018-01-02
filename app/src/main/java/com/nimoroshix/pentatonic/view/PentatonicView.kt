@@ -21,6 +21,10 @@ class PentatonicView : View {
         val TAG = "PentatonicView"
     }
 
+    var offsetLeft: Float = 10f
+    var offsetTop: Float = 10f
+    var cellSize: Float = 40f
+
     private var paint: Paint = Paint()
     private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
     var grid: Grid = Serializer.serialize("4 5\n" +
@@ -43,18 +47,25 @@ class PentatonicView : View {
         grid = Serializer.serialize(textGrid)
     }
 
-    override fun onDraw(canvas: Canvas) {
-        Log.d(TAG, "onDraw")
-        canvas.drawRGB(252, 247, 219)
-
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
         // Calculate offsets
-        val offsetLeft = 10F
-        val offsetTop = 10F
+        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
 
         // Calculate cellSize
         val maxCellHeight: Float = (height - 2 * offsetLeft) / grid.nbLines
         val maxCellWidth: Float = (width - 2 * offsetTop) / grid.nbColumns
-        val cellSize: Float = Math.min(maxCellHeight, maxCellWidth)
+        cellSize = Math.min(maxCellHeight, maxCellWidth)
+
+        offsetTop = (height - cellSize * grid.nbLines) / 2
+        offsetLeft = (width - cellSize * grid.nbColumns) / 2
+
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        Log.d(TAG, "onDraw")
+        canvas.drawRGB(252, 247, 219)
+
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.strokeWidth = 5f
 //        paint.pathEffect = null
