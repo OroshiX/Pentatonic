@@ -1,5 +1,7 @@
 package com.nimoroshix.pentatonic.model
 
+import java.util.*
+
 /**
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
@@ -15,14 +17,43 @@ class Grid(var nbLines: Int, var nbColumns: Int) {
         })
     }
 
-    fun getAreaCells(area: Area): List<Cell> {
-        var res: List<Cell> = List(area.size, { _ -> Cell() })
+    fun getAreaCells(area: Area): HashSet<Cell> {
+        val set = HashSet<Cell>()
+        (0 until cells.size).flatMapTo(set) { row ->
+            (0 until cells[row].size).filter { col ->
+                cells[row][col].area.id == area.id
+            }.map { col ->
+                cells[row][col]
+            }
+        }
+        return set
+    }
 
-        // TODO to complete
-        return res
+    private fun getAllAreas(): Set<Area> {
+        val set = HashSet<Area>()
+        (0 until cells.size).flatMapTo(set) { row ->
+            (0 until cells[row].size).map { col ->
+                cells[row][col].area
+            }
+        }
+        return set
+    }
+
+    fun fillAreaSize() {
+        val allAreas = getAllAreas()
+        allAreas.forEach { area ->
+            run {
+                val areaCells = getAreaCells(area)
+                val size = areaCells.size
+                areaCells.forEach { c ->
+                    c.area.size = size
+                }
+            }
+        }
     }
 
     fun getAdjacentCells(cell: Cell): List<Cell> {
+
         var res: List<Cell> = List(0, { _ -> Cell() })
         // TODO to complete
         return res
@@ -40,4 +71,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) {
         // TODO
     }
 
+    override fun toString(): String {
+        return "Grid(nbLines=$nbLines, nbColumns=$nbColumns, cells=${Arrays.deepToString(cells)})"
+    }
 }
