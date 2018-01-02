@@ -8,12 +8,17 @@ import android.view.MotionEvent
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
+import java.util.*
 
 /**
  * Project Pentatonic
  * Created by Jessica on 02/01/2018.
  */
-class PentatonicKeyView : View {
+class PentatonicKeyView : View, Observer {
+    override fun update(o: Observable?, arg: Any?) {
+        grid = o as Grid
+    }
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
@@ -43,6 +48,7 @@ class PentatonicKeyView : View {
     override fun performClick(): Boolean {
         return super.performClick()
     }
+
     override fun onDraw(canvas: Canvas?) {
 
     }

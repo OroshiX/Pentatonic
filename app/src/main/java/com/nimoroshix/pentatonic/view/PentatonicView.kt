@@ -10,12 +10,19 @@ import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
+import java.util.*
 
 /**
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class PentatonicView : View {
+class PentatonicView : View, Observer {
+    override fun update(o: Observable?, arg: Any?) {
+        grid = o as Grid
+        if (arg as String == Grid.STRUCTURE)
+            invalidate()
+    }
+
     companion object {
         @JvmField
         val TAG = "PentatonicView"

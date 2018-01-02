@@ -31,7 +31,6 @@ class Serializer {
             val mapAreas = HashMap<Char, Area>()
 
             val grid = Grid(nbLine, nbCol)
-            grid.generate()
             var line: String
             for (i in 0 until nbLine) {
                 line = iterator.next()
@@ -42,7 +41,7 @@ class Serializer {
                         area = Area(line[j])
                         mapAreas.put(line[j], area)
                     }
-                    cell.area = area // TODO apres, il faudra trouver la taille de la zone
+                    cell.area = area
                     grid.cells[i][j] = cell
                 }
             }

@@ -6,16 +6,26 @@ import java.util.*
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class Grid(var nbLines: Int, var nbColumns: Int) {
-    lateinit var cells: Array<Array<Cell>>
-
-    fun generate() {
-        cells = Array(nbLines, { i ->
-            Array(nbColumns, { j ->
-                Cell(i, j)
-            })
-        })
+class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
+    companion object {
+        @JvmField
+        val STRUCTURE = "structure"
+        @JvmField
+        val VALUE = "value"
+        @JvmField
+        val SELECTED = "selected"
     }
+
+    var cells: Array<Array<Cell>> = Array(nbLines, { i ->
+        Array(nbColumns, { j ->
+            Cell(i, j)
+        })
+    })
+        set(value) {
+            field = value
+            setChanged()
+            notifyObservers(STRUCTURE)
+        }
 
     fun toggleValue(nLine: Int, nColumn: Int, value: Char) {
         val values = cells[nLine][nColumn].values
@@ -25,6 +35,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) {
             values.add(value)
         }
         cells[nLine][nColumn].dirty = true
+        setChanged()
+        notifyObservers(VALUE)
     }
 
     fun getAreaCells(area: Area): HashSet<Cell> {
@@ -89,6 +101,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) {
                 }
             }
         }
+        setChanged()
+        notifyObservers(VALUE)
     }
 
     override fun toString(): String {
