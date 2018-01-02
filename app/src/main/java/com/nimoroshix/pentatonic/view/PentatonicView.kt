@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.serializer.Serializer
 
 /**
  * Project Pentatonic
@@ -22,12 +23,25 @@ class PentatonicView : View {
 
     private var paint: Paint = Paint()
     private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
-    var grid: Grid = Grid(5, 6)
+    var grid: Grid = Serializer.serialize("4 5\n" +
+            "11233\n" +
+            "11223\n" +
+            "45266\n" +
+            "55556\n" +
+            "1,2,2\n" +
+            "3,3,2\n" +
+            "a,0,2\n" +
+            "a,0,0\n" +
+            "-2,0,3,1")
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr)
+
+    fun setGrid(textGrid: String) {
+        grid = Serializer.serialize(textGrid)
+    }
 
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
@@ -61,6 +75,32 @@ class PentatonicView : View {
         for (j in 0 until grid.nbColumns) {
             canvas.drawLine(offsetLeft + j * cellSize, offsetTop, offsetLeft + j * cellSize,
                     offsetTop + grid.nbLines * cellSize, paint)
+        }
+
+        // Draw the different areas (bold)
+        paint.strokeWidth = 6f
+        paint.pathEffect = null
+
+        // compare two horizontal cells area ids
+        for (i in 0 until grid.nbLines) {
+            (1 until grid.nbColumns).filter {
+                // Compare the value of the area of the 2 adjacent cells
+                grid.cells[i][it].area.id != grid.cells[i][it - 1].area.id
+            }.forEach {
+                // Different areas, so draw a line
+                canvas.drawLine(offsetLeft + it * cellSize, offsetTop + i * cellSize,
+                        offsetLeft + it * cellSize, offsetTop + (i + 1) * cellSize, paint)
+            }
+        }
+
+        // compare two vertical cells area ids
+        for (j in 0 until grid.nbColumns) {
+            (1 until grid.nbLines)
+                    .filter { grid.cells[it][j].area.id != grid.cells[it - 1][j].area.id }
+                    .forEach {
+                        canvas.drawLine(offsetLeft + j * cellSize, offsetTop + it * cellSize,
+                                offsetLeft + (j + 1) * cellSize, offsetTop + it * cellSize, paint)
+                    }
         }
     }
 
