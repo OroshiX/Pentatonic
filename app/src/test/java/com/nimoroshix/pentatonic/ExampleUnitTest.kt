@@ -14,7 +14,7 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
 
-    val textGrid = "4 5\n" +
+    private val textGrid = "4 5\n" +
             "11233\n" +
             "11223\n" +
             "45266\n" +
@@ -58,8 +58,30 @@ class ExampleUnitTest {
         cell.differenceOne!!.area = Area('5', 5)
         cell.differenceOne!!.differenceOne = cell
         assertEquals(cell, grid.cells[2][0])
+    }
 
+    @Test
+    fun replaceIsCorrect() {
+        val grid = Serializer.serialize(textGrid)
+        grid.toggleValue(0, 1, 'q')
+        grid.toggleValue(3, 4, 'q')
 
+        // We replace all 'q's into 3
+        grid.replace('q', '3')
+
+        var cell = Cell(0, 1)
+        cell.area = Area('1', 4)
+        cell.values.add('3')
+        cell.dirty = true
+
+        assertEquals(cell, grid.cells[0][1])
+
+        cell = Cell(3, 4)
+        cell.area = Area('6', 3)
+        cell.values.add('3')
+        cell.dirty = true
+
+        assertEquals(cell, grid.cells[3][4])
     }
 
     @Test

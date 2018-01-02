@@ -17,6 +17,16 @@ class Grid(var nbLines: Int, var nbColumns: Int) {
         })
     }
 
+    fun toggleValue(nLine: Int, nColumn: Int, value: Char) {
+        val values = cells[nLine][nColumn].values
+        if (values.contains(value)) {
+            values.remove(value)
+        } else {
+            values.add(value)
+        }
+        cells[nLine][nColumn].dirty = true
+    }
+
     fun getAreaCells(area: Area): HashSet<Cell> {
         val set = HashSet<Cell>()
         (0 until cells.size).flatMapTo(set) { row ->
@@ -68,7 +78,17 @@ class Grid(var nbLines: Int, var nbColumns: Int) {
      * alpha -> beta
      */
     fun replace(oldValue: Char, newValue: Char) {
-        // TODO
+        cells.forEach { row ->
+            row.forEach { c ->
+                if (c.values.contains(oldValue)) {
+                    c.values.forEachIndexed { index, t ->
+                        if (t == oldValue) {
+                            c.values[index] = newValue
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun toString(): String {
