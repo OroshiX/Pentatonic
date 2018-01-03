@@ -8,11 +8,21 @@
     android:weightSum="5"
     tools:context="com.nimoroshix.pentatonic.MainActivity">
 
-    <com.nimoroshix.pentatonic.view.PentatonicView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
-        android:layerType="software" />
+        android:layout_weight="4">
+
+        <com.nimoroshix.pentatonic.view.PentatonicView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layerType="software" />
+
+        <com.nimoroshix.pentatonic.view.PentatonicFillView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layerType="software" />
+    </FrameLayout>
 
     <com.nimoroshix.pentatonic.view.PentatonicKeyView
         android:layout_width="match_parent"
