@@ -1,10 +1,7 @@
 package com.nimoroshix.pentatonic.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.DashPathEffect
-import android.graphics.Paint
-import android.graphics.PathEffect
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -19,46 +16,100 @@ import java.util.*
 class PentatonicView : View, Observer {
     override fun update(o: Observable?, arg: Any?) {
         grid = o as Grid
-        if (arg as String == Grid.STRUCTURE)
+        if (arg == Grid.STRUCTURE)
             invalidate()
     }
 
-    companion object {
-        @JvmField
-        val TAG = "PentatonicView"
-    }
+    private var paint: Paint = Paint()
+
+    private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
+    var grid: Grid = Serializer.serialize(
+            "9 10\n" +
+                    "1234555677\n" +
+                    "2234466687\n" +
+                    "2233469988\n" +
+                    "aa3bbcc998\n" +
+                    "daeebbccc8\n" +
+                    "daeeebfggg\n" +
+                    "ddhiifffgg\n" +
+                    "dhhiijfkkl\n" +
+                    "mmhjjjjkkl\n" +
+                    "5,2,1\n" +
+                    "5,3,3\n" +
+                    "5,4,9\n" +
+                    "5,8,4")
+
+
+//            "4 5\n" +
+//            "11233\n" +
+//            "11223\n" +
+//            "45266\n" +
+//            "55556\n" +
+//            "1,2,2\n" +
+//            "3,3,2\n" +
+//            "a,0,2\n" +
+//            "a,0,0\n" +
+//            "-2,0,3,1")
 
     var offsetLeft: Float = 10f
     var offsetTop: Float = 10f
     var cellSize: Float = 40f
 
-    private var paint: Paint = Paint()
-    private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
-    var grid: Grid = Serializer.serialize("4 5\n" +
-            "11233\n" +
-            "11223\n" +
-            "45266\n" +
-            "55556\n" +
-            "1,2,2\n" +
-            "3,3,2\n" +
-            "a,0,2\n" +
-            "a,0,0\n" +
-            "-2,0,3,1")
+    private var desiredWidthUnique: Float = 0f
+    private var desiredWidthMultiple: Float = 0f
+    private var desiredTextSizeUnique: Float = 0f
+    private var desiredTextSizeMultiple: Float = 0f
+    private var textHeightUnique: Int = 0
+    private var textHeightMultiple: Int = 0
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?) : this(context, null)
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
-            defStyleAttr)
+            defStyleAttr) {
+        paint.isAntiAlias = true
+        paint.strokeWidth = 5f
+    }
+
+    companion object {
+        @JvmField
+        val TAG = "PentatonicView"
+        val PROPORTION_NUMBER_CELL: Float = 3f / 4f
+        val PROPORTION_SMALL_NUMBER_CELL: Float = 1f / 5f
+    }
+
+    /**
+     * https://stackoverflow.com/questions/12166476/android-canvas-drawtext-set-font-size-from-width
+     * Sets the text size for a Paint object so a given string of text will be given width.
+     *
+     * @param desiredWidth the desired width
+     * @param text         the text that should be that width
+     */
+    private fun getTextSizeForWidth(desiredWidth: Float, text: String): Float {
+        val testTextSize = 48f
+        // Get the bounds of the text, using our testTextSize
+        paint.textSize = testTextSize
+        val bounds = Rect()
+        paint.getTextBounds(text, 0, text.length, bounds)
+
+        // calculate the desired size as a proportion of our testTextSize
+        return testTextSize * desiredWidth / bounds.height()
+    }
+
+    private fun getTextHeightForSize(textSize: Float, text: String): Int {
+        paint.textSize = textSize
+        val bounds = Rect()
+        paint.getTextBounds(text, 0, text.length, bounds)
+
+        return bounds.height()
+    }
 
     fun setGrid(textGrid: String) {
         grid = Serializer.serialize(textGrid)
+        resetSizeAndOffsets()
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        // Calculate offsets
-        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
 
+    private fun resetSizeAndOffsets() {
         // Calculate cellSize
         val maxCellHeight: Float = (height - 2 * offsetLeft) / grid.nbLines
         val maxCellWidth: Float = (width - 2 * offsetTop) / grid.nbColumns
@@ -67,6 +118,21 @@ class PentatonicView : View, Observer {
         offsetTop = (height - cellSize * grid.nbLines) / 2
         offsetLeft = (width - cellSize * grid.nbColumns) / 2
 
+        desiredWidthUnique = cellSize * PROPORTION_NUMBER_CELL
+        desiredTextSizeUnique = getTextSizeForWidth(desiredWidthUnique, "5")
+        desiredTextSizeMultiple = cellSize * PROPORTION_SMALL_NUMBER_CELL
+        desiredTextSizeMultiple = getTextSizeForWidth(desiredWidthMultiple, "5")
+
+        textHeightUnique = getTextHeightForSize(desiredTextSizeUnique, "5")
+        textHeightMultiple = getTextHeightForSize(desiredTextSizeMultiple, "5")
+    }
+
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        // Calculate offsets
+        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
+        resetSizeAndOffsets()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -74,8 +140,6 @@ class PentatonicView : View, Observer {
         canvas.drawRGB(252, 247, 219)
 
         // Draw a rectangle (m * cellSize) * (n * cellSize)
-        paint.strokeWidth = 5f
-//        paint.pathEffect = null
         paint.style = Paint.Style.STROKE
 
         canvas.drawRect(offsetLeft, offsetTop, offsetLeft + grid.nbColumns * cellSize,
@@ -119,6 +183,38 @@ class PentatonicView : View, Observer {
                         canvas.drawLine(offsetLeft + j * cellSize, offsetTop + it * cellSize,
                                 offsetLeft + (j + 1) * cellSize, offsetTop + it * cellSize, paint)
                     }
+        }
+
+        // Draw the initial numbers
+        paint.strokeWidth = 2f
+        paint.style = Paint.Style.FILL_AND_STROKE
+        for (i in 0 until grid.nbLines) {
+            for (j in 0 until grid.nbColumns) {
+                val cell = grid.cells[i][j]
+                val values = cell.values
+                // We want to draw the unique value from the initial numbers
+                if (cell.enonce) {
+                    assert(values.size == 1)
+                    // Draw the unique value in the center of the cell
+                    paint.textSize = desiredTextSizeUnique
+                    canvas.drawText(values[0].toString(),
+                            offsetLeft + j * cellSize + (cellSize - desiredWidthUnique) / 2,
+                            offsetTop + i * cellSize + (cellSize + textHeightUnique) / 2,
+                            paint)
+                }
+                if (cell.sister != null) {
+                    paint.textSize = desiredTextSizeMultiple
+                    // Draw the sister symbol on the bottom-right corner
+                    canvas.drawText(cell.sister.toString(),
+                            offsetLeft + j * cellSize + 4 * cellSize / 5,
+                            offsetTop + i * cellSize + 4 * cellSize / 5,
+                            paint)
+                }
+
+                if (cell.differenceOne != null) {
+                    // TODO find the other
+                }
+            }
         }
     }
 
