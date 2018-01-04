@@ -19,10 +19,12 @@ class PentatonicKeyView : View, Observer {
         grid = o as Grid
     }
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?) : super(context, null)
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
-            defStyleAttr)
+            defStyleAttr) {
+        paint.style = Paint.Style.STROKE
+    }
 
     companion object {
         @JvmField
@@ -45,12 +47,30 @@ class PentatonicKeyView : View, Observer {
         return super.onTouchEvent(event)
     }
 
+    var widthButton: Float = 30f
+    var heightButton: Float = 30f
+    val marginBetween: Float = 10f
+    var marginHorizontal: Float = 14f
+    var marginVertical: Float = 12f
+    val NUMBER_BUTTON_FIRST_ROW = 5
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        widthButton = (width - (NUMBER_BUTTON_FIRST_ROW - 1) * marginBetween - 2 * marginHorizontal) / NUMBER_BUTTON_FIRST_ROW
+        heightButton = (height - marginBetween - 2 * marginVertical) / 2
+    }
+
     override fun performClick(): Boolean {
         return super.performClick()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
 
+        for (i in 0 until NUMBER_BUTTON_FIRST_ROW) {
+            canvas.drawRect(marginHorizontal + i * widthButton + i * marginBetween, marginVertical,
+                    marginHorizontal + (i + 1) * widthButton + i * marginBetween,
+                    marginVertical + heightButton, paint)
+        }
     }
 
 }
