@@ -29,6 +29,7 @@ class PentatonicKeyView : View, Observer {
     companion object {
         @JvmField
         val TAG = "PentatonicKeyView"
+        val NUMBER_BUTTON_FIRST_ROW = 5
     }
 
     private var paint: Paint = Paint()
@@ -52,7 +53,6 @@ class PentatonicKeyView : View, Observer {
     val marginBetween: Float = 10f
     var marginHorizontal: Float = 14f
     var marginVertical: Float = 12f
-    val NUMBER_BUTTON_FIRST_ROW = 5
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)

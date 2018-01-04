@@ -214,6 +214,7 @@ class PentatonicView : View, Observer {
 
                 if (cell.differenceOne != null) {
                     // TODO find the other
+
                 }
             }
         }
