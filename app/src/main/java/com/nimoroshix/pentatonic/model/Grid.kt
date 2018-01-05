@@ -1,6 +1,8 @@
 package com.nimoroshix.pentatonic.model
 
 import java.util.*
+import kotlin.collections.HashSet
+import kotlin.math.abs
 
 /**
  * Project Pentatonic
@@ -39,7 +41,18 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         notifyObservers(VALUE)
     }
 
-    fun getAreaCells(area: Area): HashSet<Cell> {
+    fun getAreaCells(cell: Cell): Set<Cell> {
+        val idArea = cell.area.id
+        return cells.flatten().filter { c ->
+            when {
+                c.area.id != idArea -> false // We want the same area
+                c.position == cell.position -> false // We don't want the same cell
+                else -> true
+            }
+        }.toSet()
+    }
+
+    fun getAreaCells(area: Area): Set<Cell> {
         val set = HashSet<Cell>()
         (0 until cells.size).flatMapTo(set) { row ->
             (0 until cells[row].size).filter { col ->
@@ -49,6 +62,21 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
             }
         }
         return set
+    }
+
+    fun unselect() {
+        cells.flatten().forEach { c -> c.selection = CellState.UNSELECTED }
+    }
+
+    fun select(nLine: Int, nColumn: Int) {
+        unselect()
+        val cell = cells[nLine][nColumn]
+        cell.selection = CellState.SELECTED
+        val area = getAreaCells(cell)
+        val adjacent = getAdjacentCells(nLine, nColumn)
+        area.union(adjacent).forEach { c -> c.selection = CellState.SECONDARY_SELECTION }
+        setChanged()
+        notifyObservers(VALUE)
     }
 
     private fun getAllAreas(): Set<Area> {
@@ -74,11 +102,14 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         }
     }
 
-    fun getAdjacentCells(cell: Cell): List<Cell> {
-
-        var res: List<Cell> = List(0, { _ -> Cell() })
-        // TODO to complete
-        return res
+    fun getAdjacentCells(nLine: Int, nColumn: Int): Set<Cell> {
+        return cells.flatten().filter { cell ->
+            when {
+                cell.position.nLine == nLine && cell.position.nColumn == nColumn -> false // We don't want the same cell
+                abs(cell.position.nLine - nLine) <= 1 && abs(cell.position.nColumn - nColumn) <= 1 -> true // we want the cells nearby
+                else -> false // and we don't want any other cell
+            }
+        }.toSet()
     }
 
     /**

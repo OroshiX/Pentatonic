@@ -1,62 +1,28 @@
 package com.nimoroshix.pentatonic.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.DashPathEffect
+import android.graphics.Paint
+import android.graphics.PathEffect
 import android.util.AttributeSet
 import android.util.Log
-import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
-import com.nimoroshix.pentatonic.serializer.Serializer
+import com.nimoroshix.pentatonic.util.PROPORTION_MARGIN_SMALL_NUMBER_CELL
 import java.util.*
 
 /**
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class PentatonicView : View, Observer {
+class PentatonicView : PentatonicAbstractView {
     override fun update(o: Observable?, arg: Any?) {
-        grid = o as Grid
         if (arg == Grid.STRUCTURE)
             invalidate()
     }
 
-    private var paint: Paint = Paint()
 
     private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
-    var grid: Grid = Serializer.serialize(
-            "7 6\n" +
-                    "122223\n" +
-                    "445533\n" +
-                    "645537\n" +
-                    "644587\n" +
-                    "688887\n" +
-                    "6999aa\n" +
-                    "bb99aa\n" +
-                    "×,0,1\n" +
-                    "×,6,5")
-
-
-//            "4 5\n" +
-//            "11233\n" +
-//            "11223\n" +
-//            "45266\n" +
-//            "55556\n" +
-//            "1,2,2\n" +
-//            "3,3,2\n" +
-//            "a,0,2\n" +
-//            "a,0,0\n" +
-//            "-2,0,3,1")
-
-    var offsetLeft: Float = 10f
-    var offsetTop: Float = 10f
-    var cellSize: Float = 40f
-
-    private var desiredWidthUnique: Float = 0f
-    private var desiredWidthMultiple: Float = 0f
-    private var desiredTextSizeUnique: Float = 0f
-    private var desiredTextSizeMultiple: Float = 0f
-    private var textHeightUnique: Float = 0f
-    private var textHeightMultiple: Float = 0f
 
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -69,67 +35,6 @@ class PentatonicView : View, Observer {
     companion object {
         @JvmField
         val TAG = "PentatonicView"
-        val PROPORTION_NUMBER_CELL: Float = 3f / 4f
-        val PROPORTION_SMALL_NUMBER_CELL: Float = 1f / 5f
-        val PROPORTION_MARGIN_SMALL_NUMBER_CELL: Float = 1f / 20f
-    }
-
-    /**
-     * https://stackoverflow.com/questions/12166476/android-canvas-drawtext-set-font-size-from-width
-     * Sets the text size for a Paint object so a given string of text will be given width.
-     *
-     * @param desiredWidth the desired width
-     * @param text         the text that should be that width
-     */
-    private fun getTextSizeForWidth(desiredWidth: Float, text: String): Float {
-        val testTextSize = 48f
-        // Get the bounds of the text, using our testTextSize
-        paint.textSize = testTextSize
-        val bounds = Rect()
-        paint.getTextBounds(text, 0, text.length, bounds)
-
-        // calculate the desired size as a proportion of our testTextSize
-        return testTextSize * desiredWidth / bounds.height()
-    }
-
-    private fun getTextHeightForSize(textSize: Float, text: String): Float {
-        paint.textSize = textSize
-        val bounds = Rect()
-        paint.getTextBounds(text, 0, text.length, bounds)
-
-        return bounds.height().toFloat()
-    }
-
-    fun setGrid(textGrid: String) {
-        grid = Serializer.serialize(textGrid)
-        resetSizeAndOffsets()
-    }
-
-
-    private fun resetSizeAndOffsets() {
-        // Calculate cellSize
-        val maxCellHeight: Float = (height - 2 * offsetLeft) / grid.nbLines
-        val maxCellWidth: Float = (width - 2 * offsetTop) / grid.nbColumns
-        cellSize = Math.min(maxCellHeight, maxCellWidth)
-
-        offsetTop = (height - cellSize * grid.nbLines) / 2
-        offsetLeft = (width - cellSize * grid.nbColumns) / 2
-
-        desiredWidthUnique = cellSize * PROPORTION_NUMBER_CELL
-        desiredTextSizeUnique = getTextSizeForWidth(desiredWidthUnique, "5")
-        desiredWidthMultiple = cellSize * PROPORTION_SMALL_NUMBER_CELL
-        desiredTextSizeMultiple = getTextSizeForWidth(desiredWidthMultiple, "5")
-
-        textHeightUnique = getTextHeightForSize(desiredTextSizeUnique, "5")
-        textHeightMultiple = getTextHeightForSize(desiredTextSizeMultiple, "5")
-    }
-
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        // Calculate offsets
-        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
-        resetSizeAndOffsets()
     }
 
     override fun onDraw(canvas: Canvas) {

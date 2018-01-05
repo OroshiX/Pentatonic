@@ -4,19 +4,14 @@ package com.nimoroshix.pentatonic.model
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class Cell() {
-    constructor(nLine: Int, nColumn: Int) : this() {
-        this.position = Position(nLine, nColumn)
-    }
-
+class Cell(nLine: Int, nColumn: Int) {
+    var position: Position = Position(nLine, nColumn)
     var area: Area = Area()
-    var values: MutableList<Char?> = MutableList(0, { _ -> null })
-
+    var values: MutableList<Char?> = mutableListOf<Char?>()
     var dirty = false
     var valid: Boolean = true
     var sister: Char? = null
     var differenceOne: Cell? = null
-    var position: Position? = null
     var enonce: Boolean = false
     var selection: CellState = CellState.UNSELECTED
 
@@ -55,7 +50,7 @@ class Cell() {
         result = 31 * result + valid.hashCode()
         result = 31 * result + (sister?.hashCode() ?: 0)
         result = 31 * result + (differenceOne?.hashCode() ?: 0)
-        result = 31 * result + (position?.hashCode() ?: 0)
+        result = 31 * result + position.hashCode()
         result = 31 * result + enonce.hashCode()
         result = 31 * result + selection.hashCode()
         return result

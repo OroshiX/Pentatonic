@@ -14,17 +14,20 @@
         android:layout_weight="4">
 
         <com.nimoroshix.pentatonic.view.PentatonicView
+            android:id="@+id/pentatonicEnonce"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="software" />
 
         <com.nimoroshix.pentatonic.view.PentatonicFillView
+            android:id="@+id/pentatonicValues"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="software" />
     </FrameLayout>
 
     <com.nimoroshix.pentatonic.view.PentatonicKeyView
+        android:id="@+id/pentatonicKeys"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
