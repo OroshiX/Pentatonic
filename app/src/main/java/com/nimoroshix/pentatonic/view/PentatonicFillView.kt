@@ -66,7 +66,9 @@ class PentatonicFillView : PentatonicAbstractView {
                     grid.select(pos.nLine, pos.nColumn)
                     true
                 } else {
-                    false
+                    grid.unselect()
+                    invalidate()
+                    true
                 }
             }
             MotionEvent.ACTION_UP -> {

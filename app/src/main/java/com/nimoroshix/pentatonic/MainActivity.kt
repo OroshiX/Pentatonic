@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         pentatonicValues.grid = grid
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
-        grid.select(3, 2)
 
     }
 }
