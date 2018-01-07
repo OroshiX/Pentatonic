@@ -22,8 +22,8 @@ import java.util.*
 class PentatonicFillView : PentatonicAbstractView {
     companion object {
         val TAG = "PentatonicFillView"
-        val a = listOf<Float>(1f, 11F, 6F, 1F, 11F)
-        val b = listOf<Float>(5f, 5F, 10F, 15F, 15F)
+        val a = listOf<Float>(4F, 45F, 25F, 4F, 45F)
+        val b = listOf<Float>(21F, 21F, 41F, 61F, 61F)
     }
 
     override fun update(o: Observable?, arg: Any?) {
@@ -130,9 +130,8 @@ class PentatonicFillView : PentatonicAbstractView {
                             paint.textSize = desiredTextSizeMultiple
                             for ((k, value) in cell.values.withIndex()) {
                                 canvas.drawText(value.toString(),
-                                        offsetLeft + cellSize * (j + a[k] / 16f),
-                                        offsetTop + cellSize * (i + b[k] / 16f), paint)
-                                // TODO draw them at the right position in the cells
+                                        offsetLeft + cellSize * (j + a[k] / 64f),
+                                        offsetTop + cellSize * (i + b[k] / 64f), paint)
                             }
                         }
                     }

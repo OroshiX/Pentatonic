@@ -7,7 +7,7 @@ package com.nimoroshix.pentatonic.model
 class Cell(nLine: Int, nColumn: Int) {
     var position: Position = Position(nLine, nColumn)
     var area: Area = Area()
-    var values: MutableList<Char?> = mutableListOf<Char?>()
+    var values: MutableList<Char> = mutableListOf<Char>()
     var dirty = false
     var valid: Boolean = true
     var sister: Char? = null

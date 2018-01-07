@@ -36,6 +36,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
             values.remove(value)
         } else {
             values.add(value)
+            values.sort()
         }
         cells[nLine][nColumn].dirty = true
         setChanged()
