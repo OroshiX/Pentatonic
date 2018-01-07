@@ -11,7 +11,7 @@ import android.util.Log
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.RelativePosition
 import com.nimoroshix.pentatonic.model.RelativePosition.*
-import com.nimoroshix.pentatonic.util.PROPORTION_MARGIN_SMALL_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_MARGIN_SMALL_NUMBER_CELL
 import java.util.*
 
 /**
@@ -20,8 +20,9 @@ import java.util.*
  */
 class PentatonicView : PentatonicAbstractView {
     override fun update(o: Observable?, arg: Any?) {
-        if (arg == Grid.STRUCTURE)
+        if (arg == Grid.STRUCTURE) {
             invalidate()
+        }
     }
 
 
@@ -108,14 +109,14 @@ class PentatonicView : PentatonicAbstractView {
                             paint)
                 }
                 if (cell.sister != null) {
-                    paint.textSize = desiredTextSizeMultiple
+                    paint.textSize = desiredHintTextSizeMultiple
                     // Draw the sister symbol on the bottom-right corner
-                    desiredTextSizeMultiple = getTextSizeForWidth(desiredWidthMultiple,
+                    desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple,
                             cell.sister.toString())
-                    textHeightMultiple = getTextHeightForSize(desiredTextSizeMultiple,
+                    textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple,
                             cell.sister.toString())
                     canvas.drawText(cell.sister.toString(),
-                            offsetLeft + j * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize - desiredWidthMultiple,
+                            offsetLeft + j * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize - desiredHintWidthMultiple,
                             offsetTop + i * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize,
                             paint)
                 }
@@ -123,9 +124,12 @@ class PentatonicView : PentatonicAbstractView {
                 val otherCell = cell.differenceOne
                 @SuppressLint("DrawAllocation")
                 if (otherCell != null) {
-                    val relation: RelativePosition = cell.position.getPositionRelativeToMe(otherCell.position)
-                    val xArray: Array<Float> = Array(5, { k -> offsetLeft + j * cellSize + (cellSize * k) / 4 })
-                    val yArray: Array<Float> = Array(5, { k -> offsetTop + i * cellSize + (cellSize * k) / 4 })
+                    val relation: RelativePosition = cell.position.getPositionRelativeToMe(
+                            otherCell.position)
+                    val xArray: Array<Float> = Array(5,
+                            { k -> offsetLeft + j * cellSize + (cellSize * k) / 4 })
+                    val yArray: Array<Float> = Array(5,
+                            { k -> offsetTop + i * cellSize + (cellSize * k) / 4 })
                     var xStart: Float
                     var xEnd: Float
                     var yStart: Float

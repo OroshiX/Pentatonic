@@ -10,6 +10,8 @@ import android.view.MotionEvent
 import com.nimoroshix.pentatonic.model.CellState
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
+import com.nimoroshix.pentatonic.util.Constants.Companion.COLOR_SELECTED
+import com.nimoroshix.pentatonic.util.Constants.Companion.COLOR_SELECTED_SECONDARY
 import com.nimoroshix.pentatonic.util.TouchUtils
 import java.util.*
 
@@ -20,28 +22,26 @@ import java.util.*
 class PentatonicFillView : PentatonicAbstractView {
     companion object {
         val TAG = "PentatonicFillView"
+        val a = listOf<Float>(1f, 11F, 6F, 1F, 11F)
+        val b = listOf<Float>(5f, 5F, 10F, 15F, 15F)
     }
 
     override fun update(o: Observable?, arg: Any?) {
+
         if (arg == Grid.VALUE) {
             invalidate()
         }
     }
-
-    private val colorSelected: Int
 
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
         paint.style = Paint.Style.FILL
-        colorSelected = Color.parseColor("#525F9DBE")
-        colorSelectedSecondary = Color.parseColor("#52C3E5F8")
         notValid = Color.RED
         valid = Color.BLUE
     }
 
-    private val colorSelectedSecondary: Int
 
     private val notValid: Int
     private val valid: Int
@@ -59,7 +59,8 @@ class PentatonicFillView : PentatonicAbstractView {
                 return false
             }
             MotionEvent.ACTION_DOWN -> {
-                val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft, offsetTop, cellSize, grid.nbLines, grid.nbColumns)
+                val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
+                        offsetTop, cellSize, grid.nbLines, grid.nbColumns)
                 return if (pos != null) {
                     Log.d(TAG, "We got position: $pos")
                     performClick()
@@ -80,8 +81,8 @@ class PentatonicFillView : PentatonicAbstractView {
 
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
-        grid.cells.forEach { row ->
-            row.forEach { cell ->
+        for ((i, row) in grid.cells.withIndex()) {
+            for ((j, cell) in row.withIndex()) {
                 if (!cell.enonce) {
                     // We can draw
 
@@ -91,8 +92,8 @@ class PentatonicFillView : PentatonicAbstractView {
                         }
                         else -> {
                             when (cell.selection) {
-                                CellState.SELECTED -> paint.color = colorSelected
-                                CellState.SECONDARY_SELECTION -> paint.color = colorSelectedSecondary
+                                CellState.SELECTED -> paint.color = COLOR_SELECTED
+                                CellState.SECONDARY_SELECTION -> paint.color = COLOR_SELECTED_SECONDARY
                                 else -> {
                                     // nothing because it is NOT unselected anyway
                                 }
@@ -101,7 +102,8 @@ class PentatonicFillView : PentatonicAbstractView {
                             canvas.drawRect(cell.position.nColumn.times(cellSize).plus(offsetLeft),
                                     cell.position.nLine.times(cellSize).plus(offsetTop),
                                     (cell.position.nColumn + 1).times(cellSize).plus(offsetLeft),
-                                    (cell.position.nLine + 1).times(cellSize).plus(offsetTop), paint)
+                                    (cell.position.nLine + 1).times(cellSize).plus(offsetTop),
+                                    paint)
                         }
                     }
                     // Is cell valid?
@@ -112,15 +114,26 @@ class PentatonicFillView : PentatonicAbstractView {
 
                     when (cell.values.size) {
                         0 -> {// nothing
+                            Log.d(TAG, "size=0")
                         }
                         1 -> {
                             // Big number
-                            // TODO("draw the big number")
-//                            canvas.drawText(cell.values[0].toString(),)
+                            paint.textSize = desiredTextSizeUnique
+                            Log.d(TAG, "drawing this big number: ${cell.values[0].toString()}")
+                            canvas.drawText(cell.values[0].toString(),
+                                    offsetLeft + j * cellSize + (cellSize - desiredWidthUnique) / 2,
+                                    offsetTop + i * cellSize + (cellSize + textHeightUnique) / 2,
+                                    paint)
                         }
                         else -> {
                             // Small numbers
-                            // TODO("draw the small numbers")
+                            paint.textSize = desiredTextSizeMultiple
+                            for ((k, value) in cell.values.withIndex()) {
+                                canvas.drawText(value.toString(),
+                                        offsetLeft + cellSize * (j + a[k] / 16f),
+                                        offsetTop + cellSize * (i + b[k] / 16f), paint)
+                                // TODO draw them at the right position in the cells
+                            }
                         }
                     }
                 }

@@ -18,6 +18,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         val SELECTED = "selected"
     }
 
+    var positionSelected: Position? = null
     var cells: Array<Array<Cell>> = Array(nbLines, { i ->
         Array(nbColumns, { j ->
             Cell(i, j)
@@ -39,6 +40,12 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         cells[nLine][nColumn].dirty = true
         setChanged()
         notifyObservers(VALUE)
+    }
+
+    fun toggleValue(value: Char) {
+        if (positionSelected != null) {
+            toggleValue(positionSelected!!.nLine, positionSelected!!.nColumn, value)
+        }
     }
 
     fun getAreaCells(cell: Cell): Set<Cell> {
@@ -65,6 +72,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
     }
 
     fun unselect() {
+        positionSelected = null
         cells.flatten().forEach { c -> c.selection = CellState.UNSELECTED }
     }
 
@@ -72,6 +80,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         unselect()
         val cell = cells[nLine][nColumn]
         cell.selection = CellState.SELECTED
+        positionSelected = cell.position
         val area = getAreaCells(cell)
         val adjacent = getAdjacentCells(nLine, nColumn)
         area.union(adjacent).forEach { c -> c.selection = CellState.SECONDARY_SELECTION }
@@ -106,7 +115,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         return cells.flatten().filter { cell ->
             when {
                 cell.position.nLine == nLine && cell.position.nColumn == nColumn -> false // We don't want the same cell
-                abs(cell.position.nLine - nLine) <= 1 && abs(cell.position.nColumn - nColumn) <= 1 -> true // we want the cells nearby
+                abs(cell.position.nLine - nLine) <= 1 && abs(
+                        cell.position.nColumn - nColumn) <= 1 -> true // we want the cells nearby
                 else -> false // and we don't want any other cell
             }
         }.toSet()
@@ -150,4 +160,6 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
     override fun toString(): String {
         return "Grid(nbLines=$nbLines, nbColumns=$nbColumns, cells=${Arrays.deepToString(cells)})"
     }
+
+
 }

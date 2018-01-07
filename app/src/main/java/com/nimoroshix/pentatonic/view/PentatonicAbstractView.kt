@@ -7,8 +7,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
-import com.nimoroshix.pentatonic.util.PROPORTION_NUMBER_CELL
-import com.nimoroshix.pentatonic.util.PROPORTION_SMALL_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_HINT_SMALL_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_SMALL_NUMBER_CELL
 import java.util.*
 
 /**
@@ -34,10 +35,13 @@ abstract class PentatonicAbstractView : View, Observer {
     var cellSize: Float = 40f
 
     protected var desiredWidthUnique: Float = 0f
+    protected var desiredHintWidthMultiple: Float = 0f
     protected var desiredWidthMultiple: Float = 0f
     protected var desiredTextSizeUnique: Float = 0f
+    protected var desiredHintTextSizeMultiple: Float = 0f
     protected var desiredTextSizeMultiple: Float = 0f
     protected var textHeightUnique: Float = 0f
+    protected var textHintHeightMultiple: Float = 0f
     protected var textHeightMultiple: Float = 0f
     /**
      * https://stackoverflow.com/questions/12166476/android-canvas-drawtext-set-font-size-from-width
@@ -76,10 +80,15 @@ abstract class PentatonicAbstractView : View, Observer {
 
         desiredWidthUnique = cellSize * PROPORTION_NUMBER_CELL
         desiredTextSizeUnique = getTextSizeForWidth(desiredWidthUnique, "5")
+
+        desiredHintWidthMultiple = cellSize * PROPORTION_HINT_SMALL_NUMBER_CELL
+        desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple, "5")
+
         desiredWidthMultiple = cellSize * PROPORTION_SMALL_NUMBER_CELL
         desiredTextSizeMultiple = getTextSizeForWidth(desiredWidthMultiple, "5")
 
         textHeightUnique = getTextHeightForSize(desiredTextSizeUnique, "5")
+        textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple, "5")
         textHeightMultiple = getTextHeightForSize(desiredTextSizeMultiple, "5")
     }
 

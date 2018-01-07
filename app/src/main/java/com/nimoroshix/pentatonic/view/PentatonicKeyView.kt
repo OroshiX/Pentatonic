@@ -6,6 +6,9 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
+import android.widget.GridLayout
+import android.widget.LinearLayout
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
 import java.util.*
@@ -14,16 +17,44 @@ import java.util.*
  * Project Pentatonic
  * Created by Jessica on 02/01/2018.
  */
-class PentatonicKeyView : View, Observer {
+class PentatonicKeyView : LinearLayout, Observer {
     override fun update(o: Observable?, arg: Any?) {
         grid = o as Grid
     }
 
-    constructor(context: Context?) : super(context, null)
+    var views: List<View> = mutableListOf()
+
+    var lowercase1 = listOf<Char>('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l')
+    var lowercase2 = listOf<Char>('m', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+            'z')
+
+    var uppercase1 = lowercase1.map { c -> c.toUpperCase() }
+    var uppercase2 = lowercase2.map { c -> c.toUpperCase() }
+
+    var letterGreeks1 = listOf<Char>('α', 'β', 'γ', 'δ', 'ε', 'θ', 'λ', 'μ', 'ν', 'η', 'ι', 'κ')
+    var letterGreeks2 = listOf<Char>('ζ', 'ξ', 'π', 'ρ', 'σ', 'τ', 'ο', 'υ', 'φ', 'ψ', 'χ', 'ω')
+
+    val numbers: LinearLayout
+    val letters: GridLayout
+
+    constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
+        orientation = VERTICAL
+        numbers = LinearLayout(context)
+        var button: Button
+        for (i in '1'..'5') {
+            button = Button(context)
+            button.text = i.toString()
+            button.setOnClickListener { _ -> grid.toggleValue(i) }
+            numbers.addView(button)
+        }
+        addView(numbers)
+        letters = GridLayout(context)
+
         paint.style = Paint.Style.STROKE
+
     }
 
     companion object {
@@ -33,16 +64,7 @@ class PentatonicKeyView : View, Observer {
     }
 
     private var paint: Paint = Paint()
-    var grid: Grid = Serializer.serialize("4 5\n" +
-            "11233\n" +
-            "11223\n" +
-            "45266\n" +
-            "55556\n" +
-            "1,2,2\n" +
-            "3,3,2\n" +
-            "a,0,2\n" +
-            "a,0,0\n" +
-            "-2,0,3,1")
+    var grid: Grid = Grid(1, 1)
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return super.onTouchEvent(event)
@@ -62,15 +84,6 @@ class PentatonicKeyView : View, Observer {
 
     override fun performClick(): Boolean {
         return super.performClick()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-
-        for (i in 0 until NUMBER_BUTTON_FIRST_ROW) {
-            canvas.drawRect(marginHorizontal + i * widthButton + i * marginBetween, marginVertical,
-                    marginHorizontal + (i + 1) * widthButton + i * marginBetween,
-                    marginVertical + heightButton, paint)
-        }
     }
 
 }

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
                 "-1,4,0,5")
         pentatonicEnonce.grid = grid
         pentatonicValues.grid = grid
+        pentatonicKeys.grid = grid
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
 
