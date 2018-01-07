@@ -5,8 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import com.nimoroshix.pentatonic.model.CellState
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.model.Position
+import com.nimoroshix.pentatonic.util.TouchUtils
 import java.util.*
 
 /**
@@ -14,13 +18,17 @@ import java.util.*
  * Created by Jessica on 03/01/2018.
  */
 class PentatonicFillView : PentatonicAbstractView {
+    companion object {
+        val TAG = "PentatonicFillView"
+    }
+
     override fun update(o: Observable?, arg: Any?) {
         if (arg == Grid.VALUE) {
             invalidate()
         }
     }
 
-    val colorSelected: Int
+    private val colorSelected: Int
 
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -38,7 +46,38 @@ class PentatonicFillView : PentatonicAbstractView {
     private val notValid: Int
     private val valid: Int
 
+    override fun performClick(): Boolean {
+        super.performClick()
+        // Handle the action for the custom click here
+
+        return true
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_MOVE -> {
+                return false
+            }
+            MotionEvent.ACTION_DOWN -> {
+                val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft, offsetTop, cellSize, grid.nbLines, grid.nbColumns)
+                return if (pos != null) {
+                    Log.d(TAG, "We got position: $pos")
+                    performClick()
+                    grid.select(pos.nLine, pos.nColumn)
+                    true
+                } else {
+                    false
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                return false
+            }
+            else -> return false
+        }
+    }
+
     override fun onDraw(canvas: Canvas) {
+        Log.d(TAG, "onDraw")
         grid.cells.forEach { row ->
             row.forEach { cell ->
                 if (!cell.enonce) {

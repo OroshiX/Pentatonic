@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.DashPathEffect
@@ -8,6 +9,8 @@ import android.graphics.PathEffect
 import android.util.AttributeSet
 import android.util.Log
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.model.RelativePosition
+import com.nimoroshix.pentatonic.model.RelativePosition.*
 import com.nimoroshix.pentatonic.util.PROPORTION_MARGIN_SMALL_NUMBER_CELL
 import java.util.*
 
@@ -117,9 +120,71 @@ class PentatonicView : PentatonicAbstractView {
                             paint)
                 }
 
-                if (cell.differenceOne != null) {
-                    // TODO find the other
-
+                val otherCell = cell.differenceOne
+                @SuppressLint("DrawAllocation")
+                if (otherCell != null) {
+                    val relation: RelativePosition = cell.position.getPositionRelativeToMe(otherCell.position)
+                    val xArray: Array<Float> = Array(5, { k -> offsetLeft + j * cellSize + (cellSize * k) / 4 })
+                    val yArray: Array<Float> = Array(5, { k -> offsetTop + i * cellSize + (cellSize * k) / 4 })
+                    var xStart: Float
+                    var xEnd: Float
+                    var yStart: Float
+                    var yEnd: Float
+                    when (relation) {
+                        TOP -> {
+                            xStart = xArray[2]
+                            xEnd = xArray[2]
+                            yStart = yArray[0]
+                            yEnd = yArray[1]
+                        }
+                        RIGHT -> {
+                            xStart = xArray[4]
+                            xEnd = xArray[3]
+                            yStart = yArray[2]
+                            yEnd = yArray[2]
+                        }
+                        BOTTOM -> {
+                            xStart = xArray[2]
+                            xEnd = xArray[2]
+                            yStart = yArray[4]
+                            yEnd = yArray[3]
+                        }
+                        LEFT -> {
+                            xStart = xArray[0]
+                            xEnd = xArray[1]
+                            yStart = yArray[2]
+                            yEnd = yArray[2]
+                        }
+                        TOP_RIGHT -> {
+                            xStart = xArray[4]
+                            xEnd = xArray[3]
+                            yStart = yArray[0]
+                            yEnd = yArray[1]
+                        }
+                        BOTTOM_RIGHT -> {
+                            xStart = xArray[4]
+                            xEnd = xArray[3]
+                            yStart = yArray[4]
+                            yEnd = yArray[3]
+                        }
+                        BOTTOM_LEFT -> {
+                            xStart = xArray[0]
+                            xEnd = xArray[1]
+                            yStart = yArray[4]
+                            yEnd = yArray[3]
+                        }
+                        TOP_LEFT -> {
+                            xStart = xArray[0]
+                            xEnd = xArray[1]
+                            yStart = yArray[0]
+                            yEnd = yArray[1]
+                        }
+                        ILLEGAL -> {
+                            Log.e(TAG, "illegal position")
+                            return
+                        }
+                    }
+                    canvas.drawLine(xStart, yStart, xEnd, yEnd, paint)
                 }
             }
         }

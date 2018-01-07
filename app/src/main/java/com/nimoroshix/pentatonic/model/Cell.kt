@@ -12,6 +12,21 @@ class Cell(nLine: Int, nColumn: Int) {
     var valid: Boolean = true
     var sister: Char? = null
     var differenceOne: Cell? = null
+        set(value) {
+            field = when (value) {
+                null -> value
+                else -> {
+                    if (value.position == position) {
+                        throw IllegalArgumentException("DifferenceOne and this position should not be the same")
+                    }
+                    if (value.position.isNear(position)) {
+                        value
+                    } else {
+                        throw IllegalArgumentException("DifferenceOne and this position must be near each other")
+                    }
+                }
+            }
+        }
     var enonce: Boolean = false
     var selection: CellState = CellState.UNSELECTED
 
@@ -49,7 +64,7 @@ class Cell(nLine: Int, nColumn: Int) {
         result = 31 * result + dirty.hashCode()
         result = 31 * result + valid.hashCode()
         result = 31 * result + (sister?.hashCode() ?: 0)
-        result = 31 * result + (differenceOne?.hashCode() ?: 0)
+        result = 31 * result + (differenceOne?.position?.hashCode() ?: 0)
         result = 31 * result + position.hashCode()
         result = 31 * result + enonce.hashCode()
         result = 31 * result + selection.hashCode()

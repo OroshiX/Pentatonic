@@ -1,7 +1,9 @@
 package com.nimoroshix.pentatonic.util
 
 /**
- * Created by jessi on 05/01/2018.
+ * Project Pentatonic
+ *
+ * Created by OroshiX on 05/01/2018.
  */
 val PROPORTION_NUMBER_CELL: Float = 3f / 4f
 val PROPORTION_SMALL_NUMBER_CELL: Float = 1f / 5f

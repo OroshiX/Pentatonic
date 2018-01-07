@@ -13,21 +13,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        grid = Serializer.serialize("7 6\n" +
-                "122223\n" +
-                "445533\n" +
-                "645537\n" +
-                "644587\n" +
-                "688887\n" +
-                "6999aa\n" +
-                "bb99aa\n" +
-                "×,0,1\n" +
-                "×,6,5")
+        grid = Serializer.serialize("6 7\n" +
+                "1223344\n" +
+                "5523364\n" +
+                "7522666\n" +
+                "7558999\n" +
+                "788899a\n" +
+                "78bbbba\n" +
+                "-3,0,2,1\n" +
+                "-1,4,0,5")
         pentatonicEnonce.grid = grid
         pentatonicValues.grid = grid
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
-        grid.select(2, 1)
+        grid.select(3, 2)
 
     }
 }

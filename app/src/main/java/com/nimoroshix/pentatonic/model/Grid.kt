@@ -113,7 +113,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
     }
 
     /**
-     * Replace all occurences of one char into another one in the grid
+     * Replace all occurrences of one char into another one in the grid
      *
      * For example:
      * alpha -> 1
@@ -134,6 +134,17 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         }
         setChanged()
         notifyObservers(VALUE)
+    }
+
+    /**
+     * Remove all occurrences of one char in the grid
+     */
+    fun remove(oldValue: Char) {
+        cells.flatten().forEach { c ->
+            if (c.values.contains(oldValue)) {
+                c.values.remove(oldValue)
+            }
+        }
     }
 
     override fun toString(): String {
