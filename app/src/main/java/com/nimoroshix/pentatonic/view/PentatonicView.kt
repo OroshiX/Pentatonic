@@ -2,12 +2,12 @@ package com.nimoroshix.pentatonic.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.DashPathEffect
-import android.graphics.Paint
-import android.graphics.PathEffect
+import android.graphics.*
+import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.Log
+import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.RelativePosition
 import com.nimoroshix.pentatonic.model.RelativePosition.*
@@ -28,12 +28,15 @@ class PentatonicView : PentatonicAbstractView {
 
     private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
 
-    constructor(context: Context?) : this(context, null)
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
+    val backgroundDrawable: Drawable?
+
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
         paint.isAntiAlias = true
         paint.strokeWidth = 5f
+        backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.paper_blue)
     }
 
     companion object {
@@ -41,9 +44,15 @@ class PentatonicView : PentatonicAbstractView {
         val TAG = "PentatonicView"
     }
 
+    val imageBounds: Rect = Rect()
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
-        canvas.drawRGB(252, 247, 219)
+        canvas.getClipBounds(imageBounds)
+        backgroundDrawable?.bounds = imageBounds
+        backgroundDrawable?.draw(canvas)
+
+
+//        canvas.drawRGB(252, 247, 219)
 
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.style = Paint.Style.STROKE
