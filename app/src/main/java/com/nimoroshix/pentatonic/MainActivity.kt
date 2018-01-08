@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
 
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_undo, R.id.menu_redo, R.id.menu_replace -> {
                 Log.d(TAG, "TODO") // TODO("implement menu click")
+                Toast.makeText(applicationContext, "TODO Not implemented", Toast.LENGTH_SHORT).show()
                 return false
             }
             R.id.menu_reset -> {
