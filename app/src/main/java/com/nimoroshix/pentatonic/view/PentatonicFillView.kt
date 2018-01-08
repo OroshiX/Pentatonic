@@ -83,29 +83,27 @@ class PentatonicFillView : PentatonicAbstractView {
         Log.d(TAG, "onDraw")
         for ((i, row) in grid.cells.withIndex()) {
             for ((j, cell) in row.withIndex()) {
-                if (!cell.enonce) {
-                    // We can draw
-
-                    // Background (selected or not)
-                    when (cell.selection) {
-                        CellState.UNSELECTED -> {
-                        }
-                        else -> {
-                            when (cell.selection) {
-                                CellState.SELECTED -> paint.color = COLOR_SELECTED
-                                CellState.SECONDARY_SELECTION -> paint.color = COLOR_SELECTED_SECONDARY
-                                else -> {
-                                    // nothing because it is NOT unselected anyway
-                                }
-                            }
-                            // it is either selected or secondary selected, so draw background
-                            canvas.drawRect(cell.position.nColumn.times(cellSize).plus(offsetLeft),
-                                    cell.position.nLine.times(cellSize).plus(offsetTop),
-                                    (cell.position.nColumn + 1).times(cellSize).plus(offsetLeft),
-                                    (cell.position.nLine + 1).times(cellSize).plus(offsetTop),
-                                    paint)
-                        }
+                // Background (selected or not)
+                when (cell.selection) {
+                    CellState.UNSELECTED -> {
                     }
+                    else -> {
+                        when (cell.selection) {
+                            CellState.SELECTED -> paint.color = COLOR_SELECTED
+                            CellState.SECONDARY_SELECTION -> paint.color = COLOR_SELECTED_SECONDARY
+                            else -> {
+                                // nothing because it is NOT unselected anyway
+                            }
+                        }
+                        // it is either selected or secondary selected, so draw background
+                        canvas.drawRect(cell.position.nColumn.times(cellSize).plus(offsetLeft),
+                                cell.position.nLine.times(cellSize).plus(offsetTop),
+                                (cell.position.nColumn + 1).times(cellSize).plus(offsetLeft),
+                                (cell.position.nLine + 1).times(cellSize).plus(offsetTop),
+                                paint)
+                    }
+                }
+                if (!cell.enonce) {
                     // Is cell valid?
                     when {
                         !cell.valid -> paint.color = notValid

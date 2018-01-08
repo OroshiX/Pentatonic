@@ -1,8 +1,8 @@
 package com.nimoroshix.pentatonic.model
 
+import java.lang.Math.abs
 import java.util.*
 import kotlin.collections.HashSet
-import kotlin.math.abs
 
 /**
  * Project Pentatonic
@@ -116,8 +116,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         return cells.flatten().filter { cell ->
             when {
                 cell.position.nLine == nLine && cell.position.nColumn == nColumn -> false // We don't want the same cell
-                abs(cell.position.nLine - nLine) <= 1 && abs(
-                        cell.position.nColumn - nColumn) <= 1 -> true // we want the cells nearby
+                abs(cell.position.nLine - nLine) <= 1 && abs(cell.position.nColumn - nColumn) <= 1 -> true // we want the cells nearby
                 else -> false // and we don't want any other cell
             }
         }.toSet()
@@ -156,10 +155,22 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
                 c.values.remove(oldValue)
             }
         }
+        setChanged()
+        notifyObservers(VALUE)
     }
 
     override fun toString(): String {
         return "Grid(nbLines=$nbLines, nbColumns=$nbColumns, cells=${Arrays.deepToString(cells)})"
+    }
+
+    fun reset() {
+        cells.flatten().forEach { cell ->
+            if (!cell.enonce) {
+                cell.values.clear()
+            }
+        }
+        setChanged()
+        notifyObservers(VALUE)
     }
 
 
