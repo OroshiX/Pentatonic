@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.LinearLayout
@@ -35,7 +36,8 @@ class PentatonicKeyView : LinearLayout, Observer {
     var letterGreeks2 = listOf<Char>('ζ', 'ξ', 'π', 'ρ', 'σ', 'τ', 'ο', 'υ', 'φ', 'ψ', 'χ', 'ω')
 
     val numbers: LinearLayout
-    val letters: GridLayout
+    val letters1: LinearLayout
+    val letters2: LinearLayout
 
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -43,15 +45,39 @@ class PentatonicKeyView : LinearLayout, Observer {
             defStyleAttr) {
         orientation = VERTICAL
         numbers = LinearLayout(context)
+        numbers.orientation = HORIZONTAL
+        numbers.weightSum = 5f
         var button: Button
         for (i in '1'..'5') {
             button = Button(context)
             button.text = i.toString()
             button.setOnClickListener { _ -> grid.toggleValue(i) }
+            button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
             numbers.addView(button)
         }
         addView(numbers)
-        letters = GridLayout(context)
+        letters1 = LinearLayout(context)
+        letters1.orientation = HORIZONTAL
+        letters1.weightSum = lowercase1.size.toFloat()
+        for (l in lowercase1) {
+            button = Button(context)
+            button.text = l.toString()
+            button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
+            button.setOnClickListener { _ -> grid.toggleValue(l) }
+            letters1.addView(button)
+        }
+        addView(letters1)
+        letters2 = LinearLayout(context)
+        letters2.orientation = HORIZONTAL
+        letters2.weightSum = lowercase2.size.toFloat()
+        for (l in lowercase2) {
+            button = Button(context)
+            button.text = l.toString()
+            button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
+            button.setOnClickListener { _ -> grid.toggleValue(l) }
+            letters2.addView(button)
+        }
+        addView(letters2)
 
         paint.style = Paint.Style.STROKE
 

@@ -36,7 +36,7 @@ class PentatonicView : PentatonicAbstractView {
             defStyleAttr) {
         paint.isAntiAlias = true
         paint.strokeWidth = 5f
-        backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.paper)
+        backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.beige_paper)
     }
 
     companion object {
