@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="5"
-    tools:context="com.nimoroshix.pentatonic.MainActivity">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="5"
+              tools:context="com.nimoroshix.pentatonic.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4">
+        android:layout_weight="3">
 
         <com.nimoroshix.pentatonic.view.PentatonicView
             android:id="@+id/pentatonicEnonce"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layerType="software" />
+            android:layerType="software"/>
 
         <com.nimoroshix.pentatonic.view.PentatonicFillView
             android:id="@+id/pentatonicValues"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layerType="software" />
+            android:layerType="software"/>
     </FrameLayout>
 
-    <com.nimoroshix.pentatonic.view.PentatonicKeyView
-        android:id="@+id/pentatonicKeys"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="2">
+
+        <com.nimoroshix.pentatonic.view.PentatonicKeyView
+            android:id="@+id/pentatonicKeys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.nimoroshix.pentatonic.view.PentatonicKeyView>
+    </ScrollView>
 </LinearLayout>
