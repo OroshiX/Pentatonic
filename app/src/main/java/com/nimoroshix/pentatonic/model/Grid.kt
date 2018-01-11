@@ -159,12 +159,10 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         notifyObservers(VALUE)
     }
 
-    fun findAllValues(): HashSet<Char> {
-        val set = HashSet<Char>()
-        cells.flatten().forEach { cell ->
-            set.addAll(cell.values)
-        }
-        return set
+    fun findAllValues(): List<Char> {
+        val list = mutableListOf<Char>()
+        cells.flatten().flatMapTo(list, { c -> c.values })
+        return list.distinct()
     }
 
 

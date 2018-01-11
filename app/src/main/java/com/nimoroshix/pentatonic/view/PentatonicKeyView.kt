@@ -22,7 +22,7 @@ class PentatonicKeyView : LinearLayout, Observer {
         grid = o as Grid
     }
 
-    val numbers: LinearLayout
+    private val numbers: LinearLayout
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)

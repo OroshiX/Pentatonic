@@ -64,14 +64,16 @@ class MainActivity : AppCompatActivity() {
                 .create()
         val listOld = mutableListOf<Char>()
         val allValues = grid.findAllValues()
-        allValues.forEach { v -> listOld.add(v) }
+        listOld.addAll(allValues)
         val adapterOld = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listOld)
+        adapterOld.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.findViewById<Spinner>(R.id.sp_old_val).adapter = adapterOld
 
         val listNew = mutableListOf<Char>()
-        allValues.addAll('1'..'5')
-        allValues.forEach { v -> listNew.add(v) }
-        val adapterNew = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listNew)
+        listNew.addAll('1'..'5')
+        listNew.addAll(allValues)
+        val adapterNew = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listNew.distinct())
+        adapterNew.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.findViewById<Spinner>(R.id.sp_new_val).adapter = adapterNew
 
         alert.show()
