@@ -2,7 +2,6 @@ package com.nimoroshix.pentatonic.model
 
 import java.lang.Math.abs
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /**
@@ -125,19 +124,12 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
      * alpha -> beta
      */
     fun replace(oldValue: Char, newValue: Char) {
-        cells.forEach { row ->
-            row.forEach { c ->
-                if (c.values.contains(oldValue)) {
-                    c.values.forEachIndexed { index, t ->
-                        if (t == oldValue) {
-                            c.values[index] = newValue
-                        }
-                    }
-                }
-            }
+        var res = false
+        cells.flatten().forEach { c -> res = c.replace(oldValue, newValue) || res }
+        if (res) {
+            setChanged()
+            notifyObservers(VALUE)
         }
-        setChanged()
-        notifyObservers(VALUE)
     }
 
     /**

@@ -57,6 +57,26 @@ class Cell(nLine: Int, nColumn: Int) {
         return res
     }
 
+    fun replace(oldValue: Char, newValue: Char): Boolean {
+        var changed = false
+        if (values.contains(oldValue)) {
+            val it = values.listIterator()
+            while (it.hasNext()) {
+                val c = it.next()
+                if (c == oldValue) {
+                    if (values.contains(newValue)) {
+                        // We don't want to duplicate values, so just remove the oldValue
+                        it.remove()
+                    } else {
+                        it.set(newValue)
+                    }
+                    changed = true
+                }
+            }
+        }
+        return changed
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
