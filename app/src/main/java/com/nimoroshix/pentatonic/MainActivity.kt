@@ -79,8 +79,21 @@ class MainActivity : AppCompatActivity() {
         alert.show()
     }
 
+    private fun displayResetDialog() {
+        AlertDialog.Builder(this).setTitle("Reset the game")
+                .setMessage("Do you really want to reset the game. Any number/letter you put will be erased.")
+                .setPositiveButton("Reset", { _, _ -> doReset() })
+                .setNegativeButton("Cancel", { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() })
+                .show()
+    }
+
+
     private fun doReplace(oldVal: Char, newVal: Char) {
         grid.replace(oldVal, newVal)
+    }
+
+    private fun doReset() {
+        grid.reset()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -102,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_reset -> {
                 Log.d(TAG, "Reset")
-                grid.reset()
+                displayResetDialog()
                 return true
             }
         }
