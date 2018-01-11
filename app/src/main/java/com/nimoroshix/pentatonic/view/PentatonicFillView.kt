@@ -25,8 +25,8 @@ import java.util.*
 class PentatonicFillView : PentatonicAbstractView {
     companion object {
         val TAG = "PentatonicFillView"
-        val a = listOf<Float>(4F, 45F, 25F, 4F, 45F)
-        val b = listOf<Float>(21F, 21F, 41F, 61F, 61F)
+        val a = listOf(4F, 45F, 25F, 4F, 45F)
+        val b = listOf(21F, 21F, 41F, 61F, 61F)
     }
 
     override fun update(o: Observable?, arg: Any?) {

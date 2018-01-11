@@ -28,7 +28,7 @@ class PentatonicView : PentatonicAbstractView {
 
     private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
 
-    val backgroundDrawable: Drawable?
+    private val backgroundDrawable: Drawable?
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -44,7 +44,7 @@ class PentatonicView : PentatonicAbstractView {
         val TAG = "PentatonicView"
     }
 
-    val imageBounds: Rect = Rect()
+    private val imageBounds: Rect = Rect()
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
         canvas.getClipBounds(imageBounds)

@@ -74,11 +74,11 @@ class PentatonicKeyView : LinearLayout, Observer {
     private var paint: Paint = Paint()
     var grid: Grid = Grid(1, 1)
 
-    var widthButton: Float = 30f
-    var heightButton: Float = 30f
-    val marginBetween: Float = 10f
-    var marginHorizontal: Float = 14f
-    var marginVertical: Float = 12f
+    private var widthButton: Float = 30f
+    private var heightButton: Float = 30f
+    private val marginBetween: Float = 10f
+    private var marginHorizontal: Float = 14f
+    private var marginVertical: Float = 12f
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)

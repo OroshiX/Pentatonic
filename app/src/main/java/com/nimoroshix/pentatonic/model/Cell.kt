@@ -8,8 +8,8 @@ import com.nimoroshix.pentatonic.util.Constants.Companion.MAX_SIZE
  */
 class Cell(nLine: Int, nColumn: Int) {
     var position: Position = Position(nLine, nColumn)
-    var area: Area = Area()
-    var values: MutableList<Char> = mutableListOf<Char>()
+    var area = Area()
+    var values: MutableList<Char> = mutableListOf()
     var dirty = false
     var valid: Boolean = true
     var sister: Char? = null
@@ -31,10 +31,10 @@ class Cell(nLine: Int, nColumn: Int) {
         }
     var enonce: Boolean = false
     var selection: CellState = CellState.UNSELECTED
-
-    fun fullToString(): String {
-        return "Cell(area=$area, values=$values, dirty=$dirty, valid=$valid, sister=$sister, differenceOne=$differenceOne, position=$position, enonce=$enonce, selection=$selection)"
-    }
+//
+//    fun fullToString(): String {
+//        return "Cell(area=$area, values=$values, dirty=$dirty, valid=$valid, sister=$sister, differenceOne=$differenceOne, position=$position, enonce=$enonce, selection=$selection)"
+//    }
 
     override fun toString(): String {
         return "$values (${area.id})"

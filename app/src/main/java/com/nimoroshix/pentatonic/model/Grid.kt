@@ -18,7 +18,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         val SELECTED = "selected"
     }
 
-    var positionSelected: Position? = null
+    private var positionSelected: Position? = null
     var cells: Array<Array<Cell>> = Array(nbLines, { i ->
         Array(nbColumns, { j ->
             Cell(i, j)
