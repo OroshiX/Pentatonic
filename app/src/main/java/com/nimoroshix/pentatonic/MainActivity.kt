@@ -8,9 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import com.nimoroshix.pentatonic.adapter.MonoArrayAdapter
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
 import kotlinx.android.synthetic.main.activity_main.*
@@ -65,20 +65,18 @@ class MainActivity : AppCompatActivity() {
         val listOld = mutableListOf<Char>()
         val allValues = grid.findAllValues()
         listOld.addAll(allValues)
-        val adapterOld = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listOld)
+        val adapterOld = MonoArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listOld)
         adapterOld.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.findViewById<Spinner>(R.id.sp_old_val).adapter = adapterOld
 
         val listNew = mutableListOf<Char>()
         listNew.addAll('1'..'5')
         listNew.addAll(allValues)
-        val adapterNew = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listNew.distinct())
+        val adapterNew = MonoArrayAdapter(this, android.R.layout.simple_spinner_item, listNew.distinct())
         adapterNew.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.findViewById<Spinner>(R.id.sp_new_val).adapter = adapterNew
 
         alert.show()
-
-
     }
 
     private fun doReplace(oldVal: Char, newVal: Char) {

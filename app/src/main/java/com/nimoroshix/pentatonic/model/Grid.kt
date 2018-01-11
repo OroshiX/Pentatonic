@@ -125,7 +125,12 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
      */
     fun replace(oldValue: Char, newValue: Char) {
         var res = false
-        cells.flatten().forEach { c -> res = c.replace(oldValue, newValue) || res }
+        if (oldValue == newValue) {
+            return
+        }
+        cells.flatten().forEach { c ->
+            res = c.replace(oldValue, newValue) || res
+        }
         if (res) {
             setChanged()
             notifyObservers(VALUE)
@@ -159,9 +164,12 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         notifyObservers(VALUE)
     }
 
+    /**
+     * Find all values except the ones in the enonce
+     */
     fun findAllValues(): List<Char> {
         val list = mutableListOf<Char>()
-        cells.flatten().flatMapTo(list, { c -> c.values })
+        cells.flatten().filter { c -> !c.enonce }.flatMapTo(list, { c -> c.values })
         return list.distinct()
     }
 

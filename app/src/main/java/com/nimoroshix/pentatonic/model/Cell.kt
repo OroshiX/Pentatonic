@@ -42,12 +42,14 @@ class Cell(nLine: Int, nColumn: Int) {
 
     fun toggleValue(c: Char): Boolean {
         val res: Boolean
-        if (values.contains(c)) {
-            values.remove(c)
-            dirty = true
-            res = true
-        } else {
-            res = if (values.size < MAX_SIZE) {
+        when {
+            enonce -> res = false
+            values.contains(c) -> {
+                values.remove(c)
+                dirty = true
+                res = true
+            }
+            else -> res = if (values.size < MAX_SIZE) {
                 values.add(c)
                 values.sort()
                 dirty = true
@@ -59,7 +61,7 @@ class Cell(nLine: Int, nColumn: Int) {
 
     fun replace(oldValue: Char, newValue: Char): Boolean {
         var changed = false
-        if (values.contains(oldValue)) {
+        if (!enonce && values.contains(oldValue)) {
             val it = values.listIterator()
             while (it.hasNext()) {
                 val c = it.next()
