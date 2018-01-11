@@ -1,15 +1,19 @@
 package com.nimoroshix.pentatonic
 
-import kotlinx.android.synthetic.main.activity_main.*
-
-import android.support.v7.app.AppCompatActivity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +47,42 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun displayReplaceDialog() {
+        val view = LayoutInflater.from(this).inflate(R.layout.replace_dialog_layout, null)
+
+        val alert: AlertDialog = AlertDialog.Builder(this)
+                .setTitle(R.string.title_replace_dialog).setView(view)
+                .setPositiveButton(R.string.replace_positive_button,
+                        { dialogInterface: DialogInterface, _: Int ->
+                            val dialog: AlertDialog = dialogInterface as AlertDialog
+                            doReplace(dialog.findViewById<Spinner>(R.id.sp_old_val).selectedItem.toString()[0],
+                                    dialog.findViewById<Spinner>(R.id.sp_new_val).selectedItem.toString()[0])
+                            dialogInterface.dismiss()
+                        })
+                .setNegativeButton(R.string.cancel,
+                        { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() })
+                .create()
+        val listOld = mutableListOf<Char>()
+        val allValues = grid.findAllValues()
+        allValues.forEach { v -> listOld.add(v) }
+        val adapterOld = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listOld)
+        view.findViewById<Spinner>(R.id.sp_old_val).adapter = adapterOld
+
+        val listNew = mutableListOf<Char>()
+        allValues.addAll('1'..'5')
+        allValues.forEach { v -> listNew.add(v) }
+        val adapterNew = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listNew)
+        view.findViewById<Spinner>(R.id.sp_new_val).adapter = adapterNew
+
+        alert.show()
+
+
+    }
+
+    private fun doReplace(oldVal: Char, newVal: Char) {
+        grid.replace(oldVal, newVal)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -51,10 +91,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_undo, R.id.menu_redo, R.id.menu_replace -> {
+            R.id.menu_undo, R.id.menu_redo -> {
                 Log.d(TAG, "TODO") // TODO("implement menu click")
                 Toast.makeText(applicationContext, "TODO Not implemented", Toast.LENGTH_SHORT).show()
                 return false
+            }
+            R.id.menu_replace -> {
+                displayReplaceDialog()
+                return true
             }
             R.id.menu_reset -> {
                 Log.d(TAG, "Reset")

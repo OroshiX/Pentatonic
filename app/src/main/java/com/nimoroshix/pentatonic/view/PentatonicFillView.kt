@@ -4,9 +4,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.CellState
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
@@ -33,13 +36,17 @@ class PentatonicFillView : PentatonicAbstractView {
         }
     }
 
-    constructor(context: Context?) : this(context, null)
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
+    private val typeface: Typeface
+
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
         paint.style = Paint.Style.FILL
         notValid = Color.RED
         valid = Color.BLUE
+        typeface = ResourcesCompat.getFont(context, R.font.mono)!!
+        paint.typeface = typeface
     }
 
 
@@ -62,7 +69,6 @@ class PentatonicFillView : PentatonicAbstractView {
                 val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
                         offsetTop, cellSize, grid.nbLines, grid.nbColumns)
                 return if (pos != null) {
-                    Log.d(TAG, "We got position: $pos")
                     performClick()
                     grid.select(pos.nLine, pos.nColumn)
                     true
@@ -112,12 +118,10 @@ class PentatonicFillView : PentatonicAbstractView {
 
                     when (cell.values.size) {
                         0 -> {// nothing
-                            Log.d(TAG, "size=0")
                         }
                         1 -> {
                             // Big number
                             paint.textSize = desiredTextSizeUnique
-                            Log.d(TAG, "drawing this big number: ${cell.values[0].toString()}")
                             canvas.drawText(cell.values[0].toString(),
                                     offsetLeft + j * cellSize + (cellSize - desiredWidthUnique) / 2,
                                     offsetTop + i * cellSize + (cellSize + textHeightUnique) / 2,

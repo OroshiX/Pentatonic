@@ -1,5 +1,7 @@
 package com.nimoroshix.pentatonic.model
 
+import com.nimoroshix.pentatonic.util.Constants.Companion.MAX_SIZE
+
 /**
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
@@ -36,6 +38,23 @@ class Cell(nLine: Int, nColumn: Int) {
 
     override fun toString(): String {
         return "$values (${area.id})"
+    }
+
+    fun toggleValue(c: Char): Boolean {
+        val res: Boolean
+        if (values.contains(c)) {
+            values.remove(c)
+            dirty = true
+            res = true
+        } else {
+            res = if (values.size < MAX_SIZE) {
+                values.add(c)
+                values.sort()
+                dirty = true
+                true
+            } else false
+        }
+        return res
     }
 
     override fun equals(other: Any?): Boolean {

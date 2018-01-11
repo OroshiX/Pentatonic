@@ -4,4 +4,9 @@
     <string name="redo">Redo</string>
     <string name="reset">Reset</string>
     <string name="replace">Replace letter with...</string>
+    <string name="title_replace_dialog">Choose what to replace</string>
+    <string name="with">with</string>
+    <string name="replace_text">Replace</string>
+    <string name="replace_positive_button">Replace</string>
+    <string name="cancel">Cancel</string>
 </resources>

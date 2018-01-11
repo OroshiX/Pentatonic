@@ -16,6 +16,7 @@ class Constants {
         val COLOR_SELECTED: Int = Color.parseColor("#5541A5E1")
         //        val COLOR_SELECTED: Int = Color.parseColor("#525F9DBE")
         val COLOR_SELECTED_SECONDARY: Int = Color.parseColor("#5287C8EE")
-//        val COLOR_SELECTED_SECONDARY: Int = Color.parseColor("#52C3E5F8")
+        //        val COLOR_SELECTED_SECONDARY: Int = Color.parseColor("#52C3E5F8")
+        val MAX_SIZE = 5
     }
 }

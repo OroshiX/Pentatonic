@@ -2,6 +2,7 @@ package com.nimoroshix.pentatonic.model
 
 import java.lang.Math.abs
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /**
@@ -31,14 +32,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         }
 
     fun toggleValue(nLine: Int, nColumn: Int, value: Char) {
-        val values = cells[nLine][nColumn].values
-        if (values.contains(value)) {
-            values.remove(value)
-        } else {
-            values.add(value)
-            values.sort()
-        }
-        cells[nLine][nColumn].dirty = true
+        cells[nLine][nColumn].toggleValue(value)
         setChanged()
         notifyObservers(VALUE)
     }
@@ -171,6 +165,14 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         }
         setChanged()
         notifyObservers(VALUE)
+    }
+
+    fun findAllValues(): HashSet<Char> {
+        val set = HashSet<Char>()
+        cells.flatten().forEach { cell ->
+            set.addAll(cell.values)
+        }
+        return set
     }
 
 

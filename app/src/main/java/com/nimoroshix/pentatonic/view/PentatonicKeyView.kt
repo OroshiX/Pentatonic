@@ -2,6 +2,7 @@ package com.nimoroshix.pentatonic.view
 
 import android.content.Context
 import android.graphics.Paint
+import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
@@ -20,6 +21,7 @@ class PentatonicKeyView : LinearLayout, Observer {
     override fun update(o: Observable?, arg: Any?) {
         grid = o as Grid
     }
+
     val numbers: LinearLayout
 
     constructor(context: Context) : this(context, null)
@@ -30,11 +32,13 @@ class PentatonicKeyView : LinearLayout, Observer {
         numbers = LinearLayout(context)
         numbers.orientation = HORIZONTAL
         numbers.weightSum = 5f
+        val typeface = ResourcesCompat.getFont(context, R.font.mono)
         var button: Button
         for (i in '1'..'5') {
             button = Button(context)
             button.text = i.toString()
             button.setOnClickListener { _ -> grid.toggleValue(i) }
+            button.typeface = typeface
             button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
             numbers.addView(button)
         }
@@ -49,6 +53,7 @@ class PentatonicKeyView : LinearLayout, Observer {
             line.forEach { c ->
                 button = Button(context)
                 button.text = c.toString()
+                button.typeface = typeface
                 button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
                 button.setOnClickListener { _ -> grid.toggleValue(c) }
                 linearLayout.addView(button)
