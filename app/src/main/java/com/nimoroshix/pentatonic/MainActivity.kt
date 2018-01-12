@@ -5,9 +5,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import android.widget.Spinner
 import android.widget.Toast
 import com.nimoroshix.pentatonic.adapter.MonoArrayAdapter
@@ -42,6 +40,13 @@ class MainActivity : AppCompatActivity() {
         pentatonicEnonce.grid = grid
         pentatonicValues.grid = grid
         pentatonicKeys.grid = grid
+
+        val scaleDetector = ScaleGestureDetector(this, pentatonicValues)
+        val gestureDetector = GestureDetector(this, pentatonicValues)
+        pentatonicValues.setOnTouchListener { _: View?, motionEvent: MotionEvent? ->
+            scaleDetector.onTouchEvent(motionEvent)
+            gestureDetector.onTouchEvent(motionEvent)
+        }
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
 

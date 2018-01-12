@@ -8,7 +8,9 @@ import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.CellState
 import com.nimoroshix.pentatonic.model.Grid
@@ -22,7 +24,75 @@ import java.util.*
  * Project Pentatonic
  * Created by Jessica on 03/01/2018.
  */
-class PentatonicFillView : PentatonicAbstractView {
+class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
+    override fun onShowPress(p0: MotionEvent?) {
+        Log.d(TAG, "onShowPress($p0)")
+    }
+
+    override fun onSingleTapUp(p0: MotionEvent?): Boolean {
+        Log.d(TAG, "onSingleTapUp($p0)")
+        return true
+    }
+
+    override fun onDown(p0: MotionEvent?): Boolean {
+        Log.d(TAG, "onDown($p0)")
+        return true
+    }
+
+    override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
+        Log.d(TAG, "onFling($p0, $p1, $p2, $p3)")
+        return true
+    }
+
+    override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
+        Log.d(TAG, "onScroll($p0, $p1, $p2, $p3)")
+        return true
+    }
+
+    override fun onLongPress(p0: MotionEvent?) {
+        Log.d(TAG, "onLongPress($p0)")
+    }
+
+    override fun onDoubleTap(p0: MotionEvent?): Boolean {
+        Log.d(TAG, "onDoubleTap($p0)")
+        return true
+    }
+
+    override fun onDoubleTapEvent(p0: MotionEvent?): Boolean {
+        Log.d(TAG, "onDoubleTapEvent($p0)")
+        return true
+    }
+
+    override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+        Log.d(TAG, "onSingleTapConfirmed($event)")
+        val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
+                offsetTop, cellSize, grid.nbLines, grid.nbColumns)
+        return if (pos != null) {
+            performClick()
+            grid.select(pos.nLine, pos.nColumn)
+            true
+        } else {
+            grid.unselect()
+            invalidate()
+            true
+        }
+    }
+
+    override fun onScaleBegin(p0: ScaleGestureDetector?): Boolean {
+        Log.d(TAG, "onScaleBegin($p0)")
+        return true
+    }
+
+    override fun onScaleEnd(p0: ScaleGestureDetector?) {
+        Log.d(TAG, "onScaleEnd($p0)")
+    }
+
+    override fun onScale(p0: ScaleGestureDetector?): Boolean {
+        Log.d(TAG, "onScale($p0)")
+        return true
+    }
+
+
     companion object {
         val TAG = "PentatonicFillView"
         val a = listOf(4F, 45F, 25F, 4F, 45F)
@@ -58,31 +128,6 @@ class PentatonicFillView : PentatonicAbstractView {
         // Handle the action for the custom click here
 
         return true
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_MOVE -> {
-                return false
-            }
-            MotionEvent.ACTION_DOWN -> {
-                val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
-                        offsetTop, cellSize, grid.nbLines, grid.nbColumns)
-                return if (pos != null) {
-                    performClick()
-                    grid.select(pos.nLine, pos.nColumn)
-                    true
-                } else {
-                    grid.unselect()
-                    invalidate()
-                    true
-                }
-            }
-            MotionEvent.ACTION_UP -> {
-                return false
-            }
-            else -> return false
-        }
     }
 
     override fun onDraw(canvas: Canvas) {
