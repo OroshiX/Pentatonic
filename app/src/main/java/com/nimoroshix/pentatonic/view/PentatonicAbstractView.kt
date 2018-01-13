@@ -7,8 +7,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
-import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_HINT_SMALL_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_SMALL_NUMBER_CELL
 import java.util.*
 

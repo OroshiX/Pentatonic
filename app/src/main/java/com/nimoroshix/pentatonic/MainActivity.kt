@@ -14,7 +14,6 @@ import com.nimoroshix.pentatonic.persistence.AppDatabase
 import com.nimoroshix.pentatonic.persistence.Pentatonic
 import com.nimoroshix.pentatonic.serializer.Serializer
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -29,6 +28,49 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        insertDummyData()
+//        grid = Serializer.serialize("9 10\n" +
+//                "1234555677\n" +
+//                "2234466687\n" +
+//                "2233469988\n" +
+//                "aa3bbcc998\n" +
+//                "daeebbccc8\n" +
+//                "daeeebfggg\n" +
+//                "ddhiifffgg\n" +
+//                "dhhiijfkkl\n" +
+//                "mmhjjjjkkl\n" +
+//                "5,2,1\n" +
+//                "5,3,3\n" +
+//                "5,4,9\n" +
+//                "5,8,4")
+//        pentatonicEnonce.grid = grid
+//        pentatonicValues.grid = grid
+//        pentatonicKeys.grid = grid
+
+        getDbData()
+        val scaleDetector = ScaleGestureDetector(this, pentatonicValues)
+        val gestureDetector = GestureDetector(this, pentatonicValues)
+        pentatonicValues.setOnTouchListener { _: View?, motionEvent: MotionEvent? ->
+            scaleDetector.onTouchEvent(motionEvent)
+            gestureDetector.onTouchEvent(motionEvent)
+        }
+
+    }
+
+    private fun getDbData() {
+        Observable.just(AppDatabase.getInstance(this).pentatonicDao()).subscribeOn(
+                Schedulers.io()).subscribe { dao ->
+            grid = Serializer.fromDbToGrid(dao.getPentatonicById(1))
+            pentatonicEnonce.grid = grid
+            pentatonicValues.grid = grid
+            pentatonicKeys.grid = grid
+            grid.addObserver(pentatonicEnonce)
+            grid.addObserver(pentatonicValues)
+        }
+    }
+
+    private fun insertDummyData() {
+
         val penta = Pentatonic(6, 7)
         penta.difficulty = 3
         penta.areas = "1223344\n" +
@@ -39,40 +81,12 @@ class MainActivity : AppCompatActivity() {
                 "78bbbba"
         penta.enonce = "-3,0,2,1\n" +
                 "-1,4,0,5"
-        penta.progress = ""
+        penta.progress = null
 
-        //Insert a pentatonic in db
+        // Insert a pentatonic in db
         Observable.just(AppDatabase.getInstance(this).pentatonicDao())
                 .subscribeOn(Schedulers.io())
                 .subscribe { dao -> dao.insertPentatonic(penta) }
-
-
-        grid = Serializer.serialize("9 10\n" +
-                "1234555677\n" +
-                "2234466687\n" +
-                "2233469988\n" +
-                "aa3bbcc998\n" +
-                "daeebbccc8\n" +
-                "daeeebfggg\n" +
-                "ddhiifffgg\n" +
-                "dhhiijfkkl\n" +
-                "mmhjjjjkkl\n" +
-                "5,2,1\n" +
-                "5,3,3\n" +
-                "5,4,9\n" +
-                "5,8,4")
-        pentatonicEnonce.grid = grid
-        pentatonicValues.grid = grid
-        pentatonicKeys.grid = grid
-
-        val scaleDetector = ScaleGestureDetector(this, pentatonicValues)
-        val gestureDetector = GestureDetector(this, pentatonicValues)
-        pentatonicValues.setOnTouchListener { _: View?, motionEvent: MotionEvent? ->
-            scaleDetector.onTouchEvent(motionEvent)
-            gestureDetector.onTouchEvent(motionEvent)
-        }
-        grid.addObserver(pentatonicEnonce)
-        grid.addObserver(pentatonicValues)
 
     }
 

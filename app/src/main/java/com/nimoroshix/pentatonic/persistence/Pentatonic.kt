@@ -23,6 +23,6 @@ class Pentatonic(var lines: Int, var columns: Int) {
     var version: Int = 0
     var areas: String = ""
     var enonce: String = ""
-    var progress: String = ""
+    var progress: String? = null
     var difficulty: Int = 0
 }

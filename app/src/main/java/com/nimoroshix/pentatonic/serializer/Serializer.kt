@@ -1,6 +1,5 @@
 package com.nimoroshix.pentatonic.serializer
 
-import android.arch.lifecycle.Transformations.map
 import com.nimoroshix.pentatonic.model.Area
 import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
@@ -41,9 +40,9 @@ class Serializer {
             val grid = Grid(pentatonic.lines, pentatonic.columns)
             val iteratorAreas = pentatonic.areas.lineSequence().iterator()
             val iteratorEnonce = pentatonic.enonce.lineSequence().iterator()
-            val iteratorProgress = pentatonic.progress.lineSequence().iterator()
             fillAreas(grid, iteratorAreas)
             fillEnonce(grid, iteratorEnonce)
+            val iteratorProgress = pentatonic.progress?.lineSequence()?.iterator() ?: return grid
             fillProgress(grid, iteratorProgress)
             return grid
         }

@@ -37,6 +37,7 @@ class PentatonicKeyView : LinearLayout, Observer {
         for (i in '1'..'5') {
             button = Button(context)
             button.text = i.toString()
+            button.setAllCaps(false)
             button.setOnClickListener { _ -> grid.toggleValue(i) }
             button.typeface = typeface
             button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
@@ -53,6 +54,7 @@ class PentatonicKeyView : LinearLayout, Observer {
             line.forEach { c ->
                 button = Button(context)
                 button.text = c.toString()
+                button.setAllCaps(false)
                 button.typeface = typeface
                 button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
                 button.setOnClickListener { _ -> grid.toggleValue(c) }

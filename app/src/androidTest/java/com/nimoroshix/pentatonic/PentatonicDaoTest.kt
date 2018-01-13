@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PentatonicDaoTest {
     private lateinit var mDatabase: AppDatabase
-    private val PENTATONIC = Pentatonic(1, 2)
+    private val pentatonic = Pentatonic(1, 2)
     private lateinit var mPentatonicDao: PentatonicDao
     @Before
     fun initDb() {
@@ -31,17 +31,17 @@ class PentatonicDaoTest {
                 .build()
 
         mPentatonicDao = mDatabase.pentatonicDao()
-        PENTATONIC.id = 1
-        PENTATONIC.difficulty = 3
+        pentatonic.id = 1
+        pentatonic.difficulty = 3
 
     }
 
     @Test
     fun insertAndGetPentatonicById() {
-        mDatabase.pentatonicDao().insertPentatonic(PENTATONIC)
-        mPentatonicDao.insertPentatonic(PENTATONIC)
+        mDatabase.pentatonicDao().insertPentatonic(pentatonic)
+        mPentatonicDao.insertPentatonic(pentatonic)
         val byId = mPentatonicDao.getPentatonicById(1)
-        assertThat(byId, equalTo(PENTATONIC))
+        assertThat(byId, equalTo(pentatonic))
     }
 
     @After
