@@ -24,14 +24,25 @@ import java.util.*
  * Project Pentatonic
  * Created by Jessica on 03/01/2018.
  */
-class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
+class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
     override fun onShowPress(p0: MotionEvent?) {
         Log.d(TAG, "onShowPress($p0)")
     }
 
-    override fun onSingleTapUp(p0: MotionEvent?): Boolean {
-        Log.d(TAG, "onSingleTapUp($p0)")
-        return true
+    override fun onSingleTapUp(event: MotionEvent): Boolean {
+        Log.d(TAG, "onSingleTapUp($event)")
+        val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
+                offsetTop, cellSize, grid.nbLines, grid.nbColumns)
+        return if (pos != null) {
+            performClick()
+            grid.select(pos.nLine, pos.nColumn)
+            true
+        } else {
+            grid.unselect()
+            invalidate()
+            true
+        }
     }
 
     override fun onDown(p0: MotionEvent?): Boolean {
@@ -65,17 +76,7 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
 
     override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
         Log.d(TAG, "onSingleTapConfirmed($event)")
-        val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
-                offsetTop, cellSize, grid.nbLines, grid.nbColumns)
-        return if (pos != null) {
-            performClick()
-            grid.select(pos.nLine, pos.nColumn)
-            true
-        } else {
-            grid.unselect()
-            invalidate()
-            true
-        }
+        return true
     }
 
     override fun onScaleBegin(p0: ScaleGestureDetector?): Boolean {
