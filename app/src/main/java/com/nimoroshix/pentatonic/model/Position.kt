@@ -7,7 +7,7 @@ import kotlin.math.abs
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class Position(var nLine: Int, var nColumn: Int) {
+open class Position(var nLine: Int, var nColumn: Int) { // "open" means inheritable (contrary of final)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
