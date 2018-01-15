@@ -158,11 +158,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_undo, R.id.menu_redo -> {
-                Log.d(TAG, "TODO") // TODO("implement menu click")
-                Toast.makeText(applicationContext, "TODO Not implemented",
-                        Toast.LENGTH_SHORT).show()
-                return false
+            R.id.menu_undo -> {
+                val undoOk = grid.undo()
+                Toast.makeText(applicationContext, "Undo was $undoOk", Toast.LENGTH_SHORT).show()
+                return undoOk
+            }
+            R.id.menu_redo -> {
+                val redoOk = grid.redo()
+                Toast.makeText(applicationContext, "Redo was $redoOk", Toast.LENGTH_SHORT).show()
+                return redoOk
             }
             R.id.menu_replace -> {
                 displayReplaceDialog()

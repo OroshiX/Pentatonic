@@ -7,4 +7,4 @@ import com.nimoroshix.pentatonic.model.Position
  *
  * Created by OroshiX on 15/01/2018.
  */
-abstract class MultipleAction(var action: String, var positions: List<Position>) : Action
+abstract class MultipleAction(var positions: List<Position>) : Action

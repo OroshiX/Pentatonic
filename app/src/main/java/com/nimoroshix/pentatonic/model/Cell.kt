@@ -1,5 +1,9 @@
 package com.nimoroshix.pentatonic.model
 
+import com.nimoroshix.pentatonic.action.AddAction
+import com.nimoroshix.pentatonic.action.PositionReplace
+import com.nimoroshix.pentatonic.action.RemoveAction
+import com.nimoroshix.pentatonic.action.SingleAction
 import com.nimoroshix.pentatonic.util.Constants.Companion.MAX_SIZE
 
 /**
@@ -40,27 +44,27 @@ class Cell(nLine: Int, nColumn: Int) {
         return "$values (${area.id})"
     }
 
-    fun toggleValue(c: Char): Boolean {
-        val res: Boolean
+    fun toggleValue(c: Char): SingleAction? {
+        val res: SingleAction?
         when {
-            enonce -> res = false
+            enonce -> res = null
             values.contains(c) -> {
                 values.remove(c)
                 dirty = true
-                res = true
+                res = RemoveAction(c, Position(position))
             }
             else -> res = if (values.size < MAX_SIZE) {
                 values.add(c)
                 values.sort()
                 dirty = true
-                true
-            } else false
+                AddAction(c, Position(position))
+            } else null
         }
         return res
     }
 
-    fun replace(oldValue: Char, newValue: Char): Boolean {
-        var changed = false
+    fun replace(oldValue: Char, newValue: Char): PositionReplace? {
+        var positionReplace: PositionReplace? = null
         if (!enonce && values.contains(oldValue)) {
             val it = values.listIterator()
             while (it.hasNext()) {
@@ -69,14 +73,15 @@ class Cell(nLine: Int, nColumn: Int) {
                     if (values.contains(newValue)) {
                         // We don't want to duplicate values, so just remove the oldValue
                         it.remove()
+                        positionReplace = PositionReplace(position.nLine, position.nColumn, true)
                     } else {
                         it.set(newValue)
+                        positionReplace = PositionReplace(position.nLine, position.nColumn)
                     }
-                    changed = true
                 }
             }
         }
-        return changed
+        return positionReplace
     }
 
     override fun equals(other: Any?): Boolean {

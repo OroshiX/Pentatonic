@@ -7,7 +7,7 @@ import com.nimoroshix.pentatonic.model.Grid
  *
  * Created by OroshiX on 15/01/2018.
  */
-class ReplaceAction(private var oldChar: Char, private var newChar: Char, positions: List<PositionReplace>) : MultipleAction("REPLACE", positions) {
+class ReplaceAction(private var oldChar: Char, private var newChar: Char, positions: List<PositionReplace>) : MultipleAction(positions) {
 
 
     override fun applyUndo(grid: Grid): Boolean {

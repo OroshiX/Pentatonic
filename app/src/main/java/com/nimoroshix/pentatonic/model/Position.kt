@@ -8,6 +8,7 @@ import kotlin.math.abs
  * Created by Jessica on 31/12/2017.
  */
 open class Position(var nLine: Int, var nColumn: Int) { // "open" means inheritable (contrary of final)
+    constructor(position: Position) : this(position.nLine, position.nColumn)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

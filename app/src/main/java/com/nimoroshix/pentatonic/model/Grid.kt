@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic.model
 
+import com.nimoroshix.pentatonic.action.*
 import java.lang.Math.abs
 import java.util.*
 import kotlin.collections.HashSet
@@ -30,16 +31,64 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
             notifyObservers(STRUCTURE)
         }
 
+    private var undo = UndoAction()
+
+    /**
+     * Toggles the value and add the action to the undo stack if the action completed correctly
+     */
     fun toggleValue(nLine: Int, nColumn: Int, value: Char) {
-        cells[nLine][nColumn].toggleValue(value)
-        setChanged()
-        notifyObservers(VALUE)
+        val action = cells[nLine][nColumn].toggleValue(value)
+        if (action != null) {
+            undo.addAction(action)
+            setChanged()
+            notifyObservers(VALUE)
+        }
     }
 
+    fun undo(): Boolean {
+        var res = false
+        if (undo.canUndo()) {
+            res = undo.undo(this)
+            setChanged()
+            notifyObservers(VALUE)
+        }
+        return res
+    }
+
+    fun redo(): Boolean {
+        var res = false
+        if (undo.canRedo()) {
+            res = undo.redo(this)
+            setChanged()
+            notifyObservers(VALUE)
+        }
+        return res
+    }
+
+    /**
+     * Toggles the value and add the action to the undo stack if the action completed correctly
+     */
     fun toggleValue(value: Char) {
         if (positionSelected != null) {
             toggleValue(positionSelected!!.nLine, positionSelected!!.nColumn, value)
         }
+    }
+
+    fun resetCell(): ResetAction? {
+        var res: ResetAction? = null
+        if (positionSelected != null) {
+            val cell = cells[positionSelected!!.nLine][positionSelected!!.nColumn]
+            val formerValues = cell.values.toList()
+            if (formerValues.isNotEmpty()) {
+                cell.values.clear()
+                res = ResetAction(formerValues, Position(cell.position))
+                undo.addAction(res)
+                setChanged()
+                notifyObservers(VALUE)
+            }
+        }
+        return res
+
     }
 
     fun getAreaCells(cell: Cell): Set<Cell> {
@@ -123,36 +172,54 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
      * or
      * alpha -> beta
      */
-    fun replace(oldValue: Char, newValue: Char) {
-        var res = false
+    fun replace(oldValue: Char, newValue: Char): ReplaceAction? {
+        var res: ReplaceAction? = null
         if (oldValue == newValue) {
-            return
+            return null
         }
+        val positions = mutableListOf<PositionReplace>()
+
         cells.flatten().forEach { c ->
-            res = c.replace(oldValue, newValue) || res
+            val posReplace = c.replace(oldValue, newValue)
+            if (posReplace != null) {
+                positions.add(posReplace)
+            }
         }
-        if (res) {
+        if (positions.isNotEmpty()) {
             setChanged()
             notifyObservers(VALUE)
+            res = ReplaceAction(oldValue, newValue, positions)
+            undo.addAction(res)
         }
+        return res
     }
 
     /**
      * Remove all occurrences of one char in the grid
      */
-    fun remove(oldValue: Char) {
+    fun remove(oldValue: Char): RemoveMultipleAction? {
+        var res: RemoveMultipleAction? = null
+        val positions = mutableListOf<Position>()
+
         cells.flatten().forEach { c ->
             if (c.values.contains(oldValue)) {
                 c.values.remove(oldValue)
+                positions.add(Position(c.position))
             }
         }
-        setChanged()
-        notifyObservers(VALUE)
+        if (positions.isNotEmpty()) {
+            setChanged()
+            notifyObservers(VALUE)
+            res = RemoveMultipleAction(oldValue, positions)
+            undo.addAction(res)
+        }
+        return res
     }
 
     override fun toString(): String {
         return "Grid(nbLines=$nbLines, nbColumns=$nbColumns, cells=${Arrays.deepToString(cells)})"
     }
+
 
     fun reset() {
         cells.flatten().forEach { cell ->
@@ -160,6 +227,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
                 cell.values.clear()
             }
         }
+        undo.clear()
         setChanged()
         notifyObservers(VALUE)
     }

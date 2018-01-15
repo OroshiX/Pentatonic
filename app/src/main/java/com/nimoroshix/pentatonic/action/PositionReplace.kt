@@ -7,6 +7,5 @@ import com.nimoroshix.pentatonic.model.Position
  *
  * Created by OroshiX on 15/01/2018.
  */
-class PositionReplace(nLine: Int, nColumn: Int) : Position(nLine, nColumn) {
-    var deduplicated: Boolean = false
+class PositionReplace(nLine: Int, nColumn: Int, var deduplicated: Boolean = false) : Position(nLine, nColumn) {
 }
