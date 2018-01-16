@@ -14,8 +14,8 @@ class Pentatonic(var lines: Int, var columns: Int) {
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
-    @ColumnInfo(name = "has_soeur")
-    var hasSoeur: Boolean = false
+    @ColumnInfo(name = "has_sister")
+    var hasSister: Boolean = false
 
     @ColumnInfo(name = "has_diff_one")
     var hasDiffOne: Boolean = false

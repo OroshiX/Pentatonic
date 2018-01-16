@@ -35,7 +35,13 @@ class GameActivity : AppCompatActivity() {
             scaleDetector.onTouchEvent(motionEvent)
             gestureDetector.onTouchEvent(motionEvent)
         }
+    }
 
+    private fun insertToDb(grid: Grid) {
+        val penta = Serializer.fromGridToDb(grid)
+        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                .subscribeOn(Schedulers.io())
+                .subscribe { dao -> dao.insertPentatonic(penta) }
     }
 
     private fun viewDummyPentatonic() {
@@ -53,6 +59,7 @@ class GameActivity : AppCompatActivity() {
         pentatonicKeys.grid = grid
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
+        insertToDb(grid)
     }
 
     private fun getDbData() {

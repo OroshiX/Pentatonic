@@ -35,7 +35,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
             setChanged()
             notifyObservers(STRUCTURE)
         }
-
+    var version: Int = 0
+    var difficulty: Int = 0
     private var undo = UndoAction()
 
     /**
@@ -270,4 +271,6 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     override fun describeContents(): Int {
         return 0
     }
+
+
 }

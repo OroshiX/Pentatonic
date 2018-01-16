@@ -48,6 +48,42 @@ class Serializer {
             return grid
         }
 
+        fun fromGridToDb(grid: Grid): Pentatonic {
+            val penta = Pentatonic(grid.nbLines, grid.nbColumns)
+            penta.areas = grid.cells.joinToString("\n") { row ->
+                row.joinToString("") { c -> c.area.id.toString() }
+            }
+            penta.enonce = grid.cells.flatten().filter { c -> c.enonce || c.sister != null || c.differenceOne != null }.joinToString("\n") { cell ->
+                when {
+                    cell.enonce -> "${cell.values[0]},${cell.position.nLine},${cell.position.nColumn}"
+                    else -> {
+                        val sb = StringBuilder()
+
+                        if (cell.sister != null) {
+                            sb.append("${cell.sister},${cell.position.nLine},${cell.position.nColumn}")
+                        }
+                        if (sb.isNotEmpty()) {
+                            sb.append("\n")
+                        }
+                        if (cell.differenceOne != null) {
+                            sb.append("-${cell.position.nLine},${cell.position.nColumn},${cell.differenceOne!!.nLine},${cell.differenceOne!!.nColumn}")
+                            // TODO check with a Set that the diffOne was not already registered here before
+                        }
+
+                        sb.toString()
+                    }
+                }
+            }
+            penta.progress = grid.cells.flatten().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString("\n") { cell ->
+                "${cell.position.nLine},${cell.position.nColumn}:${cell.values.joinToString(",") { c -> c.toString() }}"
+            }
+            penta.hasDiffOne = grid.cells.flatten().any { c -> c.differenceOne != null }
+            penta.hasSister = grid.cells.flatten().any { c -> c.sister != null }
+            penta.version = grid.version
+            penta.difficulty = grid.difficulty
+            return penta
+        }
+
         private fun fillAreas(grid: Grid, iterator: Iterator<String>) {
             val mapAreas = HashMap<Char, Area>()
             var line: String
@@ -102,6 +138,8 @@ class Serializer {
         private fun fillProgress(grid: Grid, iterator: Iterator<String>) {
             var line: String
             while (iterator.hasNext()) {
+                // Progress format:
+                // i,j:a,b,c,d
                 line = iterator.next()
                 val progress = line.split(":")
                 if (progress.size != 2) {
