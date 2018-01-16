@@ -3,6 +3,7 @@ package com.nimoroshix.pentatonic.action
 import android.os.Parcel
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
+import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REMOVE_MULTIPLE
 import com.nimoroshix.pentatonic.util.parcelableCreator
 import com.nimoroshix.pentatonic.util.readChar
 
@@ -58,11 +59,22 @@ class RemoveMultipleAction(var char: Char, positions: List<Position>) : Multiple
     }
 
     override fun toStringSerialization(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return "$ACTION_REMOVE_MULTIPLE $char ${positions.joinToString(";") { it.toStringSerialization() }}"
     }
 
     override fun fromStringSerialization(serialization: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val bits = serialization.split(' ')
+        assert(bits.size == 3)
+        assert(bits[1].length == 1)
+        char = bits[1][0]
+        val positionsDeserialized = mutableListOf<Position>()
+        val positionStrings = bits[2].split(";")
+        positionStrings.forEach { p ->
+            val pos = Position(0, 0)
+            pos.fromStringSerialization(p)
+            positionsDeserialized.add(pos)
+        }
+        positions = positionsDeserialized
     }
 
 

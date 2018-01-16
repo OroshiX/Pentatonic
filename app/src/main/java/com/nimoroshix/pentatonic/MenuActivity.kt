@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -22,4 +23,11 @@ class MenuActivity : AppCompatActivity() {
         setContentView(R.layout.activity_menu)
     }
 
+    fun onPlay(view: View) {
+
+    }
+
+    fun onAbout(view: View) {
+        startActivity(Intent(this, AboutActivity::class.java))
+    }
 }

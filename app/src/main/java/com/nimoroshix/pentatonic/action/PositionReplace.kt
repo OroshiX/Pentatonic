@@ -32,10 +32,14 @@ class PositionReplace(nLine: Int, nColumn: Int, var deduplicated: Boolean = fals
     }
 
     override fun toStringSerialization(): String {
-        TODO("not implemented")
+        return "$nLine $nColumn $deduplicated"
     }
 
     override fun fromStringSerialization(serialization: String) {
-        TODO("not implemented")
+        val bits = serialization.split(' ')
+        assert(bits.size == 3)
+        nLine = bits[0].toInt()
+        nColumn = bits[1].toInt()
+        deduplicated = bits[2].toBoolean()
     }
 }

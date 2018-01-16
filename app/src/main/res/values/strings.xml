@@ -14,4 +14,5 @@
     <string name="icon_pentatonic">Icon pentatonic</string>
     <string name="copy_right">Copyrights © %1$d</string>
     <string name="description">Pentatonic est un projet créé par nimOroshix dans le but de résoudre des Pentatonics sur Android.</string>
+    <string name="about">About</string>
 </resources>

@@ -49,10 +49,19 @@ class ResetAction(var allChars: List<Char>, var position: Position) : Action, Pa
     }
 
     override fun toStringSerialization(): String {
-        return "$ACTION_RESET ${allChars.joinToString(",", "[", "]")} $position"
+        return "$ACTION_RESET ${allChars.joinToString(",")} $position"
     }
 
     override fun fromStringSerialization(serialization: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val bits = serialization.split(' ')
+        assert(bits.size == 3)
+        val charsDeserialized = mutableListOf<Char>()
+        val chars = bits[1].split(',')
+        chars.forEach { c ->
+            charsDeserialized.add(c[0])
+        }
+        allChars = charsDeserialized
+
+        position.fromStringSerialization(bits[2])
     }
 }

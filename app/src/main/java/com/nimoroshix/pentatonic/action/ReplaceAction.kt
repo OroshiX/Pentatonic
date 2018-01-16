@@ -2,6 +2,8 @@ package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.model.Position
+import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REPLACE
 import com.nimoroshix.pentatonic.util.parcelableCreator
 import com.nimoroshix.pentatonic.util.readChar
 import com.nimoroshix.pentatonic.util.writeChar
@@ -63,11 +65,24 @@ class ReplaceAction(private var oldChar: Char, private var newChar: Char, positi
 
 
     override fun toStringSerialization(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return "$ACTION_REPLACE $oldChar $newChar ${positions.joinToString(";") { position: Position -> position.toStringSerialization() }}"
     }
 
     override fun fromStringSerialization(serialization: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val bits = serialization.split(" ")
+        assert(bits.size == 3)
+        assert(bits[1].length == 1)
+        assert(bits[2].length == 1)
+        oldChar = bits[1][0]
+        newChar = bits[2][0]
+        val positionsDeserialized = mutableListOf<Position>()
+        val positionStrings = bits[3].split(";")
+        positionStrings.forEach { p ->
+            val pos = PositionReplace(0, 0)
+            pos.fromStringSerialization(p)
+            positionsDeserialized.add(pos)
+        }
+        positions = positionsDeserialized
     }
 
 }
