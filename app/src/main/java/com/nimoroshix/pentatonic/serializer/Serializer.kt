@@ -4,6 +4,7 @@ import com.nimoroshix.pentatonic.action.*
 import com.nimoroshix.pentatonic.model.Area
 import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.persistence.Pentatonic
 
 /**
@@ -53,10 +54,12 @@ class Serializer {
             penta.areas = grid.cells.joinToString("\n") { row ->
                 row.joinToString("") { c -> c.area.id.toString() }
             }
-            penta.enonce = grid.cells.flatten().filter { c -> c.enonce || c.sister != null || c.differenceOne != null }.joinToString("\n") { cell ->
+            val set = HashSet<Position>()
+            penta.enonce = grid.cells.flatten().filter { c -> c.enonce || c.sister != null || c.differenceOne != null }.joinToString(
+                    "\n") { cell ->
                 when {
                     cell.enonce -> "${cell.values[0]},${cell.position.nLine},${cell.position.nColumn}"
-                    else -> {
+                    else        -> {
                         val sb = StringBuilder()
 
                         if (cell.sister != null) {
@@ -66,15 +69,22 @@ class Serializer {
                             sb.append("\n")
                         }
                         if (cell.differenceOne != null) {
-                            sb.append("-${cell.position.nLine},${cell.position.nColumn},${cell.differenceOne!!.nLine},${cell.differenceOne!!.nColumn}")
-                            // TODO check with a Set that the diffOne was not already registered here before
+                            // check that the diffOne was not already registered here before
+                            if (!set.contains(cell.position) && !set.contains(
+                                    cell.differenceOne!!)) {
+                                sb.append(
+                                        "-${cell.position.nLine},${cell.position.nColumn},${cell.differenceOne!!.nLine},${cell.differenceOne!!.nColumn}")
+                                set.add(cell.position)
+                                set.add(cell.differenceOne!!)
+                            }
                         }
 
                         sb.toString()
                     }
                 }
             }
-            penta.progress = grid.cells.flatten().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString("\n") { cell ->
+            penta.progress = grid.cells.flatten().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString(
+                    "\n") { cell ->
                 "${cell.position.nLine},${cell.position.nColumn}:${cell.values.joinToString(",") { c -> c.toString() }}"
             }
             penta.hasDiffOne = grid.cells.flatten().any { c -> c.differenceOne != null }
@@ -166,12 +176,12 @@ class Serializer {
             val res = mutableListOf<Action>()
             actionString.forEach { a ->
                 val action: Action = when {
-                    a.startsWith(ACTION_ADD) -> AddAction()
-                    a.startsWith(ACTION_REMOVE) -> RemoveAction()
-                    a.startsWith(ACTION_REPLACE) -> ReplaceAction()
+                    a.startsWith(ACTION_ADD)             -> AddAction()
+                    a.startsWith(ACTION_REMOVE)          -> RemoveAction()
+                    a.startsWith(ACTION_REPLACE)         -> ReplaceAction()
                     a.startsWith(ACTION_REMOVE_MULTIPLE) -> RemoveMultipleAction()
-                    a.startsWith(ACTION_RESET) -> ResetAction()
-                    else -> {
+                    a.startsWith(ACTION_RESET)           -> ResetAction()
+                    else                                 -> {
                         throw IllegalArgumentException("action $a does not exist")
                     }
                 }
