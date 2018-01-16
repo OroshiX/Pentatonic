@@ -7,4 +7,4 @@ import com.nimoroshix.pentatonic.model.Position
  *
  * Created by OroshiX on 15/01/2018.
  */
-abstract class SingleAction(var action: String, var char: Char, var position: Position) : Action
+abstract class SingleAction(var char: Char, var position: Position) : Action

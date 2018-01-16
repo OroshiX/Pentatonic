@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic.action
 
+import android.os.Parcelable
 import com.nimoroshix.pentatonic.model.Grid
 
 /**
@@ -7,9 +8,8 @@ import com.nimoroshix.pentatonic.model.Grid
  *
  * Created by OroshiX on 15/01/2018.
  */
-interface Action {
+interface Action : Parcelable, StringSerializable {
     fun applyUndo(grid: Grid): Boolean
 
     fun applyRedo(grid: Grid): Boolean
-
 }

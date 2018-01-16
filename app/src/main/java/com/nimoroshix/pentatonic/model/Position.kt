@@ -1,13 +1,31 @@
 package com.nimoroshix.pentatonic.model
 
+import android.os.Parcel
+import android.os.Parcelable
+import com.nimoroshix.pentatonic.action.StringSerializable
 import com.nimoroshix.pentatonic.model.RelativePosition.*
+import com.nimoroshix.pentatonic.util.parcelableCreator
 import kotlin.math.abs
 
 /**
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-open class Position(var nLine: Int, var nColumn: Int) { // "open" means inheritable (contrary of final)
+open class Position(var nLine: Int, var nColumn: Int) : Parcelable, StringSerializable {
+
+
+    // "open" means inheritable (contrary of final)
+    constructor(parcel: Parcel) : this(parcel.readInt(), parcel.readInt())
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeInt(nLine)
+        dest.writeInt(nColumn)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
     constructor(position: Position) : this(position.nLine, position.nColumn)
 
     override fun equals(other: Any?): Boolean {
@@ -70,6 +88,22 @@ open class Position(var nLine: Int, var nColumn: Int) { // "open" means inherita
 
     override fun toString(): String {
         return "(nLine=$nLine, nColumn=$nColumn)"
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR = parcelableCreator(::Position)
+    }
+
+    override fun toStringSerialization(): String {
+        return "[$nLine,$nColumn]"
+    }
+
+    override fun fromStringSerialization(serialization: String) {
+        val pos = serialization.substring(1 until serialization.length - 1)
+        val (i, j) = pos.split(',').map(String::toInt)
+        nLine = i
+        nColumn = j
     }
 
 }

@@ -1,15 +1,26 @@
 package com.nimoroshix.pentatonic.action
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.serializer.Serializer.Companion.deserializeActions
+import com.nimoroshix.pentatonic.serializer.Serializer.Companion.serializeActions
+import com.nimoroshix.pentatonic.util.parcelableCreator
 
 /**
  * Project Pentatonic
  *
  * Created by OroshiX on 15/01/2018.
  */
-class UndoAction {
-    var current = 0
+class UndoAction() : Parcelable {
+    private var current = 0
     var actions = mutableListOf<Action>()
+
+    constructor(parcel: Parcel) : this() {
+        current = parcel.readInt()
+        val actionString = listOf<String>().apply { parcel.readStringList(this) }
+        actions = deserializeActions(actionString)
+    }
 
     fun addAction(action: Action) {
         when {
@@ -55,5 +66,19 @@ class UndoAction {
     fun clear() {
         current = 0
         actions = mutableListOf()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(current)
+        parcel.writeStringList(serializeActions(actions))
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR = parcelableCreator(::UndoAction)
     }
 }

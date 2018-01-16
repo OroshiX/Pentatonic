@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic.serializer
 
+import com.nimoroshix.pentatonic.action.*
 import com.nimoroshix.pentatonic.model.Area
 import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
@@ -116,6 +117,38 @@ class Serializer {
                         "Cell($i,$j) should not have progress, because it is an enonce cell")
                 grid.cells[i][j].values = values
             }
+        }
+
+        val ACTION_ADD = "ADD"
+        val ACTION_REMOVE = "RM"
+        val ACTION_REPLACE = "REPLACE"
+        val ACTION_REMOVE_MULTIPLE = "RM_ALL"
+        val ACTION_RESET = "RESET"
+        fun deserializeActions(actionString: List<String>): MutableList<Action> {
+            val res = mutableListOf<Action>()
+            actionString.forEach { a ->
+                val action: Action = when {
+                    a.startsWith(ACTION_ADD) -> AddAction()
+                    a.startsWith(ACTION_REMOVE) -> RemoveAction()
+                    a.startsWith(ACTION_REPLACE) -> ReplaceAction()
+                    a.startsWith(ACTION_REMOVE_MULTIPLE) -> RemoveMultipleAction()
+                    a.startsWith(ACTION_RESET) -> ResetAction()
+                    else -> {
+                        throw IllegalArgumentException("action $a does not exist")
+                    }
+                }
+                action.fromStringSerialization(a)
+                res.add(action)
+            }
+            return res
+        }
+
+        fun serializeActions(actions: List<Action>): List<String> {
+            val res = mutableListOf<String>()
+            actions.forEach { a ->
+                res.add(a.toStringSerialization())
+            }
+            return res
         }
     }
 }
