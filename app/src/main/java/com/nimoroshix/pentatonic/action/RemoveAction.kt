@@ -3,7 +3,6 @@ package com.nimoroshix.pentatonic.action
 import android.os.Parcel
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
-import com.nimoroshix.pentatonic.serializer.Serializer
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REMOVE
 import com.nimoroshix.pentatonic.util.*
 
@@ -52,5 +51,9 @@ class RemoveAction(char: Char, position: Position) : SingleAction(char, position
         assert(bits[1].length == 1)
         char = bits[1][0]
         position.fromStringSerialization(bits[2])
+    }
+
+    override fun toString(): String {
+        return toStringSerialization()
     }
 }

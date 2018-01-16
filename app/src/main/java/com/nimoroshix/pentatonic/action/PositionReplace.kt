@@ -42,4 +42,8 @@ class PositionReplace(nLine: Int, nColumn: Int, var deduplicated: Boolean = fals
         nColumn = bits[1].toInt()
         deduplicated = bits[2].toBoolean()
     }
+
+    override fun toString(): String {
+        return toStringSerialization()
+    }
 }

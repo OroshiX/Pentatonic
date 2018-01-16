@@ -64,4 +64,8 @@ class ResetAction(var allChars: List<Char>, var position: Position) : Action, Pa
 
         position.fromStringSerialization(bits[2])
     }
+
+    override fun toString(): String {
+        return toStringSerialization()
+    }
 }

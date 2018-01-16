@@ -55,4 +55,8 @@ class AddAction(char: Char, position: Position) : SingleAction(char, position) {
 
     }
 
+    override fun toString(): String {
+        return toStringSerialization()
+    }
+
 }

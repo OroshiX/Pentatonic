@@ -77,5 +77,8 @@ class RemoveMultipleAction(var char: Char, positions: List<Position>) : Multiple
         positions = positionsDeserialized
     }
 
+    override fun toString(): String {
+        return toStringSerialization()
+    }
 
 }

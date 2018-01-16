@@ -85,4 +85,8 @@ class ReplaceAction(private var oldChar: Char, private var newChar: Char, positi
         positions = positionsDeserialized
     }
 
+    override fun toString(): String {
+        return toStringSerialization()
+    }
+
 }
