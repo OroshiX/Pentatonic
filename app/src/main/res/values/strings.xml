@@ -9,4 +9,9 @@
     <string name="replace_text">Replace</string>
     <string name="replace_positive_button">Replace</string>
     <string name="cancel">Cancel</string>
+    <string name="play">Play</string>
+    <string name="settings">Settings</string>
+    <string name="icon_pentatonic">Icon pentatonic</string>
+    <string name="copy_right">Copyrights © %1$d</string>
+    <string name="description">Pentatonic est un projet créé par nimOroshix dans le but de résoudre des Pentatonics sur Android.</string>
 </resources>

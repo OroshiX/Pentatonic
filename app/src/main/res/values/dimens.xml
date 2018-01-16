@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bar_height">24dp</dimen>
+    <dimen name="bar_height">34dp</dimen>
     <dimen name="bar_text_size">14dp</dimen>
 </resources>
