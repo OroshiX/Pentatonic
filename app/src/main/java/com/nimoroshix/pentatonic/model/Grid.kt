@@ -1,6 +1,9 @@
 package com.nimoroshix.pentatonic.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.nimoroshix.pentatonic.action.*
+import com.nimoroshix.pentatonic.util.parcelableCreator
 import java.lang.Math.abs
 import java.util.*
 import kotlin.collections.HashSet
@@ -9,7 +12,7 @@ import kotlin.collections.HashSet
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
+class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     companion object {
         @JvmField
         val STRUCTURE = "structure"
@@ -17,6 +20,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         val VALUE = "value"
         @JvmField
         val SELECTED = "selected"
+        @JvmField
+        val CREATOR = parcelableCreator(::Grid)
     }
 
     private var positionSelected: Position? = null
@@ -241,5 +246,28 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable() {
         return list.distinct()
     }
 
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readInt()) {
+        positionSelected = parcel.readParcelable(Position::class.java.classLoader)
+        undo = parcel.readParcelable(UndoAction::class.java.classLoader)
+        for (i in 0 until nbLines) {
+            cells[i] = parcel.readParcelableArray(Cell::class.java.classLoader) as Array<Cell>
+        }
 
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(nbLines)
+        parcel.writeInt(nbColumns)
+        parcel.writeParcelable(positionSelected, flags)
+        parcel.writeParcelable(undo, flags)
+        for (i in 0 until nbLines) {
+            parcel.writeParcelableArray(cells[i], flags)
+        }
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
 }

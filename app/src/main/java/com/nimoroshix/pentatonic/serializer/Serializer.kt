@@ -76,8 +76,8 @@ class Serializer {
                 if (line.startsWith('-')) {
                     // It is a constraint [diffOne]
                     val (i1, j1, i2, j2) = line.substring(1).split(",").map { nb -> nb.toInt() }
-                    grid.cells[i1][j1].differenceOne = grid.cells[i2][j2]
-                    grid.cells[i2][j2].differenceOne = grid.cells[i1][j1]
+                    grid.cells[i1][j1].differenceOne = grid.cells[i2][j2].position
+                    grid.cells[i2][j2].differenceOne = grid.cells[i1][j1].position
                     continue
                 }
 

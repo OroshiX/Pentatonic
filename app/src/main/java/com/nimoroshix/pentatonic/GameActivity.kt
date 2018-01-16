@@ -39,20 +39,15 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun viewDummyPentatonic() {
-        grid = Serializer.serialize("9 10\n" +
-                "1234555677\n" +
-                "2234466687\n" +
-                "2233469988\n" +
-                "aa3bbcc998\n" +
-                "daeebbccc8\n" +
-                "daeeebfggg\n" +
-                "ddhiifffgg\n" +
-                "dhhiijfkkl\n" +
-                "mmhjjjjkkl\n" +
-                "5,2,1\n" +
-                "5,3,3\n" +
-                "5,4,9\n" +
-                "5,8,4")
+        grid = Serializer.serialize("6 7\n" +
+                "1223344\n" +
+                "5523364\n" +
+                "7522666\n" +
+                "7558999\n" +
+                "788899a\n" +
+                "78bbbba\n" +
+                "-3,0,2,1\n" +
+                "-1,4,0,5")
         pentatonicEnonce.grid = grid
         pentatonicValues.grid = grid
         pentatonicKeys.grid = grid

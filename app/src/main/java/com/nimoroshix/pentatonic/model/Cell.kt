@@ -1,31 +1,34 @@
 package com.nimoroshix.pentatonic.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.nimoroshix.pentatonic.action.AddAction
 import com.nimoroshix.pentatonic.action.PositionReplace
 import com.nimoroshix.pentatonic.action.RemoveAction
 import com.nimoroshix.pentatonic.action.SingleAction
+import com.nimoroshix.pentatonic.util.*
 import com.nimoroshix.pentatonic.util.Constants.Companion.MAX_SIZE
 
 /**
  * Project Pentatonic
  * Created by Jessica on 31/12/2017.
  */
-class Cell(nLine: Int, nColumn: Int) {
+class Cell(nLine: Int, nColumn: Int) : Parcelable {
     var position: Position = Position(nLine, nColumn)
     var area = Area()
     var values: MutableList<Char> = mutableListOf()
     var dirty = false
     var valid: Boolean = true
     var sister: Char? = null
-    var differenceOne: Cell? = null
+    var differenceOne: Position? = null
         set(value) {
             field = when (value) {
                 null -> value
                 else -> {
-                    if (value.position == position) {
+                    if (value == position) {
                         throw IllegalArgumentException("DifferenceOne and this position should not be the same")
                     }
-                    if (value.position.isNear(position)) {
+                    if (value.isNear(position)) {
                         value
                     } else {
                         throw IllegalArgumentException("DifferenceOne and this position must be near each other")
@@ -95,8 +98,7 @@ class Cell(nLine: Int, nColumn: Int) {
         if (dirty != other.dirty) return false
         if (valid != other.valid) return false
         if (sister != other.sister) return false
-        if (differenceOne != null && other.differenceOne != null &&
-                differenceOne!!.position != other.differenceOne!!.position) return false
+        if (differenceOne != other.differenceOne) return false
         if (position != other.position) return false
         if (enonce != other.enonce) return false
         if (selection != other.selection) return false
@@ -110,11 +112,42 @@ class Cell(nLine: Int, nColumn: Int) {
         result = 31 * result + dirty.hashCode()
         result = 31 * result + valid.hashCode()
         result = 31 * result + (sister?.hashCode() ?: 0)
-        result = 31 * result + (differenceOne?.position?.hashCode() ?: 0)
+        result = 31 * result + (differenceOne?.hashCode() ?: 0)
         result = 31 * result + position.hashCode()
         result = 31 * result + enonce.hashCode()
         result = 31 * result + selection.hashCode()
         return result
+    }
+
+    constructor(parcel: Parcel) : this(parcel.readInt(), parcel.readInt()) {
+        values = parcel.createCharArray().toMutableList()
+        dirty = parcel.readBool()
+        valid = parcel.readBool()
+        sister = parcel.readValue(Char::class.java.classLoader) as? Char
+        differenceOne = parcel.readParcelable(Position::class.java.classLoader)
+        enonce = parcel.readBool()
+        selection = parcel.readEnum<CellState>()!!
+
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(position.nLine)
+        parcel.writeInt(position.nColumn)
+        parcel.writeCharArray(values.toCharArray())
+        parcel.writeBool(dirty)
+        parcel.writeBool(valid)
+        parcel.writeValue(sister)
+        parcel.writeParcelable(differenceOne, flags)
+        parcel.writeBool(enonce)
+        parcel.writeEnum(selection)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object {
+        val CREATOR = parcelableCreator(::Cell)
     }
 
 

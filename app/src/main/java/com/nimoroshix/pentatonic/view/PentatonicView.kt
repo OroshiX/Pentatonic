@@ -51,9 +51,6 @@ class PentatonicView : PentatonicAbstractView {
         backgroundDrawable?.bounds = imageBounds
         backgroundDrawable?.draw(canvas)
 
-
-//        canvas.drawRGB(252, 247, 219)
-
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.style = Paint.Style.STROKE
 
@@ -130,11 +127,11 @@ class PentatonicView : PentatonicAbstractView {
                             paint)
                 }
 
-                val otherCell = cell.differenceOne
+                val otherPosition = cell.differenceOne
                 @SuppressLint("DrawAllocation")
-                if (otherCell != null) {
+                if (otherPosition != null) {
                     val relation: RelativePosition = cell.position.getPositionRelativeToMe(
-                            otherCell.position)
+                            otherPosition)
                     val xArray: Array<Float> = Array(5,
                             { k -> offsetLeft + j * cellSize + (cellSize * k) / 4 })
                     val yArray: Array<Float> = Array(5,
