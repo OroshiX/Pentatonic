@@ -4,10 +4,8 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.*
 import android.widget.Spinner
-import android.widget.Toast
 import com.nimoroshix.pentatonic.adapter.MonoArrayAdapter
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.persistence.AppDatabase
@@ -17,10 +15,10 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class GameActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = "MainActivity"
+        val TAG = "GameActivity"
     }
 
     private lateinit var grid: Grid
@@ -159,21 +157,16 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_undo -> {
-                val undoOk = grid.undo()
-                Toast.makeText(applicationContext, "Undo was $undoOk", Toast.LENGTH_SHORT).show()
-                return undoOk
+                return grid.undo()
             }
             R.id.menu_redo -> {
-                val redoOk = grid.redo()
-                Toast.makeText(applicationContext, "Redo was $redoOk", Toast.LENGTH_SHORT).show()
-                return redoOk
+                return grid.redo()
             }
             R.id.menu_replace -> {
                 displayReplaceDialog()
                 return true
             }
             R.id.menu_reset -> {
-                Log.d(TAG, "Reset")
                 displayResetDialog()
                 return true
             }
