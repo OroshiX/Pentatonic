@@ -12,6 +12,8 @@ import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.RelativePosition
 import com.nimoroshix.pentatonic.model.RelativePosition.*
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_MARGIN_SMALL_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextHeightForSize
+import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextSizeForWidth
 import java.util.*
 
 /**
@@ -118,9 +120,9 @@ class PentatonicView : PentatonicAbstractView {
                     paint.textSize = desiredHintTextSizeMultiple
                     // Draw the sister symbol on the bottom-right corner
                     desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple,
-                            cell.sister.toString())
+                            cell.sister.toString(), paint)
                     textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple,
-                            cell.sister.toString())
+                            cell.sister.toString(), paint)
                     canvas.drawText(cell.sister.toString(),
                             offsetLeft + j * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize - desiredHintWidthMultiple,
                             offsetTop + i * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize,

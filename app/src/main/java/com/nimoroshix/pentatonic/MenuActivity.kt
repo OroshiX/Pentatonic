@@ -17,6 +17,10 @@ class MenuActivity : AppCompatActivity() {
 
     }
 
+    fun onSettings(view: View) {
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
     fun onAbout(view: View) {
         startActivity(Intent(this, AboutActivity::class.java))
     }

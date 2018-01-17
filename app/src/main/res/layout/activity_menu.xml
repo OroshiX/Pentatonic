@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.nimoroshix.pentatonic.MenuActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_centerHorizontal="true"
+              android:layout_gravity="center"
+              android:layout_marginTop="25dp"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              tools:context="com.nimoroshix.pentatonic.MenuActivity">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btn_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:onClick="onPlay"
+        android:text="@string/play"/>
 
-        <Button
-            android:id="@+id/btn_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onPlay"
-            android:text="@string/play"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onSettings"
+        android:text="@string/settings"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onAbout"
+        android:text="@string/about"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/about"
-            android:onClick="onAbout"/>
+    <com.nimoroshix.pentatonic.view.LogoView
+        android:layout_width="300dp"
+        android:layout_height="200dp"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/icon_pentatonic"
-            android:src="@drawable/ic_launcher_background"/>
-    </LinearLayout>
-</RelativeLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/icon_pentatonic"
+        android:src="@drawable/ic_launcher_background"/>
+</LinearLayout>

@@ -2,7 +2,6 @@ package com.nimoroshix.pentatonic.view
 
 import android.content.Context
 import android.graphics.Paint
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -10,6 +9,8 @@ import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_HINT_SMALL_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_SMALL_NUMBER_CELL
+import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextHeightForSize
+import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextSizeForWidth
 import java.util.*
 
 /**
@@ -43,31 +44,7 @@ abstract class PentatonicAbstractView : View, Observer {
     protected var textHeightUnique: Float = 0f
     protected var textHintHeightMultiple: Float = 0f
     protected var textHeightMultiple: Float = 0f
-    /**
-     * https://stackoverflow.com/questions/12166476/android-canvas-drawtext-set-font-size-from-width
-     * Sets the text size for a Paint object so a given string of text will be given width.
-     *
-     * @param desiredWidth the desired width
-     * @param text         the text that should be that width
-     */
-    protected fun getTextSizeForWidth(desiredWidth: Float, text: String): Float {
-        val testTextSize = 48f
-        // Get the bounds of the text, using our testTextSize
-        paint.textSize = testTextSize
-        val bounds = Rect()
-        paint.getTextBounds(text, 0, text.length, bounds)
 
-        // calculate the desired size as a proportion of our testTextSize
-        return testTextSize * desiredWidth / bounds.height()
-    }
-
-    protected fun getTextHeightForSize(textSize: Float, text: String): Float {
-        paint.textSize = textSize
-        val bounds = Rect()
-        paint.getTextBounds(text, 0, text.length, bounds)
-
-        return bounds.height().toFloat()
-    }
 
     private fun resetSizeAndOffsets() {
         // Calculate cellSize
@@ -79,17 +56,17 @@ abstract class PentatonicAbstractView : View, Observer {
         offsetLeft = (width - cellSize * grid.nbColumns) / 2
 
         desiredWidthUnique = cellSize * PROPORTION_NUMBER_CELL
-        desiredTextSizeUnique = getTextSizeForWidth(desiredWidthUnique, "5")
+        desiredTextSizeUnique = getTextSizeForWidth(desiredWidthUnique, "5", paint)
 
         desiredHintWidthMultiple = cellSize * PROPORTION_HINT_SMALL_NUMBER_CELL
-        desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple, "5")
+        desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple, "5", paint)
 
         desiredWidthMultiple = cellSize * PROPORTION_SMALL_NUMBER_CELL
-        desiredTextSizeMultiple = getTextSizeForWidth(desiredWidthMultiple, "5")
+        desiredTextSizeMultiple = getTextSizeForWidth(desiredWidthMultiple, "5", paint)
 
-        textHeightUnique = getTextHeightForSize(desiredTextSizeUnique, "5")
-        textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple, "5")
-        textHeightMultiple = getTextHeightForSize(desiredTextSizeMultiple, "5")
+        textHeightUnique = getTextHeightForSize(desiredTextSizeUnique, "5", paint)
+        textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple, "5", paint)
+        textHeightMultiple = getTextHeightForSize(desiredTextSizeMultiple, "5", paint)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
