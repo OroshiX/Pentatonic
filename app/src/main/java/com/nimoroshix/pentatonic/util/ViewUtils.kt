@@ -37,13 +37,13 @@ class ViewUtils {
             return bounds.height().toFloat()
         }
 
-        fun getFitTextSize(desiredWidth: Float, desiredHeigh: Float, text: String, paint: Paint): Float {
+        fun getFitTextSize(desiredWidth: Float, desiredHeight: Float, text: String, paint: Paint): Float {
             val bounds = Rect()
             paint.getTextBounds(text, 0, text.length, bounds)
             val nowHeight = bounds.height()
             val nowWidth = bounds.width()
 
-            return min(desiredWidth * paint.textSize / nowWidth, desiredWidth * paint.textSize / nowHeight)
+            return min(desiredWidth * paint.textSize / nowWidth, desiredHeight * paint.textSize / nowHeight)
         }
     }
 }

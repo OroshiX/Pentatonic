@@ -31,11 +31,5 @@
 
     <com.nimoroshix.pentatonic.view.LogoView
         android:layout_width="300dp"
-        android:layout_height="200dp"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/icon_pentatonic"
-        android:src="@drawable/ic_launcher_background"/>
+        android:layout_height="wrap_content"/>
 </LinearLayout>

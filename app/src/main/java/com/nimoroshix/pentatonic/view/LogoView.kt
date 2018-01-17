@@ -4,9 +4,12 @@ import android.content.Context
 import android.graphics.*
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.util.ViewUtils
+import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * Project Pentatonic
@@ -16,12 +19,41 @@ import com.nimoroshix.pentatonic.util.ViewUtils
 class LogoView : View {
     private val typefacePenta: Typeface?
     private val typefaceSignature: Typeface?
-    private val padding: Float
+    private var padding: Float
 
     private val proportionPentaWidth = 3f / 4f
     private val proportionSignatureWidth = 1f / 2f
+    private val proportionIconWidth = 1f / 3f
 
-    private val bitmap: Bitmap
+    private val minSizeText = 10f
+
+    private var bitmap: Bitmap
+    private var paint: Paint = Paint()
+
+    private var baselinePos = 0f
+    private var heightPenta = 0f
+    private var heightSignature = 0f
+
+    private var widthPenta = 0f
+    private var widthSignature = 0f
+
+    private var textSizePenta = 0f
+    private var textSizeSignature = 0f
+    private var descentSignature = 0f
+
+    private val PENTATONIC_TEXT = "Pentatonic"
+    private val SIGNATURE_TEXT = "by nim0roshix"
+
+    private val proportionWidthHeight = 3f / 2f
+
+    private val colorPentatonic: Int
+    private val colorBackground: Int
+    private val colorShadow: Int
+
+    companion object {
+        @JvmField
+        val TAG = "LogoView"
+    }
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -29,45 +61,105 @@ class LogoView : View {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
-        paint.color = Color.RED
         paint.textSize = 100f
         paint.strokeWidth = 3f
         padding = 50f
         typefacePenta = ResourcesCompat.getFont(context, R.font.akashi)
         typefaceSignature = ResourcesCompat.getFont(context, R.font.ubuntutitle)
-        bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ic_redo)
+        bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_redo)
+        colorPentatonic = resources.getColor(R.color.colorAccent, context.theme)
+        colorBackground = resources.getColor(R.color.colorPrimary, context.theme)
+        colorShadow = resources.getColor(R.color.shadow, context.theme)
     }
 
-    private var paint: Paint = Paint()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        var desiredHeight = 100f
+        var desiredWidth = 100f
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
-//        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec)
+        if (widthSize == 0) throw IllegalArgumentException("You should always specify width > 0 in LogoView")
+
+        val res = proportionWidthHeight * heightSize - widthSize
+        when {
+            res < 0 -> desiredWidth = proportionWidthHeight * heightSize
+            res > 0 -> desiredHeight = widthSize / proportionWidthHeight
+        }
+
+        var width = 0
+        var height = 0
+
+        when (widthMode) {
+            MeasureSpec.EXACTLY -> width = widthSize
+            MeasureSpec.AT_MOST -> width = min(widthSize, desiredWidth.toInt())
+            MeasureSpec.UNSPECIFIED -> width = desiredWidth.toInt()
+        }
+
+        when (heightMode) {
+            MeasureSpec.EXACTLY -> height = heightSize
+            MeasureSpec.AT_MOST -> height = min(heightSize, desiredHeight.toInt())
+            MeasureSpec.UNSPECIFIED -> height = desiredHeight.toInt()
+        }
+
+        setMeasuredDimension(width, height)
+
+        initMeasurements(width, height)
     }
 
-    override fun onDraw(canvas: Canvas) {
-        paint.style = Paint.Style.STROKE
-        canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), paint)
-        paint.typeface = typefacePenta
-        var size = ViewUtils.getFitTextSize(width.toFloat() * proportionPentaWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, "Pentatonic", paint)
+
+    private fun initMeasurements(width: Int, height: Int) {
+
         paint.style = Paint.Style.FILL
-        paint.textSize = size
-        var baselinePos = -paint.fontMetrics.ascent
-        val heightPenta = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
-        canvas.drawText("Pentatonic", padding, baselinePos + padding, paint)
+        padding = min((height.toFloat() - 2 * minSizeText) / 4f, padding)
+        if (padding < 0) padding = 0f
+
+        paint.typeface = typefacePenta
+        textSizePenta = ViewUtils.getFitTextSize(width.toFloat() * proportionPentaWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, PENTATONIC_TEXT, paint)
+        paint.textSize = textSizePenta
+        baselinePos = -paint.fontMetrics.ascent
+        heightPenta = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
+        widthPenta = paint.measureText(PENTATONIC_TEXT)
+
+        //
+        paint.typeface = typefaceSignature
+        textSizeSignature = ViewUtils.getFitTextSize(width.toFloat() * proportionSignatureWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, SIGNATURE_TEXT, paint)
+        paint.textSize = textSizeSignature
+        heightSignature = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
+        descentSignature = paint.fontMetrics.descent
+        widthSignature = paint.measureText(SIGNATURE_TEXT)
+
+        val maxHeightIcon = height - 2 * padding - heightPenta //- heightSignature
+        val maxWidthIcon = (1f - proportionSignatureWidth) * width
+        val preferredWidthIcon = width * proportionIconWidth
+        val sizeIcon = min(maxWidthIcon, min(maxHeightIcon, preferredWidthIcon)).toInt()
+        bitmap = Bitmap.createScaledBitmap(bitmap, sizeIcon, sizeIcon, false)
+    }
+
+
+    override fun onDraw(canvas: Canvas) {
+        paint.style = Paint.Style.FILL
+
+        // Draw shadow
+        paint.color = colorShadow
+        canvas.drawRoundRect(5f, 10f, width.toFloat(), height.toFloat(), 25f, 25f, paint)
+
+        // draw background
+        paint.color = colorBackground
+        canvas.drawRoundRect(0f, 0f, width.toFloat() - 5, height.toFloat() - 10, 25f, 25f, paint)
+//        canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), paint)
+        paint.typeface = typefacePenta
+        paint.textSize = textSizePenta
+        paint.color = colorPentatonic
+
+        canvas.drawText(PENTATONIC_TEXT, padding, baselinePos + padding, paint)
 
         paint.typeface = typefaceSignature
-        size = ViewUtils.getFitTextSize(width.toFloat() * proportionSignatureWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, "by nim0roshix", paint)
-        paint.textSize = size
-        baselinePos = -paint.fontMetrics.ascent
-        val heightSignature = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
+        paint.textSize = textSizeSignature
 
-        canvas.drawText("by nim0roshix", width - padding - paint.measureText("by nim0roshix"),
-                height - paint.fontMetrics.descent - padding,
-//                heightPenta + padding + baselinePos,
-                paint)
-
+        canvas.drawText(SIGNATURE_TEXT, width - padding - widthSignature, height - descentSignature - padding, paint)
 
         // draw a pentatonic in the middle
         canvas.drawBitmap(bitmap, padding, padding + heightPenta, paint)
