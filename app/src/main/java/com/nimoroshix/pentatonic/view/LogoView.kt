@@ -1,10 +1,7 @@
 package com.nimoroshix.pentatonic.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.*
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.view.View
@@ -24,6 +21,8 @@ class LogoView : View {
     private val proportionPentaWidth = 3f / 4f
     private val proportionSignatureWidth = 1f / 2f
 
+    private val bitmap: Bitmap
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -36,9 +35,16 @@ class LogoView : View {
         padding = 50f
         typefacePenta = ResourcesCompat.getFont(context, R.font.akashi)
         typefaceSignature = ResourcesCompat.getFont(context, R.font.ubuntutitle)
+        bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ic_redo)
     }
 
     private var paint: Paint = Paint()
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+//        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec)
+    }
 
     override fun onDraw(canvas: Canvas) {
         paint.style = Paint.Style.STROKE
@@ -55,8 +61,15 @@ class LogoView : View {
         size = ViewUtils.getFitTextSize(width.toFloat() * proportionSignatureWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, "by nim0roshix", paint)
         paint.textSize = size
         baselinePos = -paint.fontMetrics.ascent
-        canvas.drawText("by nim0roshix", width - padding - paint.measureText("by nim0roshix"), heightPenta + padding + baselinePos, paint)
+        val heightSignature = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
+
+        canvas.drawText("by nim0roshix", width - padding - paint.measureText("by nim0roshix"),
+                height - paint.fontMetrics.descent - padding,
+//                heightPenta + padding + baselinePos,
+                paint)
 
 
+        // draw a pentatonic in the middle
+        canvas.drawBitmap(bitmap, padding, padding + heightPenta, paint)
     }
 }
