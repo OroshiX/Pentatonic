@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.*
 import android.widget.Spinner
 import com.nimoroshix.pentatonic.adapter.MonoArrayAdapter
@@ -19,11 +20,14 @@ class GameActivity : AppCompatActivity() {
 
     companion object {
         val TAG = "GameActivity"
+        val PARCEL_GRID = "parcelableGrid"
+
     }
 
     private lateinit var grid: Grid
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.w(TAG, "onCreate")
         setContentView(R.layout.activity_main)
 
 //        insertDummyData()
@@ -37,6 +41,29 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.w(TAG, "onSaveInstanceState")
+        outState.putParcelable(PARCEL_GRID, grid)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.w(TAG, "onRestoreInstanceState")
+        setGridAndObservers(savedInstanceState.getParcelable(PARCEL_GRID))
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.w(TAG, "onPause")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.w(TAG, "onResume")
+    }
+
     private fun insertToDb(grid: Grid) {
         val penta = Serializer.fromGridToDb(grid)
         Observable.just(AppDatabase.getInstance(this).pentatonicDao())
@@ -45,7 +72,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun viewDummyPentatonic() {
-        grid = Serializer.serialize("6 7\n" +
+        setGridAndObservers(Serializer.serialize("6 7\n" +
                 "1223344\n" +
                 "5523364\n" +
                 "7522666\n" +
@@ -53,24 +80,24 @@ class GameActivity : AppCompatActivity() {
                 "788899a\n" +
                 "78bbbba\n" +
                 "-3,0,2,1\n" +
-                "-1,4,0,5")
+                "-1,4,0,5"))
+        insertToDb(grid)
+    }
+
+    private fun setGridAndObservers(grid: Grid) {
+        this.grid = grid
         pentatonicEnonce.grid = grid
         pentatonicValues.grid = grid
         pentatonicKeys.grid = grid
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
-        insertToDb(grid)
     }
 
     private fun getDbData() {
         Observable.just(AppDatabase.getInstance(this).pentatonicDao()).subscribeOn(
                 Schedulers.io()).subscribe { dao ->
             grid = Serializer.fromDbToGrid(dao.getPentatonicById(1))
-            pentatonicEnonce.grid = grid
-            pentatonicValues.grid = grid
-            pentatonicKeys.grid = grid
-            grid.addObserver(pentatonicEnonce)
-            grid.addObserver(pentatonicValues)
+            setGridAndObservers(Serializer.fromDbToGrid(dao.getPentatonicById(1)))
         }
     }
 

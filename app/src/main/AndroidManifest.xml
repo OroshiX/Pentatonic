@@ -12,8 +12,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".GameActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
+            >
+            <!--android:configChanges="orientation"-->
+            <!--android:screenOrientation="portrait"-->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
