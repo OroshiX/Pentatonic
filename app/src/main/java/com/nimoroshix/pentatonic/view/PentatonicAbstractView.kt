@@ -72,7 +72,6 @@ abstract class PentatonicAbstractView : View, Observer {
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         // Calculate offsets
-        Log.d(PentatonicView.TAG, "onLayout($changed, $left, $top, $right, $bottom)")
         resetSizeAndOffsets()
     }
 

@@ -72,16 +72,29 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun viewDummyPentatonic() {
-        setGridAndObservers(Serializer.serialize("6 7\n" +
-                "1223344\n" +
-                "5523364\n" +
-                "7522666\n" +
-                "7558999\n" +
-                "788899a\n" +
-                "78bbbba\n" +
-                "-3,0,2,1\n" +
-                "-1,4,0,5"))
-        insertToDb(grid)
+        setGridAndObservers(Serializer.serialize("8 16\n" +
+                "12222kkkkmmrrsst\n" +
+                "124jjjklmmmrrssu\n" +
+                "1344jlllnnnqqsuu\n" +
+                "14455iilnnppquuf\n" +
+                "666555iiooppgfff\n" +
+                "768999ibhhhgggfe\n" +
+                "77899abbbhhgdeee\n" +
+                "7888aaacccccdddd\n" +
+                "5,3,3\n" +
+                "5,3,8\n" +
+                "5,6,10\n" +
+                "2,2,15\n" +
+                "-5,0,4,1\n" +
+                "-6,13,5,12\n" +
+                "-1,14,1,15\n" +
+                ".,0,3\n" +
+                ".,4,6\n" +
+                "+,5,3\n" +
+                "+,4,13\n" +
+                "*,1,9\n" +
+                "*,7,9"))
+//        insertToDb(grid)
     }
 
     private fun setGridAndObservers(grid: Grid) {
@@ -185,17 +198,17 @@ class GameActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_undo -> {
+            R.id.menu_undo    -> {
                 return grid.undo()
             }
-            R.id.menu_redo -> {
+            R.id.menu_redo    -> {
                 return grid.redo()
             }
             R.id.menu_replace -> {
                 displayReplaceDialog()
                 return true
             }
-            R.id.menu_reset -> {
+            R.id.menu_reset   -> {
                 displayResetDialog()
                 return true
             }

@@ -27,11 +27,11 @@ import java.util.*
 class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
     override fun onShowPress(p0: MotionEvent?) {
-        Log.d(TAG, "onShowPress($p0)")
+        Log.v(TAG, "onShowPress($p0)")
     }
 
     override fun onSingleTapUp(event: MotionEvent): Boolean {
-        Log.d(TAG, "onSingleTapUp($event)")
+        Log.v(TAG, "onSingleTapUp($event)")
         val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
                 offsetTop, cellSize, grid.nbLines, grid.nbColumns)
         return if (pos != null) {
@@ -46,50 +46,50 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
     }
 
     override fun onDown(p0: MotionEvent?): Boolean {
-        Log.d(TAG, "onDown($p0)")
+        Log.v(TAG, "onDown($p0)")
         return true
     }
 
     override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-        Log.d(TAG, "onFling($p0, $p1, $p2, $p3)")
+        Log.v(TAG, "onFling($p0, $p1, $p2, $p3)")
         return true
     }
 
     override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-        Log.d(TAG, "onScroll($p0, $p1, $p2, $p3)")
+        Log.v(TAG, "onScroll($p0, $p1, $p2, $p3)")
         return true
     }
 
     override fun onLongPress(p0: MotionEvent?) {
-        Log.d(TAG, "onLongPress($p0)")
+        Log.v(TAG, "onLongPress($p0)")
     }
 
     override fun onDoubleTap(p0: MotionEvent?): Boolean {
-        Log.d(TAG, "onDoubleTap($p0)")
+        Log.v(TAG, "onDoubleTap($p0)")
         return true
     }
 
     override fun onDoubleTapEvent(p0: MotionEvent?): Boolean {
-        Log.d(TAG, "onDoubleTapEvent($p0)")
+        Log.v(TAG, "onDoubleTapEvent($p0)")
         return true
     }
 
     override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-        Log.d(TAG, "onSingleTapConfirmed($event)")
+        Log.v(TAG, "onSingleTapConfirmed($event)")
         return true
     }
 
     override fun onScaleBegin(p0: ScaleGestureDetector?): Boolean {
-        Log.d(TAG, "onScaleBegin($p0)")
+        Log.v(TAG, "onScaleBegin($p0)")
         return true
     }
 
     override fun onScaleEnd(p0: ScaleGestureDetector?) {
-        Log.d(TAG, "onScaleEnd($p0)")
+        Log.v(TAG, "onScaleEnd($p0)")
     }
 
     override fun onScale(p0: ScaleGestureDetector?): Boolean {
-        Log.d(TAG, "onScale($p0)")
+        Log.v(TAG, "onScale($p0)")
         return true
     }
 
@@ -101,7 +101,6 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
     }
 
     override fun update(o: Observable?, arg: Any?) {
-
         if (arg == Grid.VALUE) {
             invalidate()
         }
@@ -131,27 +130,38 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         return true
     }
 
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
+    }
+
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 5f
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        canvas.drawRect(offsetLeft, offsetTop, width - offsetLeft, height - offsetTop, paint)
+
+        paint.style = Paint.Style.FILL
         for ((i, row) in grid.cells.withIndex()) {
             for ((j, cell) in row.withIndex()) {
                 // Background (selected or not)
                 when (cell.selection) {
                     CellState.UNSELECTED -> {
                     }
-                    else -> {
+                    else                 -> {
                         when (cell.selection) {
-                            CellState.SELECTED -> paint.color = COLOR_SELECTED
+                            CellState.SELECTED            -> paint.color = COLOR_SELECTED
                             CellState.SECONDARY_SELECTION -> paint.color = COLOR_SELECTED_SECONDARY
-                            else -> {
+                            else                          -> {
                                 // nothing because it is NOT unselected anyway
                             }
                         }
                         // it is either selected or secondary selected, so draw background
-                        canvas.drawRect(cell.position.nColumn.times(cellSize).plus(offsetLeft),
-                                cell.position.nLine.times(cellSize).plus(offsetTop),
-                                (cell.position.nColumn + 1).times(cellSize).plus(offsetLeft),
-                                (cell.position.nLine + 1).times(cellSize).plus(offsetTop),
+                        canvas.drawRect(cell.position.nColumn * cellSize + offsetLeft,
+                                cell.position.nLine * cellSize + offsetTop,
+                                (cell.position.nColumn + 1) * cellSize + offsetLeft,
+                                (cell.position.nLine + 1) * cellSize + offsetTop,
                                 paint)
                     }
                 }
@@ -159,13 +169,13 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
                     // Is cell valid?
                     when {
                         !cell.valid -> paint.color = notValid
-                        else -> paint.color = valid
+                        else        -> paint.color = valid
                     }
 
                     when (cell.values.size) {
-                        0 -> {// nothing
+                        0    -> {// nothing
                         }
-                        1 -> {
+                        1    -> {
                             // Big number
                             paint.textSize = desiredTextSizeUnique
                             canvas.drawText(cell.values[0].toString(),

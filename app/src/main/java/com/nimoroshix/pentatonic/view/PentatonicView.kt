@@ -47,6 +47,12 @@ class PentatonicView : PentatonicAbstractView {
     }
 
     private val imageBounds: Rect = Rect()
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
+    }
+
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
         canvas.getClipBounds(imageBounds)
@@ -83,10 +89,10 @@ class PentatonicView : PentatonicAbstractView {
                 // Compare the value of the area of the 2 adjacent cells
                 grid.cells[i][it].area.id != grid.cells[i][it - 1].area.id
             }.forEach {
-                // Different areas, so draw a line
-                canvas.drawLine(offsetLeft + it * cellSize, offsetTop + i * cellSize,
-                        offsetLeft + it * cellSize, offsetTop + (i + 1) * cellSize, paint)
-            }
+                        // Different areas, so draw a line
+                        canvas.drawLine(offsetLeft + it * cellSize, offsetTop + i * cellSize,
+                                offsetLeft + it * cellSize, offsetTop + (i + 1) * cellSize, paint)
+                    }
         }
 
         // compare two vertical cells area ids
@@ -143,31 +149,31 @@ class PentatonicView : PentatonicAbstractView {
                     var yStart: Float
                     var yEnd: Float
                     when (relation) {
-                        TOP -> {
+                        TOP          -> {
                             xStart = xArray[2]
                             xEnd = xArray[2]
                             yStart = yArray[0]
                             yEnd = yArray[1]
                         }
-                        RIGHT -> {
+                        RIGHT        -> {
                             xStart = xArray[4]
                             xEnd = xArray[3]
                             yStart = yArray[2]
                             yEnd = yArray[2]
                         }
-                        BOTTOM -> {
+                        BOTTOM       -> {
                             xStart = xArray[2]
                             xEnd = xArray[2]
                             yStart = yArray[4]
                             yEnd = yArray[3]
                         }
-                        LEFT -> {
+                        LEFT         -> {
                             xStart = xArray[0]
                             xEnd = xArray[1]
                             yStart = yArray[2]
                             yEnd = yArray[2]
                         }
-                        TOP_RIGHT -> {
+                        TOP_RIGHT    -> {
                             xStart = xArray[4]
                             xEnd = xArray[3]
                             yStart = yArray[0]
@@ -179,19 +185,19 @@ class PentatonicView : PentatonicAbstractView {
                             yStart = yArray[4]
                             yEnd = yArray[3]
                         }
-                        BOTTOM_LEFT -> {
+                        BOTTOM_LEFT  -> {
                             xStart = xArray[0]
                             xEnd = xArray[1]
                             yStart = yArray[4]
                             yEnd = yArray[3]
                         }
-                        TOP_LEFT -> {
+                        TOP_LEFT     -> {
                             xStart = xArray[0]
                             xEnd = xArray[1]
                             yStart = yArray[0]
                             yEnd = yArray[1]
                         }
-                        ILLEGAL -> {
+                        ILLEGAL      -> {
                             Log.e(TAG, "illegal position")
                             return
                         }
