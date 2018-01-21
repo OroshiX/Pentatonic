@@ -30,8 +30,10 @@ abstract class PentatonicAbstractView : View, Observer {
             resetSizeAndOffsets()
         }
 
-    var offsetLeft: Float = 10f
-    var offsetTop: Float = 10f
+    private val minOffsetLeft = 10f
+    private val minOffsetTop = 10f
+    var offsetLeft: Float = minOffsetLeft
+    var offsetTop: Float = minOffsetTop
     var cellSize: Float = 40f
 
     protected var desiredWidthUnique: Float = 0f
@@ -46,6 +48,9 @@ abstract class PentatonicAbstractView : View, Observer {
 
 
     private fun resetSizeAndOffsets() {
+        offsetLeft = minOffsetLeft
+        offsetTop = minOffsetTop
+
         // Calculate cellSize
         val maxCellHeight: Float = (height - 2 * offsetLeft) / grid.nbLines
         val maxCellWidth: Float = (width - 2 * offsetTop) / grid.nbColumns
