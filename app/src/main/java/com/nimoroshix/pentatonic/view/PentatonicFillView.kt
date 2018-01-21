@@ -130,17 +130,8 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         return true
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
-    }
-
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 5f
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
-        canvas.drawRect(offsetLeft, offsetTop, width - offsetLeft, height - offsetTop, paint)
 
         paint.style = Paint.Style.FILL
         for ((i, row) in grid.cells.withIndex()) {

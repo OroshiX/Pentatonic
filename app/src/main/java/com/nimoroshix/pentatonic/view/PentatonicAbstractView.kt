@@ -3,7 +3,6 @@ package com.nimoroshix.pentatonic.view
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_HINT_SMALL_NUMBER_CELL
@@ -72,7 +71,8 @@ abstract class PentatonicAbstractView : View, Observer {
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         // Calculate offsets
-        resetSizeAndOffsets()
+        if (changed)
+            resetSizeAndOffsets()
     }
 
 }

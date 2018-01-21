@@ -48,11 +48,6 @@ class PentatonicView : PentatonicAbstractView {
 
     private val imageBounds: Rect = Rect()
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        Log.d(TAG, "onLayout($changed, $left, $top, $right, $bottom)")
-    }
-
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
         canvas.getClipBounds(imageBounds)
