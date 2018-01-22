@@ -20,6 +20,9 @@ class PentatonicApp : Application() {
         checkFirstRun()
     }
 
+    /**
+     * https://stackoverflow.com/a/30274315/2589983
+     */
     private fun checkFirstRun() {
         // get Current version code
         val currentVersionCode = BuildConfig.VERSION_CODE
