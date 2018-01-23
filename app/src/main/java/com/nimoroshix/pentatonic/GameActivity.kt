@@ -72,28 +72,34 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun viewDummyPentatonic() {
-        setGridAndObservers(Serializer.serialize("8 16\n" +
-                "12222kkkkmmrrsst\n" +
-                "124jjjklmmmrrssu\n" +
-                "1344jlllnnnqqsuu\n" +
-                "14455iilnnppquuf\n" +
-                "666555iiooppgfff\n" +
-                "768999ibhhhgggfe\n" +
-                "77899abbbhhgdeee\n" +
-                "7888aaacccccdddd\n" +
-                "5,3,3\n" +
-                "5,3,8\n" +
-                "5,6,10\n" +
-                "2,2,15\n" +
-                "-5,0,4,1\n" +
-                "-6,13,5,12\n" +
-                "-1,14,1,15\n" +
-                ".,0,3\n" +
-                ".,4,6\n" +
-                "+,5,3\n" +
-                "+,4,13\n" +
-                "*,1,9\n" +
-                "*,7,9"))
+        setGridAndObservers(Serializer.deserialize("Nimo\n" +
+                "20 10\n" +
+                "1111222233\n" +
+                "4445552633\n" +
+                "7488855669\n" +
+                "77aa88b699\n" +
+                "7aacbbbb99\n" +
+                "ddaccefggg\n" +
+                "ddhcceekkg\n" +
+                "nnooopeekk\n" +
+                "Lnnoppqqkr\n" +
+                "LLnsupqqrr\n" +
+                "Lvssuuwwrx\n" +
+                "Lvvsuuwxxx\n" +
+                "yvzzzwwSxA\n" +
+                "yvzzSSSSAA\n" +
+                "BBBBCDDDEF\n" +
+                "GGGHCDDIEF\n" +
+                "GGJHHHIIEK\n" +
+                "JJJMHIINEK\n" +
+                "OOJMMPNNEK\n" +
+                "OOMMPPPNNK\n" +
+                "5,0,6\n" +
+                "4,5,9\n" +
+                "5,11,9\n" +
+                "5,17,0\n" +
+                "5,17,5\n" +
+                "4,19,0", "dummy.penta"))
 //        insertToDb(grid)
     }
 

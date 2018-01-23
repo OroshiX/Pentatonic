@@ -37,6 +37,9 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
     var version: Int = 0
     var difficulty: Int = 0
+    var filename: String = ""
+    var author: String = ""
+    var dbId: Long = 0
     private var undo = UndoAction()
 
     /**

@@ -25,4 +25,6 @@ class Pentatonic(var lines: Int, var columns: Int) {
     var enonce: String = ""
     var progress: String? = null
     var difficulty: Int = 0
+    var author: String = ""
+    var filename: String = ""
 }

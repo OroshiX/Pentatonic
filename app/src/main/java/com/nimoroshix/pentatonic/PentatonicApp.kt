@@ -4,11 +4,15 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.facebook.stetho.Stetho
+import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.persistence.AppDatabase
-import com.nimoroshix.pentatonic.persistence.Pentatonic
 import com.nimoroshix.pentatonic.persistence.PentatonicDao
+import com.nimoroshix.pentatonic.serializer.Serializer
+import com.nimoroshix.pentatonic.util.Constants.Companion.MAX_DIFFICULTY
+import com.nimoroshix.pentatonic.util.Constants.Companion.PATH_PENTA
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
 /**
  * Project Pentatonic
@@ -18,6 +22,7 @@ class PentatonicApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Go to chrome://inspect/#devices -> inspect com.nimoroshix.pentatonic -> resources tab -> web SQL
         Stetho.initialize(Stetho.newInitializerBuilder(this).enableDumpapp(
                 Stetho.defaultDumperPluginsProvider(this))
                 .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this)).build())
@@ -39,19 +44,20 @@ class PentatonicApp : Application() {
         Log.d(TAG, "current version : $currentVersionCode, saved version : $savedVersionCode")
 
         // check for first run or upgrade
-        if (currentVersionCode == savedVersionCode) {
-            // Just a normal run
-            return
-        } else if (savedVersionCode == DOESNT_EXIST) {
-            // this is a new install (or user cleared the sharedPrefs)
-            Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe { dao -> doOnFirstInstall(dao) }
-        } else if (currentVersionCode > savedVersionCode) {
-            // this is an upgrade (handle different migrations)
-            Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe { dao -> doOnUpgrade(savedVersionCode, currentVersionCode, dao) }
+        when {
+            currentVersionCode == savedVersionCode ->
+                // Just a normal run
+                return
+            savedVersionCode == DOESNT_EXIST ->
+                // this is a new install (or user cleared the sharedPrefs)
+                Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe { dao -> doOnFirstInstall(dao) }
+            currentVersionCode > savedVersionCode ->
+                // this is an upgrade (handle different migrations)
+                Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe { dao -> doOnUpgrade(savedVersionCode, currentVersionCode, dao) }
         }
 
         // update the shared prefs with the current version code
@@ -62,11 +68,28 @@ class PentatonicApp : Application() {
      * Here, get all pentatonics available, and put them in the database
      */
     private fun doOnFirstInstall(dao: PentatonicDao) {
-        val PATH_PENTA = "pentatonic"
-        resources.assets.list(PATH_PENTA)
-        // TODO look for pentatonics in assets and put them in the database
-        val penta: Pentatonic = Pentatonic(2, 3)
-        dao.insertPentatonic(penta)
+        val versions: Array<out String> = resources.assets.list(PATH_PENTA)
+        versions.forEach { version ->
+            addAllPentatonicsFromVersionFolder(dao, version)
+        }
+    }
+
+    private fun addAllPentatonicsFromVersionFolder(dao: PentatonicDao, version: String) {
+        val assetsPath = PATH_PENTA + File.separator + version + File.separator
+        (1..MAX_DIFFICULTY).forEach { diff ->
+            addAllPentatonicsFromFolder(dao, assetsPath + diff, diff)
+        }
+    }
+
+    private fun addAllPentatonicsFromFolder(dao: PentatonicDao, path: String, difficulty: Int) {
+        val pentatonicFiles = resources.assets.list(path)
+        pentatonicFiles.forEach { pentatonicFile ->
+            val grid: Grid = Serializer.deserialize(resources.assets.open(path + File.separator + pentatonicFile), pentatonicFile)
+            grid.difficulty = difficulty
+            grid.filename = pentatonicFile
+            val penta = Serializer.fromGridToDb(grid)
+            dao.insertPentatonic(penta)
+        }
     }
 
     /**
@@ -89,11 +112,11 @@ class PentatonicApp : Application() {
     }
 
     private fun from1to2(dao: PentatonicDao) {
-        // TODO
+        addAllPentatonicsFromVersionFolder(dao, "v2")
     }
 
     private fun from2to3(dao: PentatonicDao) {
-        // TODO
+        addAllPentatonicsFromVersionFolder(dao, "v3")
     }
 
     companion object {

@@ -18,5 +18,7 @@ class Constants {
         val COLOR_SELECTED_SECONDARY: Int = Color.parseColor("#5287C8EE")
         //        val COLOR_SELECTED_SECONDARY: Int = Color.parseColor("#52C3E5F8")
         val MAX_SIZE = 5
+        val PATH_PENTA = "pentatonic"
+        val MAX_DIFFICULTY = 5
     }
 }

@@ -21,11 +21,6 @@ class UpgradeReceiver : BroadcastReceiver() {
         Log.d(TAG, "onReceive: ${intent.action}")
         val versionCode = BuildConfig.VERSION_CODE;
         val versionName = BuildConfig.VERSION_NAME;
-
-        val packageName = intent.data
-        if (packageName.toString() == "package:${context.packageName}") {
-            // Application was upgraded
-
-        }
+        Log.d(TAG, "version code: $versionCode, versionName: $versionName")
     }
 }

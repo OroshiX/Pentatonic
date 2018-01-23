@@ -6,6 +6,9 @@ import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.persistence.Pentatonic
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
 
 /**
  * Project Pentatonic
@@ -26,20 +29,38 @@ class Serializer {
     companion object {
 
         @Throws(IllegalArgumentException::class)
-        fun serialize(gridText: String): Grid {
+        fun deserialize(gridText: String, filename: String): Grid {
             val lines: Sequence<String> = gridText.lineSequence()
+            return deserialize(lines, filename)
+        }
+
+        private fun deserialize(lines: Sequence<String>, filename: String): Grid {
             val iterator = lines.iterator()
-            // la 1ere ligne consiste en "nbLignes nbCol"
+            // 1st line : author's name
+            val author = iterator.next()
+            // 2nd line is "nbLines nbCols"
             val (nbLine, nbCol) = iterator.next().split(' ').map(String::toInt)
             val grid = Grid(nbLine, nbCol)
             fillAreas(grid, iterator)
             fillEnonce(grid, iterator)
+            grid.author = author
+            grid.filename = filename
             return grid
+        }
+
+        fun deserialize(inputStream: InputStream, filename: String): Grid {
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val lines = reader.lineSequence()
+            return deserialize(lines, filename)
         }
 
         @Throws(IllegalArgumentException::class)
         fun fromDbToGrid(pentatonic: Pentatonic): Grid {
             val grid = Grid(pentatonic.lines, pentatonic.columns)
+            grid.difficulty = pentatonic.difficulty
+            grid.filename = pentatonic.filename
+            grid.author = pentatonic.author
+            grid.dbId = pentatonic.id
             val iteratorAreas = pentatonic.areas.lineSequence().iterator()
             val iteratorEnonce = pentatonic.enonce.lineSequence().iterator()
             fillAreas(grid, iteratorAreas)
@@ -59,7 +80,7 @@ class Serializer {
                     "\n") { cell ->
                 when {
                     cell.enonce -> "${cell.values[0]},${cell.position.nLine},${cell.position.nColumn}"
-                    else        -> {
+                    else -> {
                         val sb = StringBuilder()
 
                         if (cell.sister != null) {
@@ -91,6 +112,11 @@ class Serializer {
             penta.hasSister = grid.cells.flatten().any { c -> c.sister != null }
             penta.version = grid.version
             penta.difficulty = grid.difficulty
+            penta.filename = grid.filename
+            penta.author = grid.author
+            if (grid.dbId != 0L) {
+                penta.id = grid.dbId
+            }
             return penta
         }
 

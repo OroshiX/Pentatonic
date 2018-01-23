@@ -28,7 +28,7 @@ class ExampleUnitTest {
 
     @Test
     fun serializationIsCorrect() {
-        val grid = Serializer.serialize(textGrid)
+        val grid = Serializer.deserialize(textGrid, "toto.penta")
         print(grid)
 
         var cell = Cell(0, 0)
@@ -57,11 +57,13 @@ class ExampleUnitTest {
         cell.area = Area('4', 1)
         cell.differenceOne = Position(3, 1)
         assertEquals(cell, grid.cells[2][0])
+
+        assertEquals("toto.penta", grid.filename)
     }
 
     @Test
     fun replaceIsCorrect() {
-        val grid = Serializer.serialize(textGrid)
+        val grid = Serializer.deserialize(textGrid, "toto.penta")
         grid.toggleValue(0, 1, 'q')
         grid.toggleValue(3, 4, 'q')
 
