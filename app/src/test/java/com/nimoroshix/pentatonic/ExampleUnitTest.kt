@@ -2,6 +2,7 @@ package com.nimoroshix.pentatonic
 
 import com.nimoroshix.pentatonic.model.Area
 import com.nimoroshix.pentatonic.model.Cell
+import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer
 import org.junit.Test
 
@@ -54,9 +55,7 @@ class ExampleUnitTest {
 
         cell = Cell(2, 0)
         cell.area = Area('4', 1)
-        cell.differenceOne = Cell(3, 1)
-        cell.differenceOne!!.area = Area('5', 5)
-        cell.differenceOne!!.differenceOne = cell
+        cell.differenceOne = Position(3, 1)
         assertEquals(cell, grid.cells[2][0])
     }
 

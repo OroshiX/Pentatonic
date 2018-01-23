@@ -4,6 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.facebook.stetho.Stetho
+import com.nimoroshix.pentatonic.persistence.AppDatabase
+import com.nimoroshix.pentatonic.persistence.Pentatonic
+import com.nimoroshix.pentatonic.persistence.PentatonicDao
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Project Pentatonic
@@ -38,13 +43,57 @@ class PentatonicApp : Application() {
             // Just a normal run
             return
         } else if (savedVersionCode == DOESNT_EXIST) {
-            // TODO this is a new install (or user cleared the sharedPrefs)
+            // this is a new install (or user cleared the sharedPrefs)
+            Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe { dao -> doOnFirstInstall(dao) }
         } else if (currentVersionCode > savedVersionCode) {
-            // TODO this is an upgrade (handle different migrations)
+            // this is an upgrade (handle different migrations)
+            Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe { dao -> doOnUpgrade(savedVersionCode, currentVersionCode, dao) }
         }
 
         // update the shared prefs with the current version code
         prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply()
+    }
+
+    /**
+     * Here, get all pentatonics available, and put them in the database
+     */
+    private fun doOnFirstInstall(dao: PentatonicDao) {
+        val PATH_PENTA = "pentatonic"
+        resources.assets.list(PATH_PENTA)
+        // TODO look for pentatonics in assets and put them in the database
+        val penta: Pentatonic = Pentatonic(2, 3)
+        dao.insertPentatonic(penta)
+    }
+
+    /**
+     * Here, see which upgrade to apply, and put the remainings pentatonics in the database
+     */
+    private fun doOnUpgrade(oldVersion: Int, newVersion: Int, dao: PentatonicDao) {
+        var currentVersion = oldVersion
+        assert(oldVersion < newVersion)
+        while (currentVersion < newVersion) {
+            upgradeOneVersion(currentVersion, dao)
+            currentVersion++
+        }
+    }
+
+    private fun upgradeOneVersion(oldVersion: Int, dao: PentatonicDao) {
+        when (oldVersion) {
+            1 -> from1to2(dao)
+            2 -> from2to3(dao)
+        }
+    }
+
+    private fun from1to2(dao: PentatonicDao) {
+        // TODO
+    }
+
+    private fun from2to3(dao: PentatonicDao) {
+        // TODO
     }
 
     companion object {
