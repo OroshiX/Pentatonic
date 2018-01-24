@@ -32,7 +32,7 @@ class GameActivity : AppCompatActivity() {
         Log.w(TAG, "onCreate")
         setContentView(R.layout.activity_main)
 
-        val idPenta: Int = savedInstanceState?.get(BUNDLE_ID_PENTA) as Int? ?: 1
+        val idPenta: Long = intent.getLongExtra(BUNDLE_ID_PENTA, 1L)
 
 
 //        insertDummyData()
@@ -124,9 +124,11 @@ class GameActivity : AppCompatActivity() {
         pentatonicKeys.grid = grid
         grid.addObserver(pentatonicEnonce)
         grid.addObserver(pentatonicValues)
+        pentatonicEnonce.invalidate()
+        pentatonicValues.invalidate()
     }
 
-    private fun getDbData(idPenta: Int) {
+    private fun getDbData(idPenta: Long) {
         Observable.just(AppDatabase.getInstance(this).pentatonicDao())
                 .switchMap({ dao -> Observable.just(Serializer.fromDbToGrid(dao.getPentatonicById(idPenta))) })
                 .subscribeOn(Schedulers.io())

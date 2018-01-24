@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.item_pentatonic.view.*
 class ChoosePentatonicAdapter(val items: List<ItemPenta>, val listener: (ItemPenta) -> Unit) : RecyclerView.Adapter<ChoosePentatonicAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.item_pentatonic))
 
-
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -25,8 +24,10 @@ class ChoosePentatonicAdapter(val items: List<ItemPenta>, val listener: (ItemPen
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: ItemPenta, listener: (ItemPenta) -> Unit) = with(itemView) {
-            tv_id.text = item.id.toString()
-            setOnClickListener { listener(item) }
+            btn_id.text = item.id.toString()
+            btn_id.setOnClickListener {
+                listener(item)
+            }
         }
     }
 

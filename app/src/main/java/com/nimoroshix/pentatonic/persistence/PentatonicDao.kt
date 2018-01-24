@@ -19,7 +19,7 @@ interface PentatonicDao {
     fun findPentatonicByDifficulty(diff: Int): List<Pentatonic>
 
     @Query("select * from pentatonic where id = :id")
-    fun getPentatonicById(id: Int): Pentatonic
+    fun getPentatonicById(id: Long): Pentatonic
 
     @Insert(onConflict = REPLACE)
     fun insertPentatonic(pentatonic: Pentatonic)

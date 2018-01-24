@@ -3,6 +3,7 @@ package com.nimoroshix.pentatonic.action
 import android.os.Parcel
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
+import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_ADD
 import com.nimoroshix.pentatonic.util.parcelableCreator
 
 /**
@@ -42,7 +43,7 @@ class AddAction(char: Char, position: Position) : SingleAction(char, position) {
     }
 
     override fun toStringSerialization(): String {
-        return "ADD $char ${position.toStringSerialization()}"
+        return "$ACTION_ADD $char ${position.toStringSerialization()}"
     }
 
     override fun fromStringSerialization(serialization: String) {

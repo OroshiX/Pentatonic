@@ -130,7 +130,7 @@ class Serializer {
                     var area = mapAreas[line[j]]
                     if (area == null) {
                         area = Area(line[j])
-                        mapAreas.put(line[j], area)
+                        mapAreas[line[j]] = area
                     }
                     cell.area = area
                     grid.cells[i][j] = cell
@@ -144,6 +144,9 @@ class Serializer {
             var line: String
             while (iterator.hasNext()) {
                 line = iterator.next()
+                if (line.isEmpty()) {
+                    continue
+                }
                 // We got a number or a constraint
                 if (line.startsWith('-')) {
                     // It is a constraint [diffOne]
@@ -196,11 +199,11 @@ class Serializer {
             }
         }
 
-        val ACTION_ADD = "ADD"
-        val ACTION_REMOVE = "RM"
-        val ACTION_REPLACE = "REPLACE"
-        val ACTION_REMOVE_MULTIPLE = "RM_ALL"
-        val ACTION_RESET = "RESET"
+        const val ACTION_ADD = "ADD"
+        const val ACTION_REMOVE = "RM"
+        const val ACTION_REPLACE = "REPLACE"
+        const val ACTION_REMOVE_MULTIPLE = "RM_ALL"
+        const val ACTION_RESET = "RESET"
         fun deserializeActions(actionString: List<String>): MutableList<Action> {
             val res = mutableListOf<Action>()
             actionString.forEach { a ->

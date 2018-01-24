@@ -19,12 +19,13 @@ class ChoosePentatonicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_pentatonic)
-        val difficulty: Int = savedInstanceState?.get(BUNDLE_DIFFICULTY) as Int? ?: 1
+        val difficulty: Int = intent.getIntExtra(BUNDLE_DIFFICULTY, 1)
 
         recycler_choose.setHasFixedSize(true)
 
         // linear layout manager
         val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
         recycler_choose.layoutManager = layoutManager
 
         Observable.just(AppDatabase.getInstance(this).pentatonicDao())
