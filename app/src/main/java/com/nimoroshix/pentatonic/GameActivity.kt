@@ -12,7 +12,9 @@ import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.persistence.AppDatabase
 import com.nimoroshix.pentatonic.persistence.Pentatonic
 import com.nimoroshix.pentatonic.serializer.Serializer
+import com.nimoroshix.pentatonic.util.Constants.Companion.BUNDLE_ID_PENTA
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -30,9 +32,12 @@ class GameActivity : AppCompatActivity() {
         Log.w(TAG, "onCreate")
         setContentView(R.layout.activity_main)
 
+        val idPenta: Int = savedInstanceState?.get(BUNDLE_ID_PENTA) as Int? ?: 1
+
+
 //        insertDummyData()
-        viewDummyPentatonic()
-//        getDbData()
+//        viewDummyPentatonic()
+        getDbData(idPenta)
         val scaleDetector = ScaleGestureDetector(this, pentatonicValues)
         val gestureDetector = GestureDetector(this, pentatonicValues)
         pentatonicValues.setOnTouchListener { _: View?, motionEvent: MotionEvent? ->
@@ -112,12 +117,14 @@ class GameActivity : AppCompatActivity() {
         grid.addObserver(pentatonicValues)
     }
 
-    private fun getDbData() {
-        Observable.just(AppDatabase.getInstance(this).pentatonicDao()).subscribeOn(
-                Schedulers.io()).subscribe { dao ->
-            grid = Serializer.fromDbToGrid(dao.getPentatonicById(1))
-            setGridAndObservers(Serializer.fromDbToGrid(dao.getPentatonicById(1)))
-        }
+    private fun getDbData(idPenta: Int) {
+        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                .switchMap({ dao -> Observable.just(Serializer.fromDbToGrid(dao.getPentatonicById(idPenta))) })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    setGridAndObservers(it)
+                })
     }
 
     private fun insertDummyData() {

@@ -177,6 +177,9 @@ class Serializer {
                 // Progress format:
                 // i,j:a,b,c,d
                 line = iterator.next()
+                if (line.isEmpty()) {
+                    continue
+                }
                 val progress = line.split(":")
                 if (progress.size != 2) {
                     throw IllegalArgumentException("Bad progress: $progress in line $line")
