@@ -62,6 +62,15 @@ class GameActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.w(TAG, "onPause")
+        saveProgressToDB()
+    }
+
+    private fun saveProgressToDB() {
+        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+                .subscribeOn(Schedulers.io())
+                .subscribe { dao ->
+                    dao.insertPentatonic(Serializer.fromGridToDb(grid))
+                }
     }
 
     override fun onResume() {

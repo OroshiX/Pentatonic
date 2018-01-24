@@ -2,6 +2,7 @@ package com.nimoroshix.pentatonic.persistence
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 import io.reactivex.Flowable
 
@@ -20,7 +21,7 @@ interface PentatonicDao {
     @Query("select * from pentatonic where id = :id")
     fun getPentatonicById(id: Int): Pentatonic
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun insertPentatonic(pentatonic: Pentatonic)
 
 }
