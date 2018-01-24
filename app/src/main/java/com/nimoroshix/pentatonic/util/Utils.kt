@@ -2,6 +2,9 @@ package com.nimoroshix.pentatonic.util
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
@@ -79,3 +82,7 @@ fun <T : Parcelable> Parcel.readTypedObjectCompat(c: Parcelable.Creator<T>): T? 
 
 fun <T : Parcelable> Parcel.writeTypedObjectCompat(value: T?, parcelableFlags: Int) =
         writeNullable(value) { it.writeToParcel(this, parcelableFlags) }
+
+fun ViewGroup.inflate(layoutRes: Int): View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, false)
+}

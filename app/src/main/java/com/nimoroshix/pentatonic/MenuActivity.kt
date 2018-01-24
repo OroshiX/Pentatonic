@@ -14,7 +14,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun onPlay(view: View) {
-        startActivity(Intent(this, GameActivity::class.java))
+        startActivity(Intent(this, DifficultyActivity::class.java))
     }
 
     fun onSettings(view: View) {

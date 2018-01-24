@@ -23,5 +23,4 @@ interface PentatonicDao {
     @Insert
     fun insertPentatonic(pentatonic: Pentatonic)
 
-
 }
