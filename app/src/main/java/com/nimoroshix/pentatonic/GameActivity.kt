@@ -129,13 +129,15 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun getDbData(idPenta: Long) {
-        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                .switchMap({ dao -> Observable.just(Serializer.fromDbToGrid(dao.getPentatonicById(idPenta))) })
+        Observable.fromCallable({
+            val pentatonic = AppDatabase.getInstance(this).pentatonicDao().getPentatonicById(idPenta)
+            return@fromCallable Serializer.fromDbToGrid(pentatonic)
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe {
                     setGridAndObservers(it)
-                })
+                }
     }
 
     private fun insertDummyData() {
