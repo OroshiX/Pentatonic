@@ -210,7 +210,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         var res: RemoveMultipleAction? = null
         val positions = mutableListOf<Position>()
 
-        cells.flatten().forEach { c ->
+        cells.flatten().filter { !it.enonce }.forEach { c ->
             if (c.values.contains(oldValue)) {
                 c.values.remove(oldValue)
                 positions.add(Position(c.position))

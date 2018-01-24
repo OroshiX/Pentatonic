@@ -205,6 +205,30 @@ class GameActivity : AppCompatActivity() {
                 .show()
     }
 
+    private fun displayRemoveAllOccurrencesDialog() {
+        val view = LayoutInflater.from(this).inflate(R.layout.remove_dialog_layout, null)
+        val alert: AlertDialog = AlertDialog.Builder(this)
+                .setView(view)
+                .setTitle("Remove a character everywhere")
+                .setPositiveButton("Delete", { dialogInterface: DialogInterface, _: Int ->
+                    val dialog: AlertDialog = dialogInterface as AlertDialog
+                    doDelete(dialog.findViewById<Spinner>(R.id.sp_value).selectedItem.toString()[0])
+                    dialog.dismiss()
+                })
+                .setNegativeButton("Cancel", { dialog: DialogInterface, _: Int -> dialog.dismiss() })
+                .create()
+
+        val listAllValues = grid.findAllValues()
+        val adapter = MonoArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listAllValues)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        view.findViewById<Spinner>(R.id.sp_value).adapter = adapter
+        alert.show()
+    }
+
+    private fun doDelete(c: Char) {
+        grid.remove(c)
+    }
+
 
     private fun doReplace(oldVal: Char, newVal: Char) {
         grid.replace(oldVal, newVal)
@@ -234,6 +258,10 @@ class GameActivity : AppCompatActivity() {
             }
             R.id.menu_reset   -> {
                 displayResetDialog()
+                return true
+            }
+            R.id.menu_remove -> {
+                displayRemoveAllOccurrencesDialog()
                 return true
             }
         }

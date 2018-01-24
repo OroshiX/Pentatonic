@@ -93,4 +93,6 @@
     <string name="medium">Medium</string>
     <string name="hard">Hard</string>
     <string name="very_hard">Very hard</string>
+    <string name="dialog_remove_message">You want to remove this character:</string>
+    <string name="menu_remove_letter">Remove letter...</string>
 </resources>
