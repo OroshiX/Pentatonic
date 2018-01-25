@@ -2,6 +2,7 @@ package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.deserializeActions
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.serializeActions
@@ -50,14 +51,17 @@ class UndoAction() : Parcelable {
         return current < actions.size
     }
 
-    fun undo(grid: Grid): Boolean {
-        if (!canUndo()) return false
+    /**
+     * Return all the affected cells
+     */
+    fun undo(grid: Grid): Set<Cell> {
+        if (!canUndo()) return emptySet()
         current--
         return actions[current].applyUndo(grid)
     }
 
-    fun redo(grid: Grid): Boolean {
-        if (!canRedo()) return false
+    fun redo(grid: Grid): Set<Cell> {
+        if (!canRedo()) return emptySet()
         val res = actions[current].applyRedo(grid)
         current++
         return res

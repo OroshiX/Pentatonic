@@ -47,31 +47,75 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
      */
     fun toggleValue(nLine: Int, nColumn: Int, value: Char) {
         val action = cells[nLine][nColumn].toggleValue(value)
+
         if (action != null) {
+            checkValidityOneCell(nLine, nColumn)
+
+            // update undo
             undo.addAction(action)
+
+            // Notify observers
             setChanged()
             notifyObservers(VALUE)
+        }
+    }
+
+    private fun checkValidityOneCell(nLine: Int, nColumn: Int) {
+        dirtifyAppropriateCells(nLine, nColumn)
+        checkDirtyValidity()
+    }
+
+    private fun checkValiditySetCell(cells: Set<Cell>) {
+        cells.forEach { c -> dirtifyAppropriateCells(c.position.nLine, c.position.nColumn) }
+        checkDirtyValidity()
+    }
+
+    /**
+     * Update the dirty propriety of nearby cells and same area cells
+     */
+    private fun dirtifyAppropriateCells(nLine: Int, nColumn: Int) {
+        getAllConnectedCells(nLine, nColumn)
+                .filter { c -> c.values.size == 1 } // Only cells with one value
+                .forEach { cell -> cell.dirty = true }
+    }
+
+    /**
+     * Adjust the cells whether they are valid or not, when they are dirty
+     *
+     * => See if the dirty cells are valid or not
+     */
+    private fun checkDirtyValidity() {
+        cells.flatten().filter { c -> c.dirty }.forEach { c ->
+            if (c.values.size > 1 || c.values.isEmpty()) c.dirty = false
+            val value = c.values[0]
+            val connectedValues = getAllConnectedCells(c).filter { it.values.size == 1 }.map { it.values[0] }
+            c.valid = !connectedValues.contains(value)
+            c.dirty = false
         }
     }
 
     fun undo(): Boolean {
-        var res = false
+        var res = emptySet<Cell>()
         if (undo.canUndo()) {
             res = undo.undo(this)
+            // check validity here for all in res
+            checkValiditySetCell(res)
             setChanged()
             notifyObservers(VALUE)
         }
-        return res
+        return res.isEmpty()
     }
 
     fun redo(): Boolean {
-        var res = false
+        var res = emptySet<Cell>()
         if (undo.canRedo()) {
             res = undo.redo(this)
+            // check validity here for all in res
+            checkValiditySetCell(res)
             setChanged()
             notifyObservers(VALUE)
         }
-        return res
+        return res.isEmpty()
     }
 
     /**
@@ -100,28 +144,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
 
     }
 
-    fun getAreaCells(cell: Cell): Set<Cell> {
-        val idArea = cell.area.id
-        return cells.flatten().filter { c ->
-            when {
-                c.area.id != idArea -> false // We want the same area
-                c.position == cell.position -> false // We don't want the same cell
-                else -> true
-            }
-        }.toSet()
-    }
 
-    fun getAreaCells(area: Area): Set<Cell> {
-        val set = HashSet<Cell>()
-        (0 until cells.size).flatMapTo(set) { row ->
-            (0 until cells[row].size).filter { col ->
-                cells[row][col].area.id == area.id
-            }.map { col ->
-                cells[row][col]
-            }
-        }
-        return set
-    }
 
     fun unselect() {
         positionSelected = null
@@ -173,6 +196,40 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }.toSet()
     }
 
+    fun getAreaCells(nLine: Int, nColumn: Int): Set<Cell> {
+        return getAreaCells(cells[nLine][nColumn])
+    }
+
+    fun getAllConnectedCells(cell: Cell): Set<Cell> {
+        return getAllConnectedCells(cell.position.nLine, cell.position.nColumn)
+    }
+
+    fun getAllConnectedCells(nLine: Int, nColumn: Int): Set<Cell> {
+        return getAreaCells(nLine, nColumn).union(getAdjacentCells(nLine, nColumn))
+    }
+
+    fun getAreaCells(cell: Cell): Set<Cell> {
+        val idArea = cell.area.id
+        return cells.flatten().filter { c ->
+            when {
+                c.area.id != idArea -> false // We want the same area
+                c.position == cell.position -> false // We don't want the same cell
+                else -> true
+            }
+        }.toSet()
+    }
+
+    fun getAreaCells(area: Area): Set<Cell> {
+        val set = HashSet<Cell>()
+        (0 until cells.size).flatMapTo(set) { row ->
+            (0 until cells[row].size).filter { col ->
+                cells[row][col].area.id == area.id
+            }.map { col ->
+                        cells[row][col]
+                    }
+        }
+        return set
+    }
     /**
      * Replace all occurrences of one char into another one in the grid
      *

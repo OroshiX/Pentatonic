@@ -2,6 +2,7 @@ package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_RESET
@@ -15,18 +16,20 @@ import com.nimoroshix.pentatonic.util.parcelableCreator
 class ResetAction(var allChars: List<Char>, var position: Position) : Action, Parcelable {
     constructor() : this(mutableListOf(), Position(0, 0))
 
-    override fun applyUndo(grid: Grid): Boolean {
-        var res = true
+    override fun applyUndo(grid: Grid): Set<Cell> {
+        val res = mutableSetOf<Cell>()
         allChars.forEach { c ->
-            res = grid.cells[position.nLine][position.nColumn].values.add(c) && res
+            grid.cells[position.nLine][position.nColumn].values.add(c)
+            res.add(grid.cells[position.nLine][position.nColumn])
         }
         return res
     }
 
-    override fun applyRedo(grid: Grid): Boolean {
-        var res = true
+    override fun applyRedo(grid: Grid): Set<Cell> {
+        val res = mutableSetOf<Cell>()
         allChars.forEach { c ->
-            res = grid.cells[position.nLine][position.nColumn].values.remove(c) && res
+            grid.cells[position.nLine][position.nColumn].values.remove(c)
+            res.add(grid.cells[position.nLine][position.nColumn])
         }
         return res
     }

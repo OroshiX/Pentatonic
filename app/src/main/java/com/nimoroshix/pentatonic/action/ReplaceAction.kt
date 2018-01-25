@@ -1,6 +1,7 @@
 package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
+import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REPLACE
@@ -16,30 +17,32 @@ import com.nimoroshix.pentatonic.util.writeChar
 class ReplaceAction(private var oldChar: Char, private var newChar: Char, positions: List<PositionReplace>) : MultipleAction(positions) {
     constructor() : this(' ', ' ', mutableListOf())
 
-    override fun applyUndo(grid: Grid): Boolean {
-        var res = true
+    override fun applyUndo(grid: Grid): Set<Cell> {
+        val res = mutableSetOf<Cell>()
         positions.forEach { pos ->
             pos as PositionReplace
             val cell = grid.cells[pos.nLine][pos.nColumn]
             // Deduplicated means that before the replace action, we already had newChar. So the replace action had only removed oldChar
             // and not added any new char
             if (!pos.deduplicated) {
-                res = cell.values.remove(newChar) && res
+                cell.values.remove(newChar)
             }
-            res = cell.values.add(oldChar) && res
+            cell.values.add(oldChar)
+            res.add(cell)
         }
         return res
     }
 
-    override fun applyRedo(grid: Grid): Boolean {
-        var res = true
+    override fun applyRedo(grid: Grid): Set<Cell> {
+        val res = mutableSetOf<Cell>()
         positions.forEach { pos ->
             pos as PositionReplace
             val cell = grid.cells[pos.nLine][pos.nColumn]
-            res = cell.values.remove(oldChar) && res
+            cell.values.remove(oldChar)
             if (!pos.deduplicated) {
-                res = cell.values.add(newChar) && res
+                cell.values.add(newChar)
             }
+            res.add(cell)
         }
         return res
     }

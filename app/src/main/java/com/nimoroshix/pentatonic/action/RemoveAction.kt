@@ -1,6 +1,7 @@
 package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
+import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REMOVE
@@ -12,14 +13,16 @@ import com.nimoroshix.pentatonic.util.*
  * Created by OroshiX on 15/01/2018.
  */
 class RemoveAction(char: Char, position: Position) : SingleAction(char, position) {
-    override fun applyUndo(grid: Grid): Boolean {
+    override fun applyUndo(grid: Grid): Set<Cell> {
         val cell = grid.cells[position.nLine][position.nColumn]
-        if (cell.values.contains(char)) return false
-        return cell.values.add(char)
+        if (cell.values.contains(char)) return emptySet()
+        cell.values.add(char)
+        return setOf(cell)
     }
 
-    override fun applyRedo(grid: Grid): Boolean {
-        return grid.cells[position.nLine][position.nColumn].values.remove(char)
+    override fun applyRedo(grid: Grid): Set<Cell> {
+        grid.cells[position.nLine][position.nColumn].values.remove(char)
+        return setOf(grid.cells[position.nLine][position.nColumn])
     }
 
     constructor(parcel: Parcel) :

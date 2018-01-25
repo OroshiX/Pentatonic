@@ -1,6 +1,7 @@
 package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
+import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REMOVE_MULTIPLE
@@ -16,27 +17,25 @@ class RemoveMultipleAction(var char: Char, positions: List<Position>) : Multiple
 
     constructor() : this(' ', mutableListOf())
 
-    override fun applyUndo(grid: Grid): Boolean {
-        var res = true
+    override fun applyUndo(grid: Grid): Set<Cell> {
+        val res = mutableSetOf<Cell>()
         positions.forEach { pos ->
             val cell = grid.cells[pos.nLine][pos.nColumn]
-            if (cell.values.contains(char)) {
-                res = false
-            } else {
-                res = cell.values.add(char) && res
+            if (!cell.values.contains(char)) {
+                cell.values.add(char)
+                res.add(cell)
             }
         }
         return res
     }
 
-    override fun applyRedo(grid: Grid): Boolean {
-        var res = true
+    override fun applyRedo(grid: Grid): Set<Cell> {
+        val res = mutableSetOf<Cell>()
         positions.forEach { pos ->
             val cell = grid.cells[pos.nLine][pos.nColumn]
             if (cell.values.contains(char)) {
-                res = cell.values.remove(char) && res
-            } else {
-                res = false
+                cell.values.remove(char)
+                res.add(cell)
             }
         }
         return res

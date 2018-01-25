@@ -1,6 +1,7 @@
 package com.nimoroshix.pentatonic.action
 
 import android.os.Parcel
+import com.nimoroshix.pentatonic.model.Cell
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_ADD
@@ -18,14 +19,16 @@ class AddAction(char: Char, position: Position) : SingleAction(char, position) {
     constructor(parcel: Parcel) :
             this(parcel.readInt().toChar(), parcel.readParcelable<Position>(Position::class.java.classLoader))
 
-    override fun applyUndo(grid: Grid): Boolean {
-        return grid.cells[position.nLine][position.nColumn].values.remove(char)
+    override fun applyUndo(grid: Grid): Set<Cell> {
+        grid.cells[position.nLine][position.nColumn].values.remove(char)
+        return setOf(grid.cells[position.nLine][position.nColumn])
     }
 
-    override fun applyRedo(grid: Grid): Boolean {
+    override fun applyRedo(grid: Grid): Set<Cell> {
         val cell = grid.cells[position.nLine][position.nColumn]
-        if (cell.values.contains(char)) return false
-        return cell.values.add(char)
+        if (cell.values.contains(char)) return emptySet()
+        cell.values.add(char)
+        return setOf(cell)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
