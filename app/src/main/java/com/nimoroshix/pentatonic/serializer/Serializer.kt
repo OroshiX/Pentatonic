@@ -67,6 +67,7 @@ class Serializer {
             fillEnonce(grid, iteratorEnonce)
             val iteratorProgress = pentatonic.progress?.lineSequence()?.iterator() ?: return grid
             fillProgress(grid, iteratorProgress)
+            grid.checkEveryCell()
             return grid
         }
 

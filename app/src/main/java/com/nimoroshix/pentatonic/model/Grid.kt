@@ -60,6 +60,11 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
     }
 
+    fun checkEveryCell() {
+        dirtifyEverything()
+        checkDirtyValidity()
+    }
+
     private fun checkValidityOneCell(cell: Cell) {
         checkValidityOneCell(cell.position.nLine, cell.position.nColumn)
     }
@@ -85,9 +90,10 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
      */
     private fun dirtifyAppropriateCells(nLine: Int, nColumn: Int) =
             getAllConnectedCells(nLine, nColumn).union(listOf(cells[nLine][nColumn]))
-                    .filter { it.values.size == 1 } // Only cells with one value
+//                    .filter { it.values.size == 1 } // Only cells with one value
                     .forEach { it.dirty = true }
 
+    private fun dirtifyEverything() = cells.flatten().forEach { it.dirty = true }
     /**
      * Adjust the cells whether they are valid or not, when they are dirty
      *
@@ -96,6 +102,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     private fun checkDirtyValidity() {
         cells.flatten().filter { it.dirty }.forEach { c ->
             if (c.values.size > 1 || c.values.isEmpty()) {
+                c.valid = true
                 c.dirty = false
                 return@forEach
             }
