@@ -22,12 +22,13 @@ class PentatonicApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        checkFirstRun()
+
         // Go to chrome://inspect/#devices -> inspect com.nimoroshix.pentatonic -> resources tab -> web SQL
         Stetho.initialize(Stetho.newInitializerBuilder(this).enableDumpapp(
                 Stetho.defaultDumperPluginsProvider(this))
                 .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this)).build())
 
-        checkFirstRun()
     }
 
     /**
