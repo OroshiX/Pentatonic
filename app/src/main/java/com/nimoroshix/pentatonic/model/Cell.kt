@@ -44,7 +44,8 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
 //    }
 
     override fun toString(): String {
-        return "$values (${area.id})"
+        val dirt = if (dirty) "dirty " else ""
+        return "$values $dirt(${area.id})"
     }
 
     fun toggleValue(c: Char): SingleAction? {

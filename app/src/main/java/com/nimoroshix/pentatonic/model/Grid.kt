@@ -60,24 +60,33 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
     }
 
+    private fun checkValidityOneCell(cell: Cell) {
+        checkValidityOneCell(cell.position.nLine, cell.position.nColumn)
+    }
     private fun checkValidityOneCell(nLine: Int, nColumn: Int) {
         dirtifyAppropriateCells(nLine, nColumn)
         checkDirtyValidity()
     }
 
-    private fun checkValiditySetCell(cells: Set<Cell>) {
+    private fun checkValidityMultipleCells(cells: Set<Cell>) {
         cells.forEach { c -> dirtifyAppropriateCells(c.position.nLine, c.position.nColumn) }
+        checkDirtyValidity()
+    }
+
+    private fun checkValidityMultipleCells(positions: Iterable<Position>) {
+        positions.forEach { p -> dirtifyAppropriateCells(p.nLine, p.nColumn) }
         checkDirtyValidity()
     }
 
     /**
      * Update the dirty propriety of nearby cells and same area cells
+     *
+     * And also oneself
      */
-    private fun dirtifyAppropriateCells(nLine: Int, nColumn: Int) {
-        getAllConnectedCells(nLine, nColumn)
-                .filter { c -> c.values.size == 1 } // Only cells with one value
-                .forEach { cell -> cell.dirty = true }
-    }
+    private fun dirtifyAppropriateCells(nLine: Int, nColumn: Int) =
+            getAllConnectedCells(nLine, nColumn).union(listOf(cells[nLine][nColumn]))
+                    .filter { it.values.size == 1 } // Only cells with one value
+                    .forEach { it.dirty = true }
 
     /**
      * Adjust the cells whether they are valid or not, when they are dirty
@@ -85,8 +94,11 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
      * => See if the dirty cells are valid or not
      */
     private fun checkDirtyValidity() {
-        cells.flatten().filter { c -> c.dirty }.forEach { c ->
-            if (c.values.size > 1 || c.values.isEmpty()) c.dirty = false
+        cells.flatten().filter { it.dirty }.forEach { c ->
+            if (c.values.size > 1 || c.values.isEmpty()) {
+                c.dirty = false
+                return@forEach
+            }
             val value = c.values[0]
             val connectedValues = getAllConnectedCells(c).filter { it.values.size == 1 }.map { it.values[0] }
             c.valid = !connectedValues.contains(value)
@@ -99,7 +111,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         if (undo.canUndo()) {
             res = undo.undo(this)
             // check validity here for all in res
-            checkValiditySetCell(res)
+            checkValidityMultipleCells(res)
             setChanged()
             notifyObservers(VALUE)
         }
@@ -111,7 +123,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         if (undo.canRedo()) {
             res = undo.redo(this)
             // check validity here for all in res
-            checkValiditySetCell(res)
+            checkValidityMultipleCells(res)
             setChanged()
             notifyObservers(VALUE)
         }
@@ -127,6 +139,9 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
     }
 
+    /**
+     * Clears the values of the cell, and adds the action to the undo stack if the action completed correctly
+     */
     fun resetCell(): ResetAction? {
         var res: ResetAction? = null
         if (positionSelected != null) {
@@ -136,6 +151,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
                 cell.values.clear()
                 res = ResetAction(formerValues, Position(cell.position))
                 undo.addAction(res)
+                checkValidityOneCell(cell)
                 setChanged()
                 notifyObservers(VALUE)
             }
@@ -144,13 +160,19 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
 
     }
 
-
-
+    /**
+     * Unselects any cell
+     */
     fun unselect() {
         positionSelected = null
         cells.flatten().forEach { c -> c.selection = CellState.UNSELECTED }
     }
 
+    /**
+     * Selects the cell situated at
+     * @param nLine line number nLine
+     * @param nColumn column number nColumn
+     */
     fun select(nLine: Int, nColumn: Int) {
         unselect()
         val cell = cells[nLine][nColumn]
@@ -252,6 +274,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
             }
         }
         if (positions.isNotEmpty()) {
+            checkValidityMultipleCells(positions)
             setChanged()
             notifyObservers(VALUE)
             res = ReplaceAction(oldValue, newValue, positions)
@@ -259,6 +282,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
         return res
     }
+
 
     /**
      * Remove all occurrences of one char in the grid
@@ -274,6 +298,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
             }
         }
         if (positions.isNotEmpty()) {
+            checkValidityMultipleCells(positions)
             setChanged()
             notifyObservers(VALUE)
             res = RemoveMultipleAction(oldValue, positions)
@@ -291,6 +316,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         cells.flatten().forEach { cell ->
             if (!cell.enonce) {
                 cell.values.clear()
+                cell.dirty = false
+                cell.valid = true
             }
         }
         undo.clear()
