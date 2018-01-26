@@ -22,5 +22,8 @@ class Constants {
         const val MAX_DIFFICULTY = 5
         const val BUNDLE_DIFFICULTY = "bundle_difficulty"
         const val BUNDLE_ID_PENTA = "bundle_id_penta"
+        const val DEFAULT_KEYS = """[["1","2","3","4","5"],["a","b","c","d","e"],["v","w","x","y","z"]]"""
+        const val PREF_KEYS = "prefKeys"
+        const val SHARED_PREFERENCES_NAME = "pentatonicPreferences"
     }
 }

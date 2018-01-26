@@ -1,17 +1,25 @@
 package com.nimoroshix.pentatonic.view
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Paint
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.LinearLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.util.Constants.Companion.DEFAULT_KEYS
+import com.nimoroshix.pentatonic.util.Constants.Companion.PREF_KEYS
+import com.nimoroshix.pentatonic.util.Constants.Companion.SHARED_PREFERENCES_NAME
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Project Pentatonic
@@ -22,42 +30,32 @@ class PentatonicKeyView : LinearLayout, Observer {
         grid = o as Grid
     }
 
-    private val numbers: LinearLayout
-
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
         orientation = VERTICAL
-        numbers = LinearLayout(context)
-        numbers.orientation = HORIZONTAL
-        numbers.weightSum = 5f
+
         val typeface = ResourcesCompat.getFont(context, R.font.mono)
         var button: Button
-        for (i in '1'..'5') {
-            button = Button(context)
-            button.text = i.toString()
-            button.setAllCaps(false)
-            button.setOnClickListener { _ -> grid.toggleValue(i) }
-            button.typeface = typeface
-            button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
-            numbers.addView(button)
-        }
-        addView(numbers)
         var linearLayout: LinearLayout
-        val inputStream: InputStream = context.resources.openRawResource(R.raw.keyboard)
-        val reader = InputStreamReader(inputStream)
-        reader.forEachLine { line ->
+
+        val array = Array(2, { i -> i.toChar() })
+        Log.d(TAG, "On a une liste de char : ${Gson().toJson(array)}")
+
+        val keys = getKeys(context)
+        keys.forEach { row ->
             linearLayout = LinearLayout(context)
             linearLayout.orientation = HORIZONTAL
-            linearLayout.weightSum = line.length.toFloat()
-            line.forEach { c ->
+            linearLayout.weightSum = row.size.toFloat()
+            row.forEach {
+                assert(it.isNotEmpty())
                 button = Button(context)
-                button.text = c.toString()
+                button.text = it
                 button.setAllCaps(false)
                 button.typeface = typeface
                 button.layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
-                button.setOnClickListener { _ -> grid.toggleValue(c) }
+                button.setOnClickListener { _ -> grid.toggleValue(it[0]) }
                 linearLayout.addView(button)
             }
             addView(linearLayout)
@@ -67,10 +65,17 @@ class PentatonicKeyView : LinearLayout, Observer {
 
     }
 
+    private fun getKeys(context: Context): List<List<String>> {
+        val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
+        val keysJson = sharedPreferences.getString(PREF_KEYS, DEFAULT_KEYS)
+        val type = object : TypeToken<ArrayList<ArrayList<String>>>() {}.type
+        return Gson().fromJson(keysJson, type)
+    }
+
     companion object {
         @JvmField
         val TAG = "PentatonicKeyView"
-        val NUMBER_BUTTON_FIRST_ROW = 5
+        const val NUMBER_BUTTON_FIRST_ROW = 5
     }
 
     private var paint: Paint = Paint()

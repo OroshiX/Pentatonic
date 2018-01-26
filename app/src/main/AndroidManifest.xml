@@ -13,6 +13,7 @@
         <activity
             android:name=".GameActivity"
             android:label="Game Pentatonic"
+            android:launchMode="singleTop"
             android:parentActivityName=".ChoosePentatonicActivity">
 
             <!-- android:configChanges="orientation" -->
@@ -57,6 +58,7 @@
         </activity>
         <activity
             android:name=".ChoosePentatonicActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".DifficultyActivity">
         </activity>
     </application>
