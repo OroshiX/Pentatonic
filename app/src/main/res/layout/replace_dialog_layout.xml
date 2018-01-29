@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
 
     <TextView
+        android:id="@+id/tv_replace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/replace_text"/>
+        android:text="@string/replace_text" />
 
     <Spinner
         android:id="@+id/sp_old_val"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tv_replace"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/tv_replace"
+        tools:listitem="@android:layout/simple_list_item_1" />
 
     <TextView
+        android:id="@+id/tv_with"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/with"/>
+        android:layout_below="@id/sp_old_val"
+        android:layout_marginTop="10dp"
+        android:text="@string/with" />
 
     <Spinner
         android:id="@+id/sp_new_val"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tv_with"
+        android:layout_alignStart="@id/sp_old_val"
+        tools:listitem="@android:layout/simple_list_item_1" />
+</RelativeLayout>

@@ -12,7 +12,7 @@ import android.util.Log
  * Project Pentatonic
  * Created by OroshiX on 13/01/2018.
  */
-@Database(entities = arrayOf(Pentatonic::class), version = 1, exportSchema = false)
+@Database(entities = [Pentatonic::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun pentatonicDao(): PentatonicDao
