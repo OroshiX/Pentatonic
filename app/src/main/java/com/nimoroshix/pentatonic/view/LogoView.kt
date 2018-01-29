@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.*
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.util.ViewUtils
-import kotlin.math.abs
 import kotlin.math.min
 
 /**

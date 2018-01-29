@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.nimoroshix.pentatonic.R
-import com.nimoroshix.pentatonic.model.ItemPenta
+import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.util.inflate
 import kotlinx.android.synthetic.main.item_pentatonic.view.*
 
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_pentatonic.view.*
  *
  * Created by OroshiX on 24/01/2018.
  */
-class ChoosePentatonicAdapter(val items: List<ItemPenta>, val listener: (ItemPenta) -> Unit) : RecyclerView.Adapter<ChoosePentatonicAdapter.ViewHolder>() {
+class ChoosePentatonicAdapter(val items: List<Grid>, val listener: (Grid) -> Unit) : RecyclerView.Adapter<ChoosePentatonicAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.item_pentatonic))
 
     override fun getItemCount(): Int = items.size
@@ -23,9 +23,10 @@ class ChoosePentatonicAdapter(val items: List<ItemPenta>, val listener: (ItemPen
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: ItemPenta, listener: (ItemPenta) -> Unit) = with(itemView) {
-            btn_id.text = item.id.toString()
-            btn_id.setOnClickListener {
+        fun bind(item: Grid, listener: (Grid) -> Unit) = with(itemView) {
+            tvTitleCard.text = item.filename
+            pentaViewCard.grid = item
+            card.setOnClickListener {
                 listener(item)
             }
         }

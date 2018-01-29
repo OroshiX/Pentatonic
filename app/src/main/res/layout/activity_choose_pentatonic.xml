@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"
-    tools:context="com.nimoroshix.pentatonic.ChoosePentatonicActivity">
+    tools:context="com.nimoroshix.pentatonic.ChoosePentatonicActivity"
+    tools:listitem="@layout/item_pentatonic">
 
 </android.support.v7.widget.RecyclerView>

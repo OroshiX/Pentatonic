@@ -16,10 +16,7 @@ import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.util.Constants.Companion.DEFAULT_KEYS
 import com.nimoroshix.pentatonic.util.Constants.Companion.PREF_KEYS
 import com.nimoroshix.pentatonic.util.Constants.Companion.SHARED_PREFERENCES_NAME
-import java.io.InputStream
-import java.io.InputStreamReader
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Project Pentatonic

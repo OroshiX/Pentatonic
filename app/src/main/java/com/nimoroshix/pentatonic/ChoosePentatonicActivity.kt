@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.nimoroshix.pentatonic.adapter.ChoosePentatonicAdapter
-import com.nimoroshix.pentatonic.model.ItemPenta
+import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.persistence.AppDatabase
+import com.nimoroshix.pentatonic.serializer.Serializer
 import com.nimoroshix.pentatonic.util.Constants.Companion.BUNDLE_DIFFICULTY
 import com.nimoroshix.pentatonic.util.Constants.Companion.BUNDLE_ID_PENTA
 import io.reactivex.Observable
@@ -28,14 +29,16 @@ class ChoosePentatonicActivity : AppCompatActivity() {
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recycler_choose.layoutManager = layoutManager
 
-        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                .switchMap({ dao -> Observable.just(dao.findPentatonicByDifficulty(difficulty).map { pentatonic -> ItemPenta(pentatonic.id) }) })
+        Observable.fromCallable {
+            return@fromCallable AppDatabase.getInstance(this).pentatonicDao().findPentatonicByDifficulty(difficulty)
+                    .map { pentatonic -> Serializer.fromDbToGrid(pentatonic) }
+        }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ list: List<ItemPenta> ->
+                .subscribe({ list: List<Grid> ->
                     recycler_choose.adapter = ChoosePentatonicAdapter(list, {
                         val intent = Intent(this@ChoosePentatonicActivity, GameActivity::class.java)
-                        intent.putExtra(BUNDLE_ID_PENTA, it.id)
+                        intent.putExtra(BUNDLE_ID_PENTA, it.dbId)
                         startActivity(intent)
                     })
                 })
