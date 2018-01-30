@@ -60,8 +60,14 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         return true
     }
 
-    override fun onLongPress(p0: MotionEvent?) {
-        Log.v(TAG, "onLongPress($p0)")
+    override fun onLongPress(event: MotionEvent) {
+        Log.v(TAG, "onLongPress($event)")
+        val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft, offsetTop, cellSize, grid.nbLines, grid.nbColumns)
+        if (pos != null) {
+            performClick()
+            grid.select(pos.nLine, pos.nColumn)
+            grid.resetCell()
+        }
     }
 
     override fun onDoubleTap(p0: MotionEvent?): Boolean {
