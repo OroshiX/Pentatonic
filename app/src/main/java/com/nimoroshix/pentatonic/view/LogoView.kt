@@ -65,9 +65,9 @@ class LogoView : View {
         typefacePenta = ResourcesCompat.getFont(context, R.font.akashi)
         typefaceSignature = ResourcesCompat.getFont(context, R.font.ubuntutitle)
         bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_redo)
-        colorPentatonic = resources.getColor(R.color.colorAccent, context.theme)
-        colorBackground = resources.getColor(R.color.colorPrimary, context.theme)
-        colorShadow = resources.getColor(R.color.shadow, context.theme)
+        colorPentatonic = ResourcesCompat.getColor(resources, R.color.colorAccent, context.theme)
+        colorBackground = ResourcesCompat.getColor(resources, R.color.colorPrimary, context.theme)
+        colorShadow = ResourcesCompat.getColor(resources, R.color.shadow, context.theme)
     }
 
 

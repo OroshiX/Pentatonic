@@ -1,6 +1,6 @@
-package com.nimoroshix.pentatonic;
+package com.nimoroshix.pentatonic
 
-import android.content.BroadcastReceiver;
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -19,8 +19,8 @@ class UpgradeReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         // Application was upgraded
         Log.d(TAG, "onReceive: ${intent.action}")
-        val versionCode = BuildConfig.VERSION_CODE;
-        val versionName = BuildConfig.VERSION_NAME;
+        val versionCode = BuildConfig.VERSION_CODE
+        val versionName = BuildConfig.VERSION_NAME
         Log.d(TAG, "version code: $versionCode, versionName: $versionName")
     }
 }

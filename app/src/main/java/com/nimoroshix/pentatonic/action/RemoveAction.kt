@@ -45,7 +45,7 @@ class RemoveAction(char: Char, position: Position) : SingleAction(char, position
     constructor() : this(' ', Position(0, 0))
 
     override fun toStringSerialization(): String {
-        return "$ACTION_REMOVE $char ${position.toStringSerialization()}";
+        return "$ACTION_REMOVE $char ${position.toStringSerialization()}"
     }
 
     override fun fromStringSerialization(serialization: String) {

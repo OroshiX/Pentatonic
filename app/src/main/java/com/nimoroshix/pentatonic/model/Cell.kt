@@ -74,13 +74,13 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
             while (it.hasNext()) {
                 val c = it.next()
                 if (c == oldValue) {
-                    if (values.contains(newValue)) {
+                    positionReplace = if (values.contains(newValue)) {
                         // We don't want to duplicate values, so just remove the oldValue
                         it.remove()
-                        positionReplace = PositionReplace(position.nLine, position.nColumn, true)
+                        PositionReplace(position.nLine, position.nColumn, true)
                     } else {
                         it.set(newValue)
-                        positionReplace = PositionReplace(position.nLine, position.nColumn)
+                        PositionReplace(position.nLine, position.nColumn)
                     }
                 }
             }
