@@ -13,6 +13,9 @@ import com.nimoroshix.pentatonic.persistence.AppDatabase
 import com.nimoroshix.pentatonic.persistence.Pentatonic
 import com.nimoroshix.pentatonic.serializer.Serializer
 import com.nimoroshix.pentatonic.util.Constants.Companion.BUNDLE_ID_PENTA
+import com.nimoroshix.pentatonic.util.saveBitmap
+import com.nimoroshix.pentatonic.util.shareIt
+import com.nimoroshix.pentatonic.util.takeScreenshot
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -264,6 +267,12 @@ class GameActivity : AppCompatActivity() {
             }
             R.id.menu_remove -> {
                 displayRemoveAllOccurrencesDialog()
+                return true
+            }
+            R.id.menu_share -> {
+                val bitmap = takeScreenshot(framePentatonic)
+                val savedBitmap = saveBitmap(this, bitmap)
+                shareIt(this, savedBitmap, "Have a look at this pentatonic. Do you think you can solve it?", "Just sharing a Pentatonic")
                 return true
             }
         }

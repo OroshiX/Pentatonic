@@ -24,4 +24,8 @@
         android:id="@+id/menu_remove"
         android:title="@string/menu_remove_letter"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_share"
+        android:title="@string/share"
+        app:showAsAction="never"/>
 </menu>
