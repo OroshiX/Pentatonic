@@ -51,14 +51,13 @@ class PentatonicApp : Application() {
                 return
             savedVersionCode == DOESNT_EXIST ->
                 // this is a new install (or user cleared the sharedPrefs)
-                Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe { dao -> doOnFirstInstall(dao) }
+                Observable.fromCallable { doOnFirstInstall(AppDatabase.getInstance(this).pentatonicDao()) }
+                        .subscribeOn(Schedulers.io()).subscribe()
             currentVersionCode > savedVersionCode ->
                 // this is an upgrade (handle different migrations)
-                Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe { dao -> doOnUpgrade(savedVersionCode, currentVersionCode, dao) }
+                Observable.fromCallable {
+                    doOnUpgrade(savedVersionCode, currentVersionCode, AppDatabase.getInstance(this).pentatonicDao())
+                }.subscribeOn(Schedulers.io()).subscribe()
         }
 
         // update the shared prefs with the current version code

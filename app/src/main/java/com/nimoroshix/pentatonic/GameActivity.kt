@@ -69,11 +69,11 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun saveProgressToDB() {
-        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
-                .subscribeOn(Schedulers.io())
-                .subscribe { dao ->
-                    dao.insertPentatonic(Serializer.fromGridToDb(grid))
-                }
+        Observable.fromCallable {
+            AppDatabase.getInstance(this).pentatonicDao()
+                    .insertPentatonic(Serializer.fromGridToDb(grid))
+            return@fromCallable
+        }.subscribeOn(Schedulers.io()).subscribe()
     }
 
     override fun onResume() {
@@ -83,9 +83,9 @@ class GameActivity : AppCompatActivity() {
 
     private fun insertToDb(grid: Grid) {
         val penta = Serializer.fromGridToDb(grid)
-        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+        Observable.fromCallable { AppDatabase.getInstance(this).pentatonicDao().insertPentatonic(penta) }
                 .subscribeOn(Schedulers.io())
-                .subscribe { dao -> dao.insertPentatonic(penta) }
+                .subscribe()
     }
 
     private fun viewDummyPentatonic() {
@@ -158,9 +158,9 @@ class GameActivity : AppCompatActivity() {
         penta.progress = null
 
         // Insert a pentatonic in db
-        Observable.just(AppDatabase.getInstance(this).pentatonicDao())
+        Observable.fromCallable { AppDatabase.getInstance(this).pentatonicDao().insertPentatonic(penta) }
                 .subscribeOn(Schedulers.io())
-                .subscribe { dao -> dao.insertPentatonic(penta) }
+                .subscribe()
 
     }
 
