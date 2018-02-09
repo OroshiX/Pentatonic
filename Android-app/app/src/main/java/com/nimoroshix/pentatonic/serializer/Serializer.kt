@@ -29,7 +29,7 @@ class Serializer {
      */
     companion object {
         @JvmField
-        val TAG = "Serializer";
+        val TAG = "Serializer"
 
         @Throws(IllegalArgumentException::class)
         fun deserialize(gridText: String, filename: String): Grid {
@@ -139,19 +139,18 @@ class Serializer {
             var line: String
             for (i in 0 until grid.nbLines) {
                 line = iterator.next()
+                if (line.isEmpty()) {
+                    continue
+                }
                 for (j in 0 until grid.nbColumns) {
                     val cell = Cell(i, j)
-                    try {
-                        var area = mapAreas[line[j]]
-                        if (area == null) {
-                            area = Area(line[j])
-                            mapAreas[line[j]] = area
-                        }
-                        cell.area = area
-                        grid.cells[i][j] = cell
-                    } catch (e: StringIndexOutOfBoundsException) {
-                        Log.e(TAG, e.message + " in file ${grid.filename}")
+                    var area = mapAreas[line[j]]
+                    if (area == null) {
+                        area = Area(line[j])
+                        mapAreas[line[j]] = area
                     }
+                    cell.area = area
+                    grid.cells[i][j] = cell
                 }
             }
             grid.fillAreaSize()
