@@ -64,6 +64,7 @@ freeline.py
 freeline/
 freeline_project_description.json
 
+Android-app/.idea/
 
 *.iml
 .gradle
