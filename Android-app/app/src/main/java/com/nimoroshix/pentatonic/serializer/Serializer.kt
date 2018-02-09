@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic.serializer
 
+import android.util.Log
 import com.nimoroshix.pentatonic.action.*
 import com.nimoroshix.pentatonic.model.Area
 import com.nimoroshix.pentatonic.model.Cell
@@ -27,6 +28,8 @@ class Serializer {
      * b,3,2
      */
     companion object {
+        @JvmField
+        val TAG = "Serializer";
 
         @Throws(IllegalArgumentException::class)
         fun deserialize(gridText: String, filename: String): Grid {
@@ -41,10 +44,18 @@ class Serializer {
             // 2nd line is "nbLines nbCols"
             val (nbLine, nbCol) = iterator.next().split(' ').map(String::toInt)
             val grid = Grid(nbLine, nbCol)
-            fillAreas(grid, iterator)
-            fillEnonce(grid, iterator)
             grid.author = author
             grid.filename = filename
+            try {
+
+
+                fillAreas(grid, iterator)
+                fillEnonce(grid, iterator)
+            } catch (e: StringIndexOutOfBoundsException) {
+                Log.e(TAG, "file: $filename, error: ${e.message}", e)
+            } catch (e: IndexOutOfBoundsException) {
+                Log.e(TAG, "file: $filename, error: ${e.message}", e)
+            }
             return grid
         }
 
@@ -81,11 +92,12 @@ class Serializer {
                     "\n") { cell ->
                 when {
                     cell.enonce -> "${cell.values[0]},${cell.position.nLine},${cell.position.nColumn}"
-                    else -> {
+                    else        -> {
                         val sb = StringBuilder()
 
                         if (cell.sister != null) {
-                            sb.append("${cell.sister},${cell.position.nLine},${cell.position.nColumn}")
+                            sb.append(
+                                    "${cell.sister},${cell.position.nLine},${cell.position.nColumn}")
                         }
                         if (sb.isNotEmpty()) {
                             sb.append("\n")
@@ -93,7 +105,7 @@ class Serializer {
                         if (cell.differenceOne != null) {
                             // check that the diffOne was not already registered here before
                             if (!set.contains(cell.position) && !set.contains(
-                                    cell.differenceOne!!)) {
+                                            cell.differenceOne!!)) {
                                 sb.append(
                                         "-${cell.position.nLine},${cell.position.nColumn},${cell.differenceOne!!.nLine},${cell.differenceOne!!.nColumn}")
                                 set.add(cell.position)
@@ -107,7 +119,8 @@ class Serializer {
             }
             penta.progress = grid.cells.flatten().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString(
                     "\n") { cell ->
-                "${cell.position.nLine},${cell.position.nColumn}:${cell.values.joinToString(",") { c -> c.toString() }}"
+                "${cell.position.nLine},${cell.position.nColumn}:${cell.values.joinToString(
+                        ",") { c -> c.toString() }}"
             }
             penta.hasDiffOne = grid.cells.flatten().any { c -> c.differenceOne != null }
             penta.hasSister = grid.cells.flatten().any { c -> c.sister != null }
@@ -128,13 +141,17 @@ class Serializer {
                 line = iterator.next()
                 for (j in 0 until grid.nbColumns) {
                     val cell = Cell(i, j)
-                    var area = mapAreas[line[j]]
-                    if (area == null) {
-                        area = Area(line[j])
-                        mapAreas[line[j]] = area
+                    try {
+                        var area = mapAreas[line[j]]
+                        if (area == null) {
+                            area = Area(line[j])
+                            mapAreas[line[j]] = area
+                        }
+                        cell.area = area
+                        grid.cells[i][j] = cell
+                    } catch (e: StringIndexOutOfBoundsException) {
+                        Log.e(TAG, e.message + " in file ${grid.filename}")
                     }
-                    cell.area = area
-                    grid.cells[i][j] = cell
                 }
             }
             grid.fillAreaSize()
