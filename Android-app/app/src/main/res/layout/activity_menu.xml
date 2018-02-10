@@ -32,7 +32,7 @@
     <include
         layout="@layout/logo"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="150dp" />
     <com.nimoroshix.pentatonic.view.LogoView
         android:layout_width="300dp"
         android:layout_height="wrap_content"/>
