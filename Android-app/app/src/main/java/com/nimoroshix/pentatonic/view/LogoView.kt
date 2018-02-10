@@ -39,8 +39,8 @@ class LogoView : View {
     private var textSizeSignature = 0f
     private var descentSignature = 0f
 
-    private val PENTATONIC_TEXT = "Pentatonic"
-    private val SIGNATURE_TEXT = "by nim0roshix"
+    private val pentatonicText = "Pentatonic"
+    private val signatureText = "by nim0roshix"
 
     private val proportionWidthHeight = 3f / 2f
 
@@ -79,7 +79,8 @@ class LogoView : View {
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        if (widthSize == 0) throw IllegalArgumentException("You should always specify width > 0 in LogoView")
+        if (widthSize == 0) throw IllegalArgumentException(
+                "You should always specify width > 0 in LogoView")
 
         val res = proportionWidthHeight * heightSize - widthSize
         when {
@@ -91,14 +92,14 @@ class LogoView : View {
         var height = 0
 
         when (widthMode) {
-            MeasureSpec.EXACTLY -> width = widthSize
-            MeasureSpec.AT_MOST -> width = min(widthSize, desiredWidth.toInt())
+            MeasureSpec.EXACTLY     -> width = widthSize
+            MeasureSpec.AT_MOST     -> width = min(widthSize, desiredWidth.toInt())
             MeasureSpec.UNSPECIFIED -> width = desiredWidth.toInt()
         }
 
         when (heightMode) {
-            MeasureSpec.EXACTLY -> height = heightSize
-            MeasureSpec.AT_MOST -> height = min(heightSize, desiredHeight.toInt())
+            MeasureSpec.EXACTLY     -> height = heightSize
+            MeasureSpec.AT_MOST     -> height = min(heightSize, desiredHeight.toInt())
             MeasureSpec.UNSPECIFIED -> height = desiredHeight.toInt()
         }
 
@@ -115,19 +116,25 @@ class LogoView : View {
         if (padding < 0) padding = 0f
 
         paint.typeface = typefacePenta
-        textSizePenta = ViewUtils.getFitTextSize(width.toFloat() * proportionPentaWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, PENTATONIC_TEXT, paint)
+        textSizePenta = ViewUtils.getFitTextSize(
+                width.toFloat() * proportionPentaWidth - 2 * padding,
+                height.toFloat() / 2 - 2 * padding,
+                pentatonicText, paint)
         paint.textSize = textSizePenta
         baselinePos = -paint.fontMetrics.ascent
         heightPenta = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
-        widthPenta = paint.measureText(PENTATONIC_TEXT)
+        widthPenta = paint.measureText(pentatonicText)
 
         //
         paint.typeface = typefaceSignature
-        textSizeSignature = ViewUtils.getFitTextSize(width.toFloat() * proportionSignatureWidth - 2 * padding, height.toFloat() / 2 - 2 * padding, SIGNATURE_TEXT, paint)
+        textSizeSignature = ViewUtils.getFitTextSize(
+                width.toFloat() * proportionSignatureWidth - 2 * padding,
+                height.toFloat() / 2 - 2 * padding,
+                signatureText, paint)
         paint.textSize = textSizeSignature
         heightSignature = paint.fontMetrics.bottom - paint.fontMetrics.top + paint.fontMetrics.leading
         descentSignature = paint.fontMetrics.descent
-        widthSignature = paint.measureText(SIGNATURE_TEXT)
+        widthSignature = paint.measureText(signatureText)
 
         val maxHeightIcon = height - 2 * padding - heightPenta //- heightSignature
         val maxWidthIcon = (1f - proportionSignatureWidth) * width
@@ -152,12 +159,13 @@ class LogoView : View {
         paint.textSize = textSizePenta
         paint.color = colorPentatonic
 
-        canvas.drawText(PENTATONIC_TEXT, padding, baselinePos + padding, paint)
+        canvas.drawText(pentatonicText, padding, baselinePos + padding, paint)
 
         paint.typeface = typefaceSignature
         paint.textSize = textSizeSignature
 
-        canvas.drawText(SIGNATURE_TEXT, width - padding - widthSignature, height - descentSignature - padding, paint)
+        canvas.drawText(signatureText, width - padding - widthSignature,
+                height - descentSignature - padding, paint)
 
         // draw a pentatonic in the middle
         canvas.drawBitmap(bitmap, padding, padding + heightPenta, paint)
