@@ -10,7 +10,6 @@ import android.widget.Spinner
 import com.nimoroshix.pentatonic.adapter.MonoArrayAdapter
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.persistence.AppDatabase
-import com.nimoroshix.pentatonic.persistence.Pentatonic
 import com.nimoroshix.pentatonic.serializer.Serializer
 import com.nimoroshix.pentatonic.util.Constants.Companion.BUNDLE_ID_PENTA
 import com.nimoroshix.pentatonic.util.saveBitmap
@@ -24,8 +23,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class GameActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = "GameActivity"
-        val PARCEL_GRID = "parcelableGrid"
+        const val TAG = "GameActivity"
+        const val PARCEL_GRID = "parcelableGrid"
 
     }
 
@@ -81,45 +80,6 @@ class GameActivity : AppCompatActivity() {
         Log.w(TAG, "onResume")
     }
 
-    private fun insertToDb(grid: Grid) {
-        val penta = Serializer.fromGridToDb(grid)
-        Observable.fromCallable { AppDatabase.getInstance(this).pentatonicDao().insertPentatonic(penta) }
-                .subscribeOn(Schedulers.io())
-                .subscribe()
-    }
-
-    private fun viewDummyPentatonic() {
-        setGridAndObservers(Serializer.deserialize("Nimo\n" +
-                "20 10\n" +
-                "1111222233\n" +
-                "4445552633\n" +
-                "7488855669\n" +
-                "77aa88b699\n" +
-                "7aacbbbb99\n" +
-                "ddaccefggg\n" +
-                "ddhcceekkg\n" +
-                "nnooopeekk\n" +
-                "Lnnoppqqkr\n" +
-                "LLnsupqqrr\n" +
-                "Lvssuuwwrx\n" +
-                "Lvvsuuwxxx\n" +
-                "yvzzzwwSxA\n" +
-                "yvzzSSSSAA\n" +
-                "BBBBCDDDEF\n" +
-                "GGGHCDDIEF\n" +
-                "GGJHHHIIEK\n" +
-                "JJJMHIINEK\n" +
-                "OOJMMPNNEK\n" +
-                "OOMMPPPNNK\n" +
-                "5,0,6\n" +
-                "4,5,9\n" +
-                "5,11,9\n" +
-                "5,17,0\n" +
-                "5,17,5\n" +
-                "4,19,0", "dummy.penta"))
-//        insertToDb(grid)
-    }
-
     private fun setGridAndObservers(grid: Grid) {
         this.grid = grid
         pentatonicEnonce.grid = grid
@@ -133,7 +93,8 @@ class GameActivity : AppCompatActivity() {
 
     private fun getDbData(idPenta: Long) {
         Observable.fromCallable({
-            val pentatonic = AppDatabase.getInstance(this).pentatonicDao().getPentatonicById(idPenta)
+            val pentatonic = AppDatabase.getInstance(this).pentatonicDao().getPentatonicById(
+                    idPenta)
             return@fromCallable Serializer.fromDbToGrid(pentatonic)
         })
                 .subscribeOn(Schedulers.io())
@@ -141,27 +102,6 @@ class GameActivity : AppCompatActivity() {
                 .subscribe {
                     setGridAndObservers(it)
                 }
-    }
-
-    private fun insertDummyData() {
-
-        val penta = Pentatonic(6, 7)
-        penta.difficulty = 3
-        penta.areas = "1223344\n" +
-                "5523364\n" +
-                "7522666\n" +
-                "7558999\n" +
-                "788899a\n" +
-                "78bbbba"
-        penta.enonce = "-3,0,2,1\n" +
-                "-1,4,0,5"
-        penta.progress = null
-
-        // Insert a pentatonic in db
-        Observable.fromCallable { AppDatabase.getInstance(this).pentatonicDao().insertPentatonic(penta) }
-                .subscribeOn(Schedulers.io())
-                .subscribe()
-
     }
 
     private fun displayReplaceDialog() {
@@ -220,11 +160,13 @@ class GameActivity : AppCompatActivity() {
                     doDelete(dialog.findViewById<Spinner>(R.id.sp_value).selectedItem.toString()[0])
                     dialog.dismiss()
                 })
-                .setNegativeButton("Cancel", { dialog: DialogInterface, _: Int -> dialog.dismiss() })
+                .setNegativeButton("Cancel",
+                        { dialog: DialogInterface, _: Int -> dialog.dismiss() })
                 .create()
 
         val listAllValues = grid.findAllValues()
-        val adapter = MonoArrayAdapter(baseContext, android.R.layout.simple_spinner_item, listAllValues)
+        val adapter = MonoArrayAdapter(baseContext, android.R.layout.simple_spinner_item,
+                listAllValues)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.findViewById<Spinner>(R.id.sp_value).adapter = adapter
         alert.show()
@@ -265,14 +207,16 @@ class GameActivity : AppCompatActivity() {
                 displayResetDialog()
                 return true
             }
-            R.id.menu_remove -> {
+            R.id.menu_remove  -> {
                 displayRemoveAllOccurrencesDialog()
                 return true
             }
-            R.id.menu_share -> {
+            R.id.menu_share   -> {
                 val bitmap = takeScreenshot(framePentatonic)
                 val savedBitmap = saveBitmap(this, bitmap)
-                shareIt(this, savedBitmap, "Have a look at this pentatonic. Do you think you can solve it?", "Just sharing a Pentatonic")
+                shareIt(this, savedBitmap,
+                        "Have a look at this pentatonic. Do you think you can solve it?",
+                        "Just sharing a Pentatonic")
                 return true
             }
         }

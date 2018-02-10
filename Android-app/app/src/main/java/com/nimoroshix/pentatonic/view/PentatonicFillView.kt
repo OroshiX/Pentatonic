@@ -101,7 +101,7 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
 
 
     companion object {
-        val TAG = "PentatonicFillView"
+        const val TAG = "PentatonicFillView"
         val a = listOf(4F, 45F, 25F, 4F, 45F)
         val b = listOf(21F, 21F, 41F, 61F, 61F)
     }
