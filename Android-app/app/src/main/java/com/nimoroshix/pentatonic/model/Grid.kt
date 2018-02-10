@@ -3,6 +3,9 @@ package com.nimoroshix.pentatonic.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.nimoroshix.pentatonic.action.*
+import com.nimoroshix.pentatonic.util.getNumericValue
+import com.nimoroshix.pentatonic.util.getOnlyValueList
+import com.nimoroshix.pentatonic.util.getOnlyValueSet
 import com.nimoroshix.pentatonic.util.parcelableCreator
 import java.lang.Math.abs
 import java.util.*
@@ -68,6 +71,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     private fun checkValidityOneCell(cell: Cell) {
         checkValidityOneCell(cell.position.nLine, cell.position.nColumn)
     }
+
     private fun checkValidityOneCell(nLine: Int, nColumn: Int) {
         dirtifyAppropriateCells(nLine, nColumn)
         checkDirtyValidity()
@@ -84,14 +88,17 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     /**
-     * Update the dirty propriety of nearby cells and same area cells
+     * Update the dirty propriety of nearby cells and same area cells and sister
      *
      * And also oneself
      */
     private fun dirtifyAppropriateCells(nLine: Int, nColumn: Int) =
             getAllConnectedCells(nLine, nColumn).union(listOf(cells[nLine][nColumn]))
+                    .union(getSisterCells(nLine, nColumn))
+                    .union(getDiffOneCells(nLine, nColumn))
 //                    .filter { it.values.size == 1 } // Only cells with one value
                     .forEach { it.dirty = true }
+
 
     private fun dirtifyEverything() = cells.flatten().forEach { it.dirty = true }
     /**
@@ -101,14 +108,31 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
      */
     private fun checkDirtyValidity() {
         cells.flatten().filter { it.dirty }.forEach { c ->
-            if (c.values.size > 1 || c.values.isEmpty()) {
+            if (c.values.size > 1 || c.values.isEmpty()) { // if more than 1 value or 0 values, it is valid
                 c.valid = true
                 c.dirty = false
                 return@forEach
             }
+            // exactly 1 value
             val value = c.values[0]
-            val connectedValues = getAllConnectedCells(c).filter { it.values.size == 1 }.map { it.values[0] }
-            c.valid = !connectedValues.contains(value)
+            if (!value.isDigit()) c.valid = true
+            else {
+                val n = value.getNumericValue()
+                val connectedValues = getAllConnectedCells(c).getOnlyValueList()
+
+                val sisterValues = getSisterCells(c).union(setOf(c)).getOnlyValueSet()
+
+                val diffOneValues = getDiffOneCells(c).getOnlyValueList()
+
+                // valid if:
+                // * no neighbour or area has the same value
+                // * sisters all have the same value
+                // * either cell is not a number or all diffOne have a difference of one with it
+                c.valid = n <= c.area.size
+                        && !connectedValues.contains(n)
+                        && sisterValues.size <= 1
+                        && diffOneValues.all { abs(it - n) == 1 }
+            }
             c.dirty = false
         }
     }
@@ -219,11 +243,37 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         return cells.flatten().filter { cell ->
             when {
                 cell.position.nLine == nLine && cell.position.nColumn == nColumn -> false // We don't want the same cell
-                abs(cell.position.nLine - nLine) <= 1 && abs(cell.position.nColumn - nColumn) <= 1 -> true // we want the cells nearby
-                else -> false // and we don't want any other cell
+                abs(cell.position.nLine - nLine) <= 1 && abs(
+                        cell.position.nColumn - nColumn) <= 1                    -> true // we want the cells nearby
+                else                                                             -> false // and we don't want any other cell
             }
         }.toSet()
     }
+
+    fun getSisterCells(cell: Cell): Set<Cell> {
+        if (cell.sister == null) return emptySet()
+        return cells.flatten().filter { c ->
+            when {
+                c.position.nLine == cell.position.nLine && c.position.nColumn == cell.position.nColumn -> false // we don't want the same cell
+                c.sister == cell.sister                                                                -> true // We want the sister
+                else                                                                                   -> false // and we don't want any other cell
+            }
+        }.toSet()
+    }
+
+    fun getSisterCells(nLine: Int, nColumn: Int): Set<Cell> {
+        return getSisterCells(cells[nLine][nColumn])
+    }
+
+    private fun getDiffOneCells(cell: Cell): Set<Cell> {
+        if (cell.differenceOne == null) return emptySet()
+        return setOf(cells[cell.differenceOne!!.nLine][cell.differenceOne!!.nColumn])
+    }
+
+    private fun getDiffOneCells(nLine: Int, nColumn: Int): Set<Cell> {
+        return getDiffOneCells(cells[nLine][nColumn])
+    }
+
 
     fun getAreaCells(nLine: Int, nColumn: Int): Set<Cell> {
         return getAreaCells(cells[nLine][nColumn])
@@ -233,6 +283,14 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         return getAllConnectedCells(cell.position.nLine, cell.position.nColumn)
     }
 
+    /**
+     * Get area and adjacent cells of the given cell at the given position
+     *
+     * @param nLine at position nLine
+     * @param nColumn at position nColumn
+     *
+     * @return all connected cells
+     */
     fun getAllConnectedCells(nLine: Int, nColumn: Int): Set<Cell> {
         return getAreaCells(nLine, nColumn).union(getAdjacentCells(nLine, nColumn))
     }
@@ -241,9 +299,9 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         val idArea = cell.area.id
         return cells.flatten().filter { c ->
             when {
-                c.area.id != idArea -> false // We want the same area
+                c.area.id != idArea         -> false // We want the same area
                 c.position == cell.position -> false // We don't want the same cell
-                else -> true
+                else                        -> true
             }
         }.toSet()
     }
@@ -259,6 +317,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
         return set
     }
+
     /**
      * Replace all occurrences of one char into another one in the grid
      *
