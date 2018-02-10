@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.nimoroshix.pentatonic">
+    package="com.nimoroshix.pentatonic">
 
     <application
         android:name=".PentatonicApp"
@@ -12,55 +12,45 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".GameActivity"
+            android:configChanges="orientation"
             android:label="Game Pentatonic"
             android:launchMode="singleTop"
-            android:parentActivityName=".ChoosePentatonicActivity">
-
-            <!-- android:configChanges="orientation" -->
-            <!-- android:screenOrientation="portrait" -->
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+            android:parentActivityName=".ChoosePentatonicActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MenuActivity"
             android:label="Main menu Pentatonic">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity"/>
+        <activity android:name=".AboutActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nimoroshix.pentatonic.MenuActivity"/>
+                android:value="com.nimoroshix.pentatonic.MenuActivity" />
         </activity>
 
         <receiver
             android:name=".UpgradeReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".DifficultyActivity"
-            android:parentActivityName=".MenuActivity">
-        </activity>
+            android:parentActivityName=".MenuActivity" />
         <activity
             android:name=".ChoosePentatonicActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".DifficultyActivity">
-        </activity>
+            android:parentActivityName=".DifficultyActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -69,7 +59,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
     </application>
 

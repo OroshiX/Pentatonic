@@ -38,10 +38,6 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
         }
     var enonce: Boolean = false
     var selection: CellState = CellState.UNSELECTED
-//
-//    fun fullToString(): String {
-//        return "Cell(area=$area, values=$values, dirty=$dirty, valid=$valid, sister=$sister, differenceOne=$differenceOne, position=$position, enonce=$enonce, selection=$selection)"
-//    }
 
     override fun toString(): String {
         val dirt = if (dirty) "dirty " else ""
@@ -51,13 +47,13 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
     fun toggleValue(c: Char): SingleAction? {
         val res: SingleAction?
         when {
-            enonce -> res = null
+            enonce             -> res = null
             values.contains(c) -> {
                 values.remove(c)
                 dirty = true
                 res = RemoveAction(c, Position(position))
             }
-            else -> res = if (values.size < MAX_SIZE) {
+            else               -> res = if (values.size < MAX_SIZE) {
                 values.add(c)
                 values.sort()
                 dirty = true
@@ -94,17 +90,19 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
 
         other as Cell
 
-        if (area != other.area) return false
-        if (values != other.values) return false
-        if (dirty != other.dirty) return false
-        if (valid != other.valid) return false
-        if (sister != other.sister) return false
-        if (differenceOne != other.differenceOne) return false
-        if (position != other.position) return false
-        if (enonce != other.enonce) return false
-        if (selection != other.selection) return false
+        return when {
+            area != other.area                   -> false
+            values != other.values               -> false
+            dirty != other.dirty                 -> false
+            valid != other.valid                 -> false
+            sister != other.sister               -> false
+            differenceOne != other.differenceOne -> false
+            position != other.position           -> false
+            enonce != other.enonce               -> false
+            selection != other.selection         -> false
+            else                                 -> true
+        }
 
-        return true
     }
 
     override fun hashCode(): Int {
