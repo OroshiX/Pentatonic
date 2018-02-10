@@ -6,6 +6,8 @@ import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_ADD
 import com.nimoroshix.pentatonic.util.parcelableCreator
+import com.nimoroshix.pentatonic.util.readChar
+import com.nimoroshix.pentatonic.util.writeChar
 
 /**
  * Project Pentatonic
@@ -17,7 +19,8 @@ class AddAction(char: Char, position: Position) : SingleAction(char, position) {
     constructor() : this(' ', Position(0, 0))
 
     constructor(parcel: Parcel) :
-            this(parcel.readInt().toChar(), parcel.readParcelable<Position>(Position::class.java.classLoader))
+            this(parcel.readChar(),
+                    parcel.readParcelable<Position>(Position::class.java.classLoader))
 
     override fun applyUndo(grid: Grid): Set<Cell> {
         grid.cells[position.nLine][position.nColumn].values.remove(char)
@@ -32,7 +35,7 @@ class AddAction(char: Char, position: Position) : SingleAction(char, position) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(char.toInt())
+        parcel.writeChar(char)
         parcel.writeParcelable(position, flags)
     }
 

@@ -7,6 +7,7 @@ import com.nimoroshix.pentatonic.model.Position
 import com.nimoroshix.pentatonic.serializer.Serializer.Companion.ACTION_REMOVE_MULTIPLE
 import com.nimoroshix.pentatonic.util.parcelableCreator
 import com.nimoroshix.pentatonic.util.readChar
+import com.nimoroshix.pentatonic.util.writeChar
 
 /**
  * Project Pentatonic
@@ -41,11 +42,12 @@ class RemoveMultipleAction(var char: Char, positions: List<Position>) : Multiple
         return res
     }
 
-    constructor(parcel: Parcel) : this(parcel.readChar(), listOf<Position>().apply { parcel.readTypedList(this, Position.CREATOR) })
+    constructor(parcel: Parcel) : this(parcel.readChar(),
+            listOf<Position>().apply { parcel.readTypedList(this, Position.CREATOR) })
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(char.toInt())
-
+        parcel.writeChar(char)
+        parcel.writeTypedList(this.positions)
     }
 
     override fun describeContents(): Int {
@@ -58,7 +60,8 @@ class RemoveMultipleAction(var char: Char, positions: List<Position>) : Multiple
     }
 
     override fun toStringSerialization(): String {
-        return "$ACTION_REMOVE_MULTIPLE $char ${positions.joinToString(";") { it.toStringSerialization() }}"
+        return "$ACTION_REMOVE_MULTIPLE $char ${positions.joinToString(
+                ";") { it.toStringSerialization() }}"
     }
 
     override fun fromStringSerialization(serialization: String) {

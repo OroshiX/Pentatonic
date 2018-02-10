@@ -3,6 +3,7 @@ package com.nimoroshix.pentatonic.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.nimoroshix.pentatonic.action.*
+import com.nimoroshix.pentatonic.util.getNumericValue
 import com.nimoroshix.pentatonic.util.getOnlyValueList
 import com.nimoroshix.pentatonic.util.getOnlyValueSet
 import com.nimoroshix.pentatonic.util.parcelableCreator
@@ -116,7 +117,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
             val value = c.values[0]
             if (!value.isDigit()) c.valid = true
             else {
-                val n = value.toInt()
+                val n = value.getNumericValue()
                 val connectedValues = getAllConnectedCells(c).getOnlyValueList()
 
                 val sisterValues = getSisterCells(c).union(setOf(c)).getOnlyValueSet()
@@ -127,8 +128,10 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
                 // * no neighbour or area has the same value
                 // * sisters all have the same value
                 // * either cell is not a number or all diffOne have a difference of one with it
-                c.valid = !connectedValues.contains(n) && sisterValues.size <= 1 &&
-                        diffOneValues.all { abs(it - n) == 1 }
+                c.valid = n <= c.area.size
+                        && !connectedValues.contains(n)
+                        && sisterValues.size <= 1
+                        && diffOneValues.all { abs(it - n) == 1 }
             }
             c.dirty = false
         }

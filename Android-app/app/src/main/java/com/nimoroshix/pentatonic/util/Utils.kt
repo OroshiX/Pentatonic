@@ -56,11 +56,16 @@ inline fun <T> Parcel.writeNullable(value: T?, writer: (T) -> Unit) {
 
 fun Set<Cell>.getOnlyValueList() =
         filter { it.values.size == 1 }.map { it.values[0] }
-                .filter { it.isDigit() }.map { it.toInt() }.toList()
+                .filter { it.isDigit() }.map { it.getNumericValue() }.toList()
 
 fun Set<Cell>.getOnlyValueSet() =
         filter { it.values.size == 1 }.map { it.values[0] }
-                .filter { it.isDigit() }.map { it.toInt() }.toSet()
+                .filter { it.isDigit() }.map { it.getNumericValue() }.toSet()
+
+fun Char.getNumericValue(): Int {
+    if (this !in '0'..'9') throw NumberFormatException()
+    return this.toInt() - '0'.toInt()
+}
 
 fun Parcel.readChar() = readInt().toChar()
 
