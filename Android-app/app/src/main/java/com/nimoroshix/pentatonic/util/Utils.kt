@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.nimoroshix.pentatonic.model.Cell
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
@@ -26,8 +27,12 @@ inline fun <reified T> parcelableCreator(
 inline fun <reified T> parcelableClassLoaderCreator(
         crossinline create: (Parcel, ClassLoader) -> T) =
         object : Parcelable.ClassLoaderCreator<T> {
-            override fun createFromParcel(source: Parcel, loader: ClassLoader) = create(source, loader)
-            override fun createFromParcel(source: Parcel) = createFromParcel(source, T::class.java.classLoader)
+            override fun createFromParcel(source: Parcel, loader: ClassLoader) = create(source,
+                    loader)
+
+            override fun createFromParcel(source: Parcel) = createFromParcel(source,
+                    T::class.java.classLoader)
+
             override fun newArray(size: Int) = arrayOfNulls<T>(size)
         }
 
@@ -48,6 +53,14 @@ inline fun <T> Parcel.writeNullable(value: T?, writer: (T) -> Unit) {
         writeInt(0)
     }
 }
+
+fun Set<Cell>.getOnlyValueList() =
+        filter { it.values.size == 1 }.map { it.values[0] }
+                .filter { it.isDigit() }.map { it.toInt() }.toList()
+
+fun Set<Cell>.getOnlyValueSet() =
+        filter { it.values.size == 1 }.map { it.values[0] }
+                .filter { it.isDigit() }.map { it.toInt() }.toSet()
 
 fun Parcel.readChar() = readInt().toChar()
 
