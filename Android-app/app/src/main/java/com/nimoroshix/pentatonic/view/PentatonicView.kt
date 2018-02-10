@@ -3,11 +3,8 @@ package com.nimoroshix.pentatonic.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.Log
-import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.RelativePosition
 import com.nimoroshix.pentatonic.model.RelativePosition.*
@@ -30,7 +27,7 @@ class PentatonicView : PentatonicAbstractView {
 
     private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
 
-    private val backgroundDrawable: Drawable?
+//    private val backgroundDrawable: Drawable?
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -38,7 +35,7 @@ class PentatonicView : PentatonicAbstractView {
             defStyleAttr) {
         paint.isAntiAlias = true
         paint.strokeWidth = 5f
-        backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.beige_paper)
+//        backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.beige_paper)
     }
 
     companion object {
@@ -51,8 +48,8 @@ class PentatonicView : PentatonicAbstractView {
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
         canvas.getClipBounds(imageBounds)
-        backgroundDrawable?.bounds = imageBounds
-        backgroundDrawable?.draw(canvas)
+//        backgroundDrawable?.bounds = imageBounds
+//        backgroundDrawable?.draw(canvas)
 
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.style = Paint.Style.STROKE

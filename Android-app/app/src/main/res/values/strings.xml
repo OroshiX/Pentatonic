@@ -97,4 +97,6 @@
     <string name="menu_remove_letter">Remove letter…</string>
     <string name="default_title">Titre</string>
     <string name="share">Share</string>
+    <string name="logo_pentatonic">Pentatonic</string>
+    <string name="logo_nimoroshix">nim0roshix</string>
 </resources>

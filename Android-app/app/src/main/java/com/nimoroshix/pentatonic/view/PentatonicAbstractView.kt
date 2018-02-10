@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import com.nimoroshix.pentatonic.model.Grid
+import com.nimoroshix.pentatonic.serializer.Serializer
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_HINT_SMALL_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_SMALL_NUMBER_CELL
@@ -24,7 +25,12 @@ abstract class PentatonicAbstractView : View, Observer {
             defStyleAttr)
 
     protected var paint: Paint = Paint()
-    var grid: Grid = Grid(1, 1)
+    var grid: Grid = Serializer.deserialize("MonsieurO\n" +
+            "3 3\n" +
+            "aab\n" +
+            "ccb\n" +
+            "ccb\n" +
+            "1,2,1", "logo")
         set(value) {
             field = value
             resetSizeAndOffsets()
