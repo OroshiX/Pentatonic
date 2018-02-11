@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.serializer.Serializer
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_HINT_SMALL_NUMBER_CELL
@@ -19,10 +20,15 @@ import java.util.*
  * Created by OroshiX on 05/01/2018.
  */
 abstract class PentatonicAbstractView : View, Observer {
-    constructor(context: Context?) : this(context, null)
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
-            defStyleAttr)
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
+            defStyleAttr) {
+        val array = context.obtainStyledAttributes(attrs, R.styleable.PentatonicAbstractView)
+        desiredCellSize = array.getDimension(R.styleable.PentatonicAbstractView_cellSize, 0f)
+
+        array.recycle()
+    }
 
     protected var paint: Paint = Paint()
     var grid: Grid = Serializer.deserialize("MonsieurO\n" +
@@ -41,6 +47,7 @@ abstract class PentatonicAbstractView : View, Observer {
     var offsetLeft: Float = minOffsetLeft
     var offsetTop: Float = minOffsetTop
     var cellSize: Float = 40f
+    var desiredCellSize: Float
 
     protected var desiredWidthUnique: Float = 0f
     protected var desiredHintWidthMultiple: Float = 0f
@@ -60,8 +67,10 @@ abstract class PentatonicAbstractView : View, Observer {
         // Calculate cellSize
         val maxCellHeight: Float = (height - 2 * offsetLeft) / grid.nbLines
         val maxCellWidth: Float = (width - 2 * offsetTop) / grid.nbColumns
-        cellSize = Math.min(maxCellHeight, maxCellWidth)
-
+        cellSize = when {
+            desiredCellSize != 0f -> desiredCellSize
+            else                  -> Math.min(maxCellHeight, maxCellWidth)
+        }
         offsetTop = (height - cellSize * grid.nbLines) / 2
         offsetLeft = (width - cellSize * grid.nbColumns) / 2
 

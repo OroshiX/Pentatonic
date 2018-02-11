@@ -22,15 +22,16 @@
 
 
     <TextView
-        android:id="@+id/text1"
+        android:id="@+id/text_penta"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/space"
         android:autoSizeTextType="uniform"
+        android:gravity="center"
         android:fontFamily="@font/akashi"
         android:maxLines="1"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/logo_title_color"
         android:text="@string/logo_pentatonic"
         app:autoSizeTextType="uniform" />
 
@@ -39,17 +40,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/space"
+        android:layerType="software"
+        app:cellSize="20dp"
+        app:dashesOff="3dp"
+        app:dashesOn="2dp"
+        app:gridColor="@android:color/white"
         android:layout_toStartOf="@id/space" />
 
     <TextView
+        android:id="@+id/text_signature"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/space"
+        android:gravity="center"
         android:layout_toEndOf="@id/space"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/ubuntutitle"
         android:maxLines="1"
         android:text="@string/logo_nimoroshix"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/logo_signature_color"
         app:autoSizeTextType="uniform" />
 </RelativeLayout>

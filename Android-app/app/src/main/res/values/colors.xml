@@ -5,4 +5,8 @@
     <color name="colorAccent">#d50000</color>
     <color name="bar_text_color">#fff3e0</color>
     <color name="shadow">#bdbdbd</color>
+    <color name="logo_title_color">#ECF5FA</color>
+    <color name="logo_border_color">#01334E</color>
+    <color name="logo_signature_color">#64AED6</color>
+    <color name="logo_background_color">#218EC8</color>
 </resources>

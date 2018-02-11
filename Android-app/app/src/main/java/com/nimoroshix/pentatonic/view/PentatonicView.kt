@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
+import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.model.RelativePosition
 import com.nimoroshix.pentatonic.model.RelativePosition.*
@@ -25,7 +26,12 @@ class PentatonicView : PentatonicAbstractView {
     }
 
 
-    private var pathEffectDotted: PathEffect = DashPathEffect(floatArrayOf(10F, 50F), 0F)
+    private var colorGrid: Int
+
+    private var pathEffectDotted: PathEffect
+    private var strokeWidthLarge: Float
+    private var strokeWidthThin: Float
+    private var strokeWidthNumber: Float
 
 //    private val backgroundDrawable: Drawable?
 
@@ -33,8 +39,19 @@ class PentatonicView : PentatonicAbstractView {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
+        strokeWidthLarge = 6f
+        strokeWidthThin = 3f
+        strokeWidthNumber = 2.5f
+        val array = context.obtainStyledAttributes(attrs, R.styleable.PentatonicView)
+        colorGrid = array.getColor(R.styleable.PentatonicView_gridColor, Color.BLACK)
+
+        val on = array.getDimension(R.styleable.PentatonicView_dashesOn, 2f)
+        val off = array.getDimension(R.styleable.PentatonicView_dashesOff, 10f)
+        pathEffectDotted = DashPathEffect(floatArrayOf(on, off), 0f)
+        array.recycle()
+
         paint.isAntiAlias = true
-        paint.strokeWidth = 5f
+        paint.strokeWidth = strokeWidthLarge
 //        backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.beige_paper)
     }
 
@@ -43,23 +60,24 @@ class PentatonicView : PentatonicAbstractView {
         val TAG = "PentatonicView"
     }
 
-    private val imageBounds: Rect = Rect()
+//    private val imageBounds: Rect = Rect()
 
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
-        canvas.getClipBounds(imageBounds)
+//        canvas.getClipBounds(imageBounds)
 //        backgroundDrawable?.bounds = imageBounds
 //        backgroundDrawable?.draw(canvas)
 
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.style = Paint.Style.STROKE
+        paint.color = colorGrid
 
         canvas.drawRect(offsetLeft, offsetTop, offsetLeft + grid.nbColumns * cellSize,
                 offsetTop + grid.nbLines * cellSize, paint)
 
         // Draw a dotted grid
         paint.pathEffect = pathEffectDotted
-        paint.strokeWidth = 1f
+        paint.strokeWidth = strokeWidthThin
 
         for (i in 0 until grid.nbLines) {
             canvas.drawLine(offsetLeft, offsetTop + i * cellSize,
@@ -72,7 +90,7 @@ class PentatonicView : PentatonicAbstractView {
         }
 
         // Draw the different areas (bold)
-        paint.strokeWidth = 6f
+        paint.strokeWidth = strokeWidthLarge
         paint.pathEffect = null
 
         // compare two horizontal cells area ids
@@ -98,7 +116,7 @@ class PentatonicView : PentatonicAbstractView {
         }
 
         // Draw the initial numbers
-        paint.strokeWidth = 2f
+        paint.strokeWidth = strokeWidthNumber
         paint.style = Paint.Style.FILL_AND_STROKE
         for (i in 0 until grid.nbLines) {
             for (j in 0 until grid.nbColumns) {

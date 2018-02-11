@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="PentatonicView">
+    <declare-styleable name="PentatonicAbstractView">
         <attr name="customFont" format="string" />
+        <attr name="cellSize" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="PentatonicView">
+        <attr name="gridColor" format="color" />
+        <attr name="dashesOn" format="dimension" />
+        <attr name="dashesOff" format="dimension" />
     </declare-styleable>
 </resources>
