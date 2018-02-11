@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/logo_background"
+    android:layout_width="match_parent"
+    android:padding="@dimen/logo_padding"
+    android:layout_height="match_parent">
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" />
+
+    <!--<com.nimoroshix.pentatonic.view.AutoFitText-->
+    <!--android:id="@+id/text"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_above="@id/space"-->
+    <!--android:text="@string/logo_pentatonic"-->
+    <!--app:customFont="akashifont.ttf" />-->
+
+
+    <TextView
+        android:id="@+id/text1"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/space"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/akashi"
+        android:maxLines="1"
+        android:textColor="@color/colorAccent"
+        android:text="@string/logo_pentatonic"
+        app:autoSizeTextType="uniform" />
+
+    <com.nimoroshix.pentatonic.view.PentatonicView
+        android:id="@+id/pentatonicView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/space"
+        android:layout_toStartOf="@id/space" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/space"
+        android:layout_toEndOf="@id/space"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/ubuntutitle"
+        android:maxLines="1"
+        android:text="@string/logo_nimoroshix"
+        android:textColor="@color/colorAccent"
+        app:autoSizeTextType="uniform" />
+</RelativeLayout>
