@@ -20,12 +20,20 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         @JvmField
         val STRUCTURE = "structure"
         @JvmField
+        val ZOOM = "zoom"
+        @JvmField
         val VALUE = "value"
         @JvmField
         val SELECTED = "selected"
         @JvmField
         val CREATOR = parcelableCreator(::Grid)
     }
+
+    var scale = 1f
+    var dx = 0f
+    var dy = 0f
+    var scaleFocusX = 0f
+    var scaleFocusY = 0f
 
     private var positionSelected: Position? = null
     var cells: Array<Array<Cell>> = Array(nbLines, { i ->
@@ -423,6 +431,23 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    fun setScales(scale: Float, dx: Float, dy: Float, scaleFocusX: Float, scaleFocusY: Float) {
+        this.scale = scale
+        this.dx = dx
+        this.dy = dy
+        this.scaleFocusX = scaleFocusX
+        this.scaleFocusY = scaleFocusY
+        setChanged()
+        notifyObservers(ZOOM)
+    }
+
+    fun addTranslation(dxFromLastScroll: Float, dyFromLastScroll: Float) {
+        this.dx += dxFromLastScroll
+        this.dy += dyFromLastScroll
+        setChanged()
+        notifyObservers(ZOOM)
     }
 
 

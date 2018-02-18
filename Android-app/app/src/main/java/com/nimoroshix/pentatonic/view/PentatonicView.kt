@@ -20,7 +20,7 @@ import java.util.*
  */
 class PentatonicView : PentatonicAbstractView {
     override fun update(o: Observable?, arg: Any?) {
-        if (arg == Grid.STRUCTURE) {
+        if (arg == Grid.STRUCTURE || arg == Grid.ZOOM) {
             invalidate()
         }
     }
@@ -64,9 +64,10 @@ class PentatonicView : PentatonicAbstractView {
 
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
-//        canvas.getClipBounds(imageBounds)
-//        backgroundDrawable?.bounds = imageBounds
-//        backgroundDrawable?.draw(canvas)
+
+        canvas.save()
+        canvas.scale(grid.scale, grid.scale, grid.scaleFocusX, grid.scaleFocusY)
+        canvas.translate(grid.dx, grid.dy)
 
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.style = Paint.Style.STROKE
@@ -216,6 +217,8 @@ class PentatonicView : PentatonicAbstractView {
                 }
             }
         }
+
+        canvas.restore()
     }
 
 }

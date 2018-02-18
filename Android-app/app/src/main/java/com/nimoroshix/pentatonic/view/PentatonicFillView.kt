@@ -8,9 +8,7 @@ import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
+import android.view.*
 import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.CellState
 import com.nimoroshix.pentatonic.model.Grid
@@ -26,23 +24,47 @@ import java.util.*
  */
 class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
+
+    private enum class Mode {
+        NONE, DRAG, ZOOM
+    }
+
+    private var mode = Mode.NONE;
+    private var scale = 1.0f
+    private var lastScaleFactor = 0f
+
+    // Where the finger first touches the screen
+    private var startX = 0f
+    private var startY = 0f
+
+    // Focus point
+    private var scaleFocusX = 0f
+    private var scaleFocusY = 0f
+
+    // How much to translate the canvas
+    private var dx = 0f
+    private var dy = 0f
+    private var prevDx = 0f
+    private var prevDy = 0f
+    private var isScaling = false
+
     override fun onShowPress(p0: MotionEvent?) {
         Log.v(TAG, "onShowPress($p0)")
     }
 
     override fun onSingleTapUp(event: MotionEvent): Boolean {
-        Log.v(TAG, "onSingleTapUp($event)")
+        Log.v(TAG, "onSingleTapUp(${event.x}, ${event.y})")
+//        event.transform(invertMatrix)
         val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
                 offsetTop, cellSize, grid.nbLines, grid.nbColumns)
-        return if (pos != null) {
+        if (pos != null) {
             performClick()
             grid.select(pos.nLine, pos.nColumn)
-            true
         } else {
             grid.unselect()
             invalidate()
-            true
         }
+        return true
     }
 
     override fun onDown(p0: MotionEvent?): Boolean {
@@ -55,8 +77,12 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         return true
     }
 
-    override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-        Log.v(TAG, "onScroll($p0, $p1, $p2, $p3)")
+    override fun onScroll(firstEvent: MotionEvent, currentMotionEvent: MotionEvent,
+                          dxFromLastScroll: Float, dyFromLastScroll: Float): Boolean {
+        Log.v(TAG, "Scrolling: dx= $dxFromLastScroll, dy = $dyFromLastScroll")
+//        if  i(isScaling) {
+        grid.addTranslation(-dxFromLastScroll, -dyFromLastScroll)
+//        }
         return true
     }
 
@@ -85,17 +111,36 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         return true
     }
 
-    override fun onScaleBegin(p0: ScaleGestureDetector?): Boolean {
-        Log.v(TAG, "onScaleBegin($p0)")
+    override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+        Log.v(TAG, "onScaleBegin($detector)")
+        startX = detector.focusX
+        startY = detector.focusY
+        isScaling = true
         return true
     }
 
     override fun onScaleEnd(p0: ScaleGestureDetector?) {
         Log.v(TAG, "onScaleEnd($p0)")
+        isScaling = false
     }
 
-    override fun onScale(p0: ScaleGestureDetector?): Boolean {
-        Log.v(TAG, "onScale($p0)")
+    override fun onScale(detector: ScaleGestureDetector): Boolean {
+        Log.v(TAG, "onScale($detector)")
+        val scaleFactor = detector.scaleFactor
+        if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
+            scale *= scaleFactor
+            // Don't let the object get too small or too large
+            scale = Math.max(MIN_ZOOM, Math.min(scale, MAX_ZOOM))
+            scaleFocusX = detector.focusX
+            scaleFocusY = detector.focusY
+            dx = scaleFocusX - startX
+            dy = scaleFocusY - startY
+
+            lastScaleFactor = scaleFactor
+        } else {
+            lastScaleFactor = 0f
+        }
+        grid.setScales(scale, dx, dy, scaleFocusX, scaleFocusY)
         return true
     }
 
@@ -104,10 +149,12 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         const val TAG = "PentatonicFillView"
         val a = listOf(4F, 45F, 25F, 4F, 45F)
         val b = listOf(21F, 21F, 41F, 61F, 61F)
+        private val MIN_ZOOM = 0.9f
+        private val MAX_ZOOM = 4.0f
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        if (arg == Grid.VALUE) {
+        if (arg == Grid.VALUE || arg == Grid.ZOOM) {
             invalidate()
         }
     }
@@ -138,6 +185,9 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
 
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
+        canvas.save()
+        canvas.scale(grid.scale, grid.scale, grid.scaleFocusX, grid.scaleFocusY)
+        canvas.translate(grid.dx, grid.dy)
 
         paint.style = Paint.Style.FILL
         for ((i, row) in grid.cells.withIndex()) {
@@ -193,6 +243,8 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
                 }
             }
         }
+
+        canvas.restore()
     }
 
 }
