@@ -1,10 +1,7 @@
 package com.nimoroshix.pentatonic.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.*
 import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.util.Log
@@ -29,9 +26,10 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         NONE, DRAG, ZOOM
     }
 
+    private var viewMatrix: Matrix = Matrix()
     private var mode = Mode.NONE;
     private var scale = 1.0f
-    private var lastScaleFactor = 0f
+    private var lastScaleFactor = 1f
 
     // Where the finger first touches the screen
     private var startX = 0f
@@ -54,7 +52,9 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
 
     override fun onSingleTapUp(event: MotionEvent): Boolean {
         Log.v(TAG, "onSingleTapUp(${event.x}, ${event.y})")
-//        event.transform(invertMatrix)
+        event.transform(grid.invertMatrix)
+        Log.v(TAG, "after transform: (${event.x}, ${event.y})")
+
         val pos: Position? = TouchUtils.touchToPosition(event.x, event.y, offsetLeft,
                 offsetTop, cellSize, grid.nbLines, grid.nbColumns)
         if (pos != null) {
@@ -80,9 +80,7 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
     override fun onScroll(firstEvent: MotionEvent, currentMotionEvent: MotionEvent,
                           dxFromLastScroll: Float, dyFromLastScroll: Float): Boolean {
         Log.v(TAG, "Scrolling: dx= $dxFromLastScroll, dy = $dyFromLastScroll")
-//        if  i(isScaling) {
         grid.addTranslation(-dxFromLastScroll, -dyFromLastScroll)
-//        }
         return true
     }
 
@@ -127,6 +125,7 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
     override fun onScale(detector: ScaleGestureDetector): Boolean {
         Log.v(TAG, "onScale($detector)")
         val scaleFactor = detector.scaleFactor
+
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
             scale *= scaleFactor
             // Don't let the object get too small or too large
@@ -184,10 +183,11 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
     }
 
     override fun onDraw(canvas: Canvas) {
-        Log.d(TAG, "onDraw")
-        canvas.save()
-        canvas.scale(grid.scale, grid.scale, grid.scaleFocusX, grid.scaleFocusY)
-        canvas.translate(grid.dx, grid.dy)
+        Log.d(TAG, "onDraw, viewMatrix = ${grid.viewMatrix}")
+//        canvas.save()
+        canvas.concat(grid.viewMatrix)
+//        canvas.scale(grid.scale, grid.scale, grid.scaleFocusX, grid.scaleFocusY)
+//        canvas.translate(grid.dx, grid.dy)
 
         paint.style = Paint.Style.FILL
         for ((i, row) in grid.cells.withIndex()) {
@@ -244,7 +244,6 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
             }
         }
 
-        canvas.restore()
     }
 
 }

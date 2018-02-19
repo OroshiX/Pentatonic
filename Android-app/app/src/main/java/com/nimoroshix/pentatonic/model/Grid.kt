@@ -1,5 +1,6 @@
 package com.nimoroshix.pentatonic.model
 
+import android.graphics.Matrix
 import android.os.Parcel
 import android.os.Parcelable
 import com.nimoroshix.pentatonic.action.*
@@ -28,13 +29,6 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         @JvmField
         val CREATOR = parcelableCreator(::Grid)
     }
-
-    var scale = 1f
-    var dx = 0f
-    var dy = 0f
-    var scaleFocusX = 0f
-    var scaleFocusY = 0f
-
     private var positionSelected: Position? = null
     var cells: Array<Array<Cell>> = Array(nbLines, { i ->
         Array(nbColumns, { j ->
@@ -434,21 +428,28 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     fun setScales(scale: Float, dx: Float, dy: Float, scaleFocusX: Float, scaleFocusY: Float) {
-        this.scale = scale
-        this.dx = dx
-        this.dy = dy
-        this.scaleFocusX = scaleFocusX
-        this.scaleFocusY = scaleFocusY
+        viewMatrix = Matrix(unitMatrix)
+        viewMatrix.postScale(scale, scale, scaleFocusX, scaleFocusY)
+        invertMatrix = Matrix(viewMatrix)
+        invertMatrix.invert(invertMatrix)
+
         setChanged()
         notifyObservers(ZOOM)
     }
 
     fun addTranslation(dxFromLastScroll: Float, dyFromLastScroll: Float) {
-        this.dx += dxFromLastScroll
-        this.dy += dyFromLastScroll
+        viewMatrix.postTranslate(dxFromLastScroll, dyFromLastScroll)
+        invertMatrix = Matrix(viewMatrix)
+        invertMatrix.invert(invertMatrix)
+
         setChanged()
         notifyObservers(ZOOM)
     }
+
+    var viewMatrix: Matrix = Matrix()
+
+    var invertMatrix: Matrix = Matrix()
+    val unitMatrix = Matrix()
 
 
 }
