@@ -146,6 +146,7 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR = parcelableCreator(::Cell)
     }
 
