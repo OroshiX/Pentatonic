@@ -76,3 +76,5 @@ Android-app/.idea/
 /captures
 .externalNativeBuild
 
+#Xcode user data - breakpoints / selected lines etc ...
+xcuserdata
