@@ -31,19 +31,44 @@ class playViewController: UIViewController {
     var arrayPlayButtons:[UIButton] = []
     var initialized:Bool = false
     var currentPenta:APenta? = nil
+    var initialX:Int = 0
+    var initialY:Int = 0
+    var sizeBut:Int = 0
+    var sizeFont:CGFloat = 0
     var screenWidth:CGFloat = 0
     var screenHeight:CGFloat = 0
     var minW:Int = 0
     var area:[[Int]] = [[]]
     var valueSet:[Int] = []
     var selectedValue:Int = -1
+    var correctifXFont:CGFloat = 0
+    var correctifYFont:CGFloat = 0
+    
     @IBOutlet var myviewImage: UIImageView!
     
     public func setPenta (_ penta:APenta) {
         currentPenta = penta
+        
+        let screenSize: CGRect = UIScreen.main.bounds
+        screenWidth = screenSize.width
+        screenHeight = screenSize.height
+
         let width = penta.width
         let height = penta.height
         let size:Int = width! * height!
+        
+        // For the buttons
+        minW = min(Int(screenHeight),Int(screenWidth))
+        if minW == 0 { return }
+        let NBButton = max(width!,height!)
+        let divSize:Int = NBButton + 2
+        sizeBut = minW / divSize
+        initialX = sizeBut
+        initialY = sizeBut*2
+        sizeFont = CGFloat(sizeBut) * 0.8
+        correctifXFont = 0
+        correctifYFont = 0
+        
         area = Array(repeating: [], count: size)
         print ("width=\(width!) height=\(height!)")
         valueSet=Array(repeating:0, count: size)
@@ -97,11 +122,6 @@ class playViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let screenSize: CGRect = UIScreen.main.bounds
-        screenWidth = screenSize.width
-        screenHeight = screenSize.height
-        minW = min(Int(screenHeight),Int(screenWidth))
-        
         myviewImage = UIImageView(frame:CGRect(x: 0, y: 0, width: minW, height: minW))
         self.view.addSubview(myviewImage)
         
@@ -114,15 +134,7 @@ class playViewController: UIViewController {
     }
     
     func showTheGrid(_ width:Int, _ height:Int) {
-        var sizeBut:Int
-        var initialX:Int
-        var initialY:Int
-        let NBButton = max(width,height)
         
-        let divSize:Int = NBButton + 2
-        sizeBut = minW / divSize
-        initialX = sizeBut
-        initialY = sizeBut*2
         var tag=0
         for j in 0..<height {
             for i in 0..<width {
@@ -178,18 +190,9 @@ class playViewController: UIViewController {
     func drawPenta(penta:APenta, valSelected:Int, darker:[Int] ) {
         let width:Int = penta.width!
         let height:Int = penta.height!
-        var widthBut:Int
-        var heightBut:Int
-        var initialX:Int
-        var initialY:Int
-        let NBButton = max(width,height)
-        let divSize:Int = NBButton + 2
-        widthBut = minW / divSize
-        heightBut = widthBut
-        initialX = min(widthBut,200)
-        initialY = min(heightBut*2,200)
-        let maxI = initialX/4+height*widthBut
-        let maxJ = initialY/2+width*heightBut + heightBut
+
+        let maxI = initialX/4+height*sizeBut
+        let maxJ = initialY/2+width*sizeBut + sizeBut
         if (Int(screenWidth) - maxI) > (Int(screenHeight) - maxJ) {
             print ("USING I : \((screenWidth - CGFloat(maxI))/5.0)  and not  \((screenHeight - CGFloat(maxJ))/5.0)")
         } else {
@@ -206,7 +209,7 @@ class playViewController: UIViewController {
                              ldefine.currentTheme[define.LColor.lighter]?.cgColor]
             var color:Int
             let lIJ:IJ = IJ(p: penta, val: 0)
-            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: CGFloat(heightBut) * 0.8)]
+            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont)]
             for i in 0..<height {
                 for j in 0..<width {
                     let val:Int = lIJ.getIndex(penta,i,j)
@@ -214,25 +217,27 @@ class playViewController: UIViewController {
                     if val == valSelected { color = 0}
 
                     ctx.cgContext.setFillColor(listColor[color]!)
-                    let x=initialX+j*widthBut
-                    let y=initialY+i*heightBut
-                    ctx.cgContext.fill(CGRect(x: x, y: y, width: widthBut, height: heightBut))
+                    let x=initialX+j*sizeBut
+                    let y=initialY+i*sizeBut
+                    ctx.cgContext.fill(CGRect(x: x, y: y, width: sizeBut, height: sizeBut))
                     let itsNeighbour = get_neighbour(penta:penta,i,j)
                     print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
-                    drawRect(ctx.cgContext, CGFloat(x), CGFloat(y), CGFloat(widthBut), CGFloat(heightBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
+                    drawRect(ctx.cgContext, CGFloat(x), CGFloat(y), CGFloat(sizeBut), CGFloat(sizeBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
                     
                 }
-                for valeur in penta.valeurs! {
-                    let val:Int = valeur.val!
-                    let i:Int = valeur.j!+1
-                    let j:Int = valeur.i!+1
-                    
-                    ("\(val)" as NSString).draw(
-                        at: CGPoint(x: initialX/4+i*widthBut, y: initialY/2+j*heightBut),
-                        withAttributes: atts)
-
-                }
-
+            }
+            print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY)")
+            for valeur in penta.valeurs! {
+                let val:Int = valeur.val!
+                let i:Int = valeur.j!+1
+                let j:Int = valeur.i!+1
+                let x = (initialX/4+i*sizeBut) - Int(correctifXFont)
+                let y = (initialY/2+j*sizeBut) - Int(correctifYFont)
+                
+                ("\(val)" as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
+                print ("writing \(val) -\(valeur.i!) \(valeur.j!)- at x=\(initialX/4+i*sizeBut),y\(initialY/2+j*sizeBut)")
+                
+                
             }
         }
         
