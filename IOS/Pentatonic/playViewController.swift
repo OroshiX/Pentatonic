@@ -80,7 +80,7 @@ class playViewController: UIViewController {
                 }
             }
 
-            print ("area <=> \(allVal) = data[\(lIJ.i)][\(lIJ.j)] = \(penta.data![lIJ.i][lIJ.j])")
+            // print ("area <=> \(allVal) = data[\(lIJ.i)][\(lIJ.j)] = \(penta.data![lIJ.i][lIJ.j])")
             for allVal2 in 0..<size {
                 let dIJ = IJ(p:currentPenta!, val:allVal2)
                 if lIJ.val == dIJ.val { area[allVal].append(allVal2)}
@@ -91,9 +91,7 @@ class playViewController: UIViewController {
             area[i] = Array(Set(area[i]))
             area[i].sort()
         }
-        for i in 0..<area.count {
-            print ("\(i) is incompatible with \(area[i]) ")
-        }
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -188,8 +186,8 @@ class playViewController: UIViewController {
         let divSize:Int = NBButton + 2
         widthBut = minW / divSize
         heightBut = widthBut
-        initialX = widthBut
-        initialY = heightBut*2
+        initialX = min(widthBut,200)
+        initialY = min(heightBut*2,200)
         let maxI = initialX/4+height*widthBut
         let maxJ = initialY/2+width*heightBut + heightBut
         if (Int(screenWidth) - maxI) > (Int(screenHeight) - maxJ) {
@@ -219,8 +217,8 @@ class playViewController: UIViewController {
                     let x=initialX+j*widthBut
                     let y=initialY+i*heightBut
                     ctx.cgContext.fill(CGRect(x: x, y: y, width: widthBut, height: heightBut))
-                    let itsNeighbour = get_neighbour(penta:penta,j,i)
-                    
+                    let itsNeighbour = get_neighbour(penta:penta,i,j)
+                    print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
                     drawRect(ctx.cgContext, CGFloat(x), CGFloat(y), CGFloat(widthBut), CGFloat(heightBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
                     
                 }
@@ -242,21 +240,21 @@ class playViewController: UIViewController {
     }
     func get_neighbour(penta:APenta, _ i:Int, _ j:Int) -> neighbour {
         let maxj=penta.data!.count-1
-        let maxi=penta.data![j].count-1
+        let maxi=penta.data![i].count-1
         var myNeighbour:neighbour = neighbour.init(up: false, down: false, right: false, left: false)
-        let val = penta.data![j][i]
+        let val = penta.data![i][j]
 
-        if i == 0 { myNeighbour.left = false }
-        else { myNeighbour.left = penta.data![j][i-1] == val }
+        if j == 0 { myNeighbour.left = false }
+        else { myNeighbour.left = penta.data![i][j-1] == val }
         
-        if j == 0 { myNeighbour.up = false }
-        else { myNeighbour.up = penta.data![j-1][i] == val }
+        if i == 0 { myNeighbour.up = false }
+        else { myNeighbour.up = penta.data![i-1][j] == val }
         
-        if i == maxi { myNeighbour.right = false }
-        else { myNeighbour.right = penta.data![j][i+1] == val }
+        if j == maxi { myNeighbour.right = false }
+        else { myNeighbour.right = penta.data![i][j+1] == val }
         
-        if j == maxj { myNeighbour.down = false }
-        else { myNeighbour.down = penta.data![j+1][i] == val }
+        if i == maxj { myNeighbour.down = false }
+        else { myNeighbour.down = penta.data![i+1][j] == val }
         
         return myNeighbour
     }

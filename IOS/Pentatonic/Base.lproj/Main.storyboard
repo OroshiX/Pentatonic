@@ -161,37 +161,6 @@
             </objects>
             <point key="canvasLocation" x="848.79999999999995" y="133.5832083958021"/>
         </scene>
-        <!--Play View Controller-->
-        <scene sceneID="l94-jg-DQR">
-            <objects>
-                <viewController id="qh7-O8-6W5" customClass="playViewController" customModule="Pentatonic" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="ESo-pY-Xmo">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wpT-G5-M5S">
-                                <rect key="frame" x="10" y="30" width="355" height="355"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="wpT-G5-M5S" secondAttribute="height" multiplier="1:1" id="kro-Vo-myt"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="Rws-8C-xXb" firstAttribute="trailing" secondItem="wpT-G5-M5S" secondAttribute="trailing" constant="10" id="Jer-9u-rtW"/>
-                            <constraint firstItem="wpT-G5-M5S" firstAttribute="top" secondItem="Rws-8C-xXb" secondAttribute="top" constant="10" id="VbH-id-edr"/>
-                            <constraint firstItem="wpT-G5-M5S" firstAttribute="leading" secondItem="Rws-8C-xXb" secondAttribute="leading" constant="10" id="dh2-cx-t79"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="Rws-8C-xXb"/>
-                    </view>
-                    <connections>
-                        <outlet property="myviewImage" destination="wpT-G5-M5S" id="TqC-dm-BXG"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zCh-uW-U9f" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1565.5999999999999" y="139.880059970015"/>
-        </scene>
         <!--Rules View Controller-->
         <scene sceneID="zA5-IG-8Qj">
             <objects>
