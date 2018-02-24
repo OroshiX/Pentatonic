@@ -68,6 +68,14 @@ class playViewController: UIViewController {
         sizeFont = CGFloat(sizeBut) * 0.8
         correctifXFont = 0
         correctifYFont = 0
+        //*************************
+        
+        let increment = sizeFont / 4
+        sizeFont = CGFloat(sizeBut) * 0.8 / 3
+        correctifXFont = 4 * increment
+        correctifYFont = 0
+        
+        
         
         area = Array(repeating: [], count: size)
         print ("width=\(width!) height=\(height!)")
