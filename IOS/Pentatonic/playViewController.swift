@@ -35,17 +35,31 @@ class playViewController: UIViewController {
     var initialY:Int = 0
     var sizeBut:Int = 0
     var sizeFont:CGFloat = 0
+    var petiteFont:CGFloat = 0
+    
+    var dxl:CGFloat = 0
+    var dxm:CGFloat = 0
+    var dxr:CGFloat = 0
+    var dyu:CGFloat = 0
+    var dym:CGFloat = 0
+    var dyd:CGFloat = 0
+
     var screenWidth:CGFloat = 0
     var screenHeight:CGFloat = 0
     var minW:Int = 0
     var area:[[Int]] = [[]]
-    var valueSet:[Int] = []
+    // vSet will contain the origina values (negative)
+    // and set of value user want to pre-select
+    
+    var vSet :[Set<Int>] = [[]]
+    
     var selectedValue:Int = -1
-    var correctifXFont:CGFloat = 0
-    var correctifYFont:CGFloat = 0
+    var whatTag = ["a","b","c","d","e","x","y","z","v","w"]
+
     
     @IBOutlet var myviewImage: UIImageView!
-    
+    @IBOutlet var myNumbersImage: UIImageView!
+
     public func setPenta (_ penta:APenta) {
         currentPenta = penta
         
@@ -66,20 +80,26 @@ class playViewController: UIViewController {
         initialX = sizeBut
         initialY = sizeBut*2
         sizeFont = CGFloat(sizeBut) * 0.8
-        correctifXFont = 0
-        correctifYFont = 0
         //*************************
         
-        let increment = sizeFont / 4
-        sizeFont = CGFloat(sizeBut) * 0.8 / 3
-        correctifXFont = 4 * increment
-        correctifYFont = 0
+        sizeFont = CGFloat(sizeBut) * 0.8
         
+        petiteFont = CGFloat(sizeBut) * 0.8 / 3
+        
+        dxm = 0-CGFloat(sizeBut) / 4.8
+        dxl = dxm + CGFloat(sizeBut) / 2.5
+        dxr = dxm - CGFloat(sizeBut) / 2.7
+        
+        dyd = CGFloat(sizeBut) / 1.5
+        dym = CGFloat(sizeBut) / 3.3
+        dyu = CGFloat(0.0)
+        
+
         
         
         area = Array(repeating: [], count: size)
         print ("width=\(width!) height=\(height!)")
-        valueSet=Array(repeating:0, count: size)
+        vSet = Array(repeating:Set<Int>(),count:size)
         
         for allVal in 0..<size {
             let lIJ = IJ(p: currentPenta!, val: allVal)
@@ -124,7 +144,15 @@ class playViewController: UIViewController {
             area[i] = Array(Set(area[i]))
             area[i].sort()
         }
-        
+        for valeur in (currentPenta?.valeurs)! {
+            let val:Int = valeur.val!
+            let lIJ:IJ = IJ.init(p: currentPenta!, val: 0)
+            let i:Int = valeur.i!
+            let j:Int = valeur.j!
+            let index = lIJ.getIndex(currentPenta!, i, j)
+            vSet[index] = [ -val ]
+        }
+
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -132,6 +160,28 @@ class playViewController: UIViewController {
         
         myviewImage = UIImageView(frame:CGRect(x: 0, y: 0, width: minW, height: minW))
         self.view.addSubview(myviewImage)
+        
+        myNumbersImage = UIImageView(frame:CGRect(x:0,y:minW,width:minW,height:(Int(screenHeight) - minW)))
+        self.view.addSubview(myNumbersImage)
+        
+        
+        
+        //***********
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: Int(minW), height: (Int(screenHeight) - minW)))
+        let img = renderer.image { ctx in
+
+            ctx.cgContext.setFillColor(UIColor.gray.cgColor)
+            let widthAreaBut = CGFloat(((currentPenta?.width)!+1)*sizeBut)
+            let heightAreaBut = screenHeight - CGFloat(minW) - 10.0
+            let xmin = CGFloat(sizeBut)
+            
+            drawNumbersButton(ctx: ctx.cgContext, xmin: xmin, ymin: 0, xmax: widthAreaBut, ymax: heightAreaBut)
+            //drawLine(ctx.cgContext, xmin, 0, widthAreaBut, heightAreaBut , false, UIColor.red.cgColor)
+        }
+        myNumbersImage.image = img
+        //**********
+        
+        
         
         if !initialized {
             showTheGrid((currentPenta?.width)!, (currentPenta?.height)!)
@@ -195,6 +245,76 @@ class playViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    func drawNumbersButton (ctx:CGContext,xmin:CGFloat, ymin:CGFloat,xmax:CGFloat, ymax:CGFloat) {
+        let nbNButtonsX = 5
+        let nbNButtonsY = 3
+        let interNButton = 5
+        
+        /*
+         *     B1 B2 B3 B4 B5
+         *     Ba Bb Bc Bd Be
+         *     Bx By Bz Bv Bw
+         *
+         *   Buttons have "interButton" distance
+         */
+        //ctx.fill(CGRect(x: xmin, y:ymin, width: xmax-xmin, height: ymax-ymin))
+        let widthNBut = (Int(xmax - xmin) / nbNButtonsX) - (nbNButtonsX-1)*interNButton
+        let heightNBut = (Int(ymax - ymin) / nbNButtonsY) - (nbNButtonsY-1)*interNButton
+        let atts = [NSAttributedStringKey.font:
+            UIFont.systemFont(ofSize: min(CGFloat(widthNBut),CGFloat(heightNBut))*0.8),
+                    NSAttributedStringKey.foregroundColor:UIColor.black]
+        
+        for i in 0..<nbNButtonsX {
+            for j in 0..<nbNButtonsY {
+                let x = xmin+CGFloat(widthNBut*i)
+                let y = ymin+CGFloat(heightNBut*j)
+                let w = CGFloat(widthNBut-interNButton)
+                let h = CGFloat(heightNBut-interNButton)
+                let tag = j*nbNButtonsX+i+1
+                ctx.setFillColor(UIColor.gray.cgColor)
+
+                ctx.fill(CGRect(x:x, y:y, width:w,height:h ))
+                addNButton(x:x, y:y, width:w, height:h, color:UIColor.clear, tag:tag)
+                
+                (getStringNButton(tag) as NSString).draw(at: CGPoint(x: x+w/4, y: y), withAttributes: atts)
+                
+            }
+        }
+    }
+    func getStringNButton(_ val:Int) -> String{
+        var ret:String
+        
+        switch val {
+        case 1...5:
+            ret="\(val)"
+        
+        case 6..<whatTag.count+6:
+            ret=whatTag[val-6]
+        
+        default:
+            ret="?"
+        }
+        return ret
+    }
+    func addNButton (x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat, color: UIColor, tag:Int) {
+        let myImage:UIImage = UIImage(named: "transparent.png")!
+        let button = UIButton(type: UIButtonType.custom)
+        let rect = CGRect(x:x,y:y+CGFloat(minW),width:width,height:height)
+        button.frame = rect
+        button.setImage(myImage, for: UIControlState.normal)
+        button.backgroundColor = color
+        button.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
+        button.tag = tag
+        self.view.addSubview(button)
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     func drawPenta(penta:APenta, valSelected:Int, darker:[Int] ) {
         let width:Int = penta.width!
         let height:Int = penta.height!
@@ -217,7 +337,6 @@ class playViewController: UIViewController {
                              ldefine.currentTheme[define.LColor.lighter]?.cgColor]
             var color:Int
             let lIJ:IJ = IJ(p: penta, val: 0)
-            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont)]
             for i in 0..<height {
                 for j in 0..<width {
                     let val:Int = lIJ.getIndex(penta,i,j)
@@ -234,19 +353,48 @@ class playViewController: UIViewController {
                     
                 }
             }
-            print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY)")
-            for valeur in penta.valeurs! {
-                let val:Int = valeur.val!
-                let i:Int = valeur.j!+1
-                let j:Int = valeur.i!+1
-                let x = (initialX/4+i*sizeBut) - Int(correctifXFont)
-                let y = (initialY/2+j*sizeBut) - Int(correctifYFont)
-                
-                ("\(val)" as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
-                print ("writing \(val) -\(valeur.i!) \(valeur.j!)- at x=\(initialX/4+i*sizeBut),y\(initialY/2+j*sizeBut)")
-                
-                
+            print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY) width \(sizeBut)")
+            var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
+            var index:Int = -1
+            let petiteListeXY:[[CGFloat]] = [ [dxl,dyu],[dxr,dyu],[dxl,dyd],[dxr,dyd],[dxm,dym],[dxm,dyu],[dxm,dyd],[dxl,dym],[dxr,dym]]
+            for arrayValeur in vSet {
+                index = index+1
+                let lIJ = IJ(p: currentPenta!, val: index)
+
+                if arrayValeur.count == 1 {
+                    let x = (initialX/4+(lIJ.j+1)*sizeBut)
+                    let y = (initialY/2+(lIJ.i+1)*sizeBut)
+                    var valeur = arrayValeur.first!
+                    
+                    if (valeur < 0) {
+                        // black
+                        atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: UIColor.black]
+                        valeur = -valeur
+                    } else {
+                        // blue
+                        atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: UIColor.blue]
+                        
+                    }
+                    ("\(valeur)" as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
+                    
+                } else {
+                    atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: petiteFont)]
+                    
+                    var coord:Int = -1
+                    for valeur in arrayValeur {
+                        coord = coord+1
+                        if coord >=  petiteListeXY.count {
+                            break
+                        }
+                        let x = (initialX/4+(lIJ.j+1)*sizeBut) - Int(petiteListeXY[coord][0])
+                        let y = (initialY/2+(lIJ.i+1)*sizeBut) + Int(petiteListeXY[coord][1])
+                        ("\(valeur)" as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
+                        
+                        
+                    }
+                }
             }
+            
         }
         
         myviewImage.image = img
@@ -273,13 +421,15 @@ class playViewController: UIViewController {
     }
     
     func drawRect(_ ctx:CGContext, _ x:CGFloat,_ y:CGFloat,_ width:CGFloat,_ height:CGFloat,_ up:Bool,_ down:Bool,_ right:Bool,_ left:Bool) {
-        drawLine(ctx,x,y,x+width,y,up)
-        drawLine(ctx,x,y+height,x+width,y+height,down)
-        drawLine(ctx,x,y,x,y+height,left)
-        drawLine(ctx,x+width,y,x+width,y+height,right)
+        let color = UIColor.black.cgColor
+        
+        drawLine(ctx,x,y,x+width,y,up,color)
+        drawLine(ctx,x,y+height,x+width,y+height,down,color)
+        drawLine(ctx,x,y,x,y+height,left,color)
+        drawLine(ctx,x+width,y,x+width,y+height,right,color)
     }
     
-    func drawLine(_ context:CGContext,_ x:CGFloat,_ y:CGFloat, _ xdest:CGFloat, _ ydest:CGFloat, _ dash:Bool) {
+    func drawLine(_ context:CGContext,_ x:CGFloat,_ y:CGFloat, _ xdest:CGFloat, _ ydest:CGFloat, _ dash:Bool, _ color:CGColor ) {
         let startPoint = CGPoint(x: x, y: y)
         let endPoint = CGPoint(x: xdest, y: ydest)
         context.move(to: startPoint)
@@ -291,29 +441,56 @@ class playViewController: UIViewController {
             context.setLineWidth(2)
             context.setLineDash(phase: 0, lengths: [])
         }
-        context.setStrokeColor(UIColor.black.cgColor)
+        context.setStrokeColor(color)
         context.strokePath()
     }
-  
+    
+    
+    @IBAction func buttonNBAction(_ sender: UIButton) {
+        let number:Int = sender.tag
+        print ("Number = \(number) in buttonNBAction")
+        // No cell selected in the penta ... nothing to do
+        if selectedValue == -1 {
+            print("Nothing to do - no value selected")
+            return
+        }
+        
+        // This is a predefine value .... no action accepted
+        if vSet[selectedValue].count == 1 && vSet[selectedValue].first! < 0 {
+            print("We dont do anything since it's a predefined value")
+        }
+        
+        // Lets see if the value is already present
+        if vSet[selectedValue].contains(number) {
+            // lets remove it
+            vSet[selectedValue].remove(number)
+            //armand
+        } else {
+            vSet[selectedValue].insert(number)
+        }
+        drawPenta(penta: currentPenta!, valSelected: selectedValue, darker:area[selectedValue]
+)
+
+    }
+    
     @IBAction func buttonAction(_ sender: UIButton) {
         var noArea:[Int] = []
         
-        var currentLevel:Int = sender.tag
-        if currentLevel == 999 {
+        let buttonID:Int = sender.tag
+        if buttonID == 999 {
             // We did press Back button
 
             dismiss(animated: true, completion: nil)
             return
         }
-        if selectedValue != currentLevel {
-            selectedValue = currentLevel
-            noArea = area[currentLevel]
+        if selectedValue != buttonID {
+            selectedValue = buttonID
+            noArea = area[selectedValue]
         } else {
             selectedValue = -1
-            currentLevel = -1
             noArea = []
         }
-        drawPenta(penta: currentPenta!, valSelected: currentLevel, darker: noArea)
+        drawPenta(penta: currentPenta!, valSelected: selectedValue, darker: noArea)
     }
 
 

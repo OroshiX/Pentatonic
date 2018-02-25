@@ -8,19 +8,30 @@
 
 import UIKit
 
+var incrementPenta:Int = 0
+var incrementYPenta:Int = 0
+
 class listNiveauViewController: UIViewController {
 
     var arrayLevelButtons:[UIButton] = []
     var pentas:[APenta] = []
     
+    @IBOutlet var labelIncrement: UILabel!
+    @IBOutlet var labelYIncrement: UILabel!
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var labelCurrentLevel: UILabel!
     @IBOutlet var difficultySegment: UISegmentedControl!
     
+    @IBOutlet var sliderYIncrement: UISlider!
+    @IBOutlet var sliderIncrement: UISlider!
     override func viewDidLoad() {
         super.viewDidLoad()
+        sliderIncrement.value = Float(incrementPenta)
+        labelIncrement.text = "X\(incrementPenta)"
         
-        
+        sliderYIncrement.value = Float(incrementYPenta)
+        labelYIncrement.text = "Y\(incrementYPenta)"
+
         // Do any additional setup after loading the view.
         /* Read the JSON File with all level available */
         
@@ -52,6 +63,19 @@ class listNiveauViewController: UIViewController {
         labelCurrentLevel.text = ""
     }
     
+    @IBAction func incrementYAction(_ sender: UISlider) {
+        print (sender.value)
+        incrementYPenta = Int(sender.value)
+        sender.value = Float(incrementYPenta)
+        labelYIncrement.text = "Y\(incrementYPenta)"
+
+    }
+    @IBAction func incrementAction(_ sender: UISlider) {
+        print (sender.value)
+        incrementPenta = Int(sender.value)
+        sender.value = Float(incrementPenta)
+        labelIncrement.text = "X\(incrementPenta)"
+    }
     func createButtons() {
         let screenSize: CGRect = UIScreen.main.bounds
         let screenWidth = screenSize.width
@@ -155,7 +179,7 @@ class listNiveauViewController: UIViewController {
         }
         print ("\(arrayLevels[difficulty]![currentLevel])")
         labelCurrentLevel.text = arrayLevels[difficulty]![currentLevel]
-        let aPenta:Initializor = Initializor.init(name: "Armand", line: 0, column: 0)
+        //let _:Initializor = Initializor.init(name: "Armand", line: 0, column: 0)
 
         var penta:APenta? = nil
         for anyPenta in pentas {
