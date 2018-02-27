@@ -7,6 +7,7 @@
 //
 
 import UIKit
+var globalUserGameData:ATotalBackup = ATotalBackup()
 
 class preferencesViewController: UIViewController {
 

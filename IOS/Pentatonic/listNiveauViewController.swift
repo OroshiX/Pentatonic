@@ -38,6 +38,9 @@ class listNiveauViewController: UIViewController {
         pentas = readJson()
         // displayPentas(pentas)
         
+        globalUserGameData = readBackup()
+        // writeBackup(backup: globalUserGameData)
+        
         // Initialize the data struct containing all levels
         
         for level in ldefine.allLevel
@@ -150,6 +153,68 @@ class listNiveauViewController: UIViewController {
         return pentas
         
     }
+    func readBackup() -> ATotalBackup {
+        
+        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let myDataPath = paths[0].appending("/globalUserData.json")
+        
+        let url = URL(fileURLWithPath:myDataPath)
+
+        
+        
+        
+        
+        
+        //let url = URL(fileURLWithPath:Bundle.main.path(forResource: "backup", ofType: "json")! )
+        let jsonTotalBackup = try? Data(contentsOf:url)
+        let decoder = JSONDecoder()
+        if jsonTotalBackup != nil {
+            let theBackup = try! decoder.decode(ATotalBackup.self,from: jsonTotalBackup!)
+            return theBackup
+        } else {
+            let theBackup:ATotalBackup = ATotalBackup()
+            theBackup.joueur = "Armand"
+            theBackup.totale = []
+            return theBackup
+            
+        }
+    }
+    
+    
+func saveUploadedFilesSet(fileName:[String : Any]) {
+    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let myDataPath = paths[0].appending("/toto.json")
+        print (myDataPath)
+        
+        let file: FileHandle? = FileHandle(forWritingAtPath: myDataPath)
+        
+        if file != nil {
+            // Set the data we want to write
+            do{
+                if let jsonData = try JSONSerialization.data(withJSONObject: fileName, options: .init(rawValue: 0)) as? Data
+                {
+                    // Check if everything went well
+                    print(NSString(data: jsonData, encoding: 1)!)
+                    file?.write(jsonData)
+                    
+                    // Do something cool with the new JSON data
+                }
+            }
+            catch {
+                
+            }
+            // Write it to the file
+            
+            // Close the file
+            file?.closeFile()
+        }
+        else {
+            print("Ooops! Something went wrong!")
+        }
+    }
+    
+    
     func displayButtons(_ nombre:Int) {
         var i:Int = 0
         
@@ -179,7 +244,8 @@ class listNiveauViewController: UIViewController {
         }
         print ("\(arrayLevels[difficulty]![currentLevel])")
         labelCurrentLevel.text = arrayLevels[difficulty]![currentLevel]
-        //let _:Initializor = Initializor.init(name: "Armand", line: 0, column: 0)
+        //let iii :Initializor = Initializor.init(name: "Armand", line: 0, column: 0)
+        //iii.createLevel()
 
         var penta:APenta? = nil
         for anyPenta in pentas {
@@ -190,6 +256,19 @@ class listNiveauViewController: UIViewController {
         }
         let next:playViewController = playViewController()
         next.setPenta(penta!)
+        print("this is the global backup")
+        var index = 0
+        var found:Bool = false
+        for backup in globalUserGameData.totale! {
+            if backup.name == penta?.name {
+                found = true
+                break
+            }
+            index = index + 1
+
+        }
+        if found { next.setVSet(vset:globalUserGameData.totale![index].vSet!, index:index) }
+
         present(next, animated: true, completion: nil)
     }
     

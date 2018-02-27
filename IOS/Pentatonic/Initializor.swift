@@ -23,7 +23,8 @@ struct Initializor {
     func createLevel() {
         let def:define = define.init()
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        
+        let myDataPath = paths[0].appending("/toto.json")
+
         
         let documentsDirectory = paths[0]
 
