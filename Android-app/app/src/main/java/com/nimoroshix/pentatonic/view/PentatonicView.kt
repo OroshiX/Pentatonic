@@ -65,9 +65,7 @@ class PentatonicView : PentatonicAbstractView {
     override fun onDraw(canvas: Canvas) {
         Log.d(TAG, "onDraw")
 
-        canvas.save()
-        canvas.scale(grid.scale, grid.scale, grid.scaleFocusX, grid.scaleFocusY)
-        canvas.translate(grid.dx, grid.dy)
+        canvas.concat(grid.viewMatrix)
 
         // Draw a rectangle (m * cellSize) * (n * cellSize)
         paint.style = Paint.Style.STROKE
@@ -218,7 +216,6 @@ class PentatonicView : PentatonicAbstractView {
             }
         }
 
-        canvas.restore()
     }
 
 }
