@@ -25,74 +25,82 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background3.png" translatesAutoresizingMaskIntoConstraints="NO" id="hSE-Zm-zZx">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="9iv-g3-qj2">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="hgc-fH-IfV">
-                                        <rect key="frame" x="122.5" y="0.0" width="130" height="130.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bf5-1Q-g6o">
-                                                <rect key="frame" x="0.0" y="0.0" width="130" height="130.5"/>
+                                                <rect key="frame" x="106.5" y="0.0" width="162" height="162"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" secondItem="Bf5-1Q-g6o" secondAttribute="height" multiplier="1:1" id="hYz-Ke-yHW"/>
+                                                    <constraint firstAttribute="width" secondItem="Bf5-1Q-g6o" secondAttribute="height" multiplier="1:1" id="Ga6-pb-xCy"/>
                                                 </constraints>
-                                                <state key="normal" title="Button" image="setting.png"/>
+                                                <state key="normal" image="setting.png"/>
                                                 <connections>
                                                     <segue destination="G5O-PZ-Blk" kind="show" id="qtH-Jr-4qP"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4GZ-Uo-0V5" userLabel="Tuto">
+                                                <rect key="frame" x="0.0" y="162" width="375" height="161.5"/>
+                                                <state key="normal" image="Tutorial.png"/>
+                                                <connections>
+                                                    <segue destination="qBf-CZ-QP3" kind="presentation" id="4ug-bJ-Daz"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Gz-d0-vnU" userLabel="Play">
+                                                <rect key="frame" x="106.5" y="323.5" width="162" height="162"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="2Gz-d0-vnU" secondAttribute="height" multiplier="1:1" id="dbv-V7-hJu"/>
+                                                </constraints>
+                                                <state key="normal" image="Play.png"/>
+                                                <connections>
+                                                    <segue destination="tRj-px-kUi" kind="presentation" id="pmb-uc-OGU"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jpp-CZ-guW" userLabel="Rules">
+                                                <rect key="frame" x="119.5" y="485.5" width="136" height="161.5"/>
+                                                <state key="normal" image="Rules.png"/>
+                                                <connections>
+                                                    <segue destination="PO3-WS-dWH" kind="presentation" id="Yrl-FT-SAA"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstItem="Bf5-1Q-g6o" firstAttribute="centerX" secondItem="hgc-fH-IfV" secondAttribute="centerX" id="gwZ-cM-AOs"/>
+                                            <constraint firstItem="4GZ-Uo-0V5" firstAttribute="height" secondItem="Bf5-1Q-g6o" secondAttribute="height" id="7F9-BB-mFP"/>
+                                            <constraint firstItem="4GZ-Uo-0V5" firstAttribute="centerX" secondItem="Bf5-1Q-g6o" secondAttribute="centerX" id="AIC-Mk-1Ia"/>
+                                            <constraint firstItem="2Gz-d0-vnU" firstAttribute="height" secondItem="Bf5-1Q-g6o" secondAttribute="height" id="Drg-DM-2QN"/>
+                                            <constraint firstItem="2Gz-d0-vnU" firstAttribute="centerX" secondItem="Bf5-1Q-g6o" secondAttribute="centerX" id="FNH-Wc-bVF"/>
+                                            <constraint firstItem="jpp-CZ-guW" firstAttribute="height" secondItem="Bf5-1Q-g6o" secondAttribute="height" id="FsO-Bx-j2q"/>
+                                            <constraint firstItem="Bf5-1Q-g6o" firstAttribute="centerX" secondItem="hgc-fH-IfV" secondAttribute="centerX" id="Wbj-6P-Bzh"/>
+                                            <constraint firstItem="jpp-CZ-guW" firstAttribute="centerX" secondItem="hgc-fH-IfV" secondAttribute="centerX" id="ayD-Zy-Ggc"/>
+                                            <constraint firstItem="2Gz-d0-vnU" firstAttribute="centerX" secondItem="hgc-fH-IfV" secondAttribute="centerX" id="cq7-aC-G0L"/>
+                                            <constraint firstItem="jpp-CZ-guW" firstAttribute="centerX" secondItem="Bf5-1Q-g6o" secondAttribute="centerX" id="hbi-Tb-Ehz"/>
+                                            <constraint firstItem="4GZ-Uo-0V5" firstAttribute="centerX" secondItem="hgc-fH-IfV" secondAttribute="centerX" id="ooQ-De-dhj"/>
                                         </constraints>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4GZ-Uo-0V5" userLabel="Tuto">
-                                        <rect key="frame" x="0.0" y="130.5" width="375" height="130"/>
-                                        <state key="normal" title="Button" image="Tutorial.png"/>
-                                        <connections>
-                                            <segue destination="qBf-CZ-QP3" kind="presentation" id="4ug-bJ-Daz"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Gz-d0-vnU" userLabel="Play">
-                                        <rect key="frame" x="59.5" y="260.5" width="256" height="256"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="256" id="br5-pS-Tfc"/>
-                                            <constraint firstAttribute="height" constant="256" id="z4o-Q1-7jg"/>
-                                        </constraints>
-                                        <state key="normal" title="Button" image="Play.png"/>
-                                        <connections>
-                                            <segue destination="tRj-px-kUi" kind="presentation" id="pmb-uc-OGU"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jpp-CZ-guW" userLabel="Rules">
-                                        <rect key="frame" x="122.5" y="516.5" width="130.5" height="130.5"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="130.5" id="B12-I7-BSa"/>
-                                            <constraint firstAttribute="height" constant="130.5" id="Y9K-VJ-9vu"/>
-                                        </constraints>
-                                        <state key="normal" title="Button" image="Rules.png"/>
-                                        <connections>
-                                            <segue destination="PO3-WS-dWH" kind="presentation" id="Yrl-FT-SAA"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstItem="4GZ-Uo-0V5" firstAttribute="height" secondItem="hgc-fH-IfV" secondAttribute="height" id="2p2-yl-3yZ"/>
-                                    <constraint firstItem="4GZ-Uo-0V5" firstAttribute="centerX" secondItem="9iv-g3-qj2" secondAttribute="centerX" id="KdD-mI-ypS"/>
-                                    <constraint firstItem="jpp-CZ-guW" firstAttribute="centerX" secondItem="9iv-g3-qj2" secondAttribute="centerX" id="Ylf-Hk-dIn"/>
-                                    <constraint firstItem="jpp-CZ-guW" firstAttribute="height" secondItem="hgc-fH-IfV" secondAttribute="height" id="qTy-Uj-v9y"/>
-                                </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="9iv-g3-qj2" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="7cf-nx-nX2"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="hSE-Zm-zZx" secondAttribute="bottom" id="7mQ-vn-WZn"/>
+                            <constraint firstItem="hSE-Zm-zZx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="AQz-7x-wTL"/>
                             <constraint firstAttribute="trailing" secondItem="9iv-g3-qj2" secondAttribute="trailing" id="SNe-JT-vJH"/>
                             <constraint firstItem="9iv-g3-qj2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Z9N-Ru-aKh"/>
+                            <constraint firstItem="hSE-Zm-zZx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fmW-y1-oWP"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="hSE-Zm-zZx" secondAttribute="trailing" id="i0R-nV-WEv"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9iv-g3-qj2" secondAttribute="bottom" id="j9G-81-n04"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="backgroundImage" destination="hSE-Zm-zZx" id="Sfh-5j-zlr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -109,13 +117,12 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ban-Wr-skJ">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcq-Ud-o25">
-                                <rect key="frame" x="330" y="632" width="45" height="33"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcq-Ud-o25">
+                                <rect key="frame" x="330" y="643" width="45" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="45" id="Hpj-7C-QI3"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                <state key="normal" title="Back"/>
+                                <state key="normal" title="Back" image="back20.png"/>
                                 <connections>
                                     <action selector="backAction:" destination="tRj-px-kUi" eventType="touchUpInside" id="z6x-vE-Wyi"/>
                                 </connections>
@@ -412,9 +419,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Background3.png" width="612" height="408"/>
         <image name="Play.png" width="256" height="256"/>
         <image name="Rules.png" width="136" height="125"/>
         <image name="Tutorial.png" width="550" height="250"/>
+        <image name="back20.png" width="20" height="20"/>
         <image name="background.png" width="183" height="275"/>
         <image name="rect_jaune.png" width="520" height="527"/>
         <image name="setting.png" width="482" height="485"/>

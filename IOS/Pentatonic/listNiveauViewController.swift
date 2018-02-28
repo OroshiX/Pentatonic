@@ -75,7 +75,13 @@ class listNiveauViewController: UIViewController {
         displayButtons(currentMaxLevel)
         print ("Levels loaded : \(arrayLevels)")
         labelCurrentLevel.text = ""
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.view.addGestureRecognizer(swipeRight)
         
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        self.view.addGestureRecognizer(swipeLeft)
     }
     
     @IBAction func incrementYAction(_ sender: UISlider) {
@@ -428,9 +434,46 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         // Pass the selected object to the new view controller.
     }
     */
+    @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.right:
+                print("Swiped right")
+                var segment = difficultySegment.selectedSegmentIndex
+                if segment > 0 {
+                    segment = segment-1
+                    difficultySegment.selectedSegmentIndex = segment
+                    let currentDifficulty = ldefine.allLevel[segment]
+                    let currentMaxLevel = (arrayLevels[currentDifficulty]?.count)!
+                    displayButtons(currentMaxLevel)
+                    labelCurrentLevel.text = ""
+                    
+                }
+
+            case UISwipeGestureRecognizerDirection.down:
+                print("Swiped down")
+            case UISwipeGestureRecognizerDirection.left:
+                print("Swiped left")
+                var segment = difficultySegment.selectedSegmentIndex
+                if segment < ldefine.allLevel.count-1 {
+                    segment = segment+1
+                    difficultySegment.selectedSegmentIndex = segment
+                    let currentDifficulty = ldefine.allLevel[segment]
+                    let currentMaxLevel = (arrayLevels[currentDifficulty]?.count)!
+                    displayButtons(currentMaxLevel)
+                    labelCurrentLevel.text = ""
+                    
+                }
+
+            case UISwipeGestureRecognizerDirection.up:
+                print("Swiped up")
+            default:
+                break
+            }
+            
+        }
+    }
+
 
 }
-
-
-
 

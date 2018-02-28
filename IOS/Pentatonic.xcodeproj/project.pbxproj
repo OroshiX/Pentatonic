@@ -18,6 +18,15 @@
 		123E35FF2046EEC4009F0B82 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 123E35FE2046EEC3009F0B82 /* Media.xcassets */; };
 		123E36012046EFCB009F0B82 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E36002046EFCB009F0B82 /* background.png */; };
 		123E36032046F1B2009F0B82 /* background2.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E36022046F1B2009F0B82 /* background2.png */; };
+		123E3605204710A5009F0B82 /* Background3.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E3604204710A5009F0B82 /* Background3.png */; };
+		123E360820472A8A009F0B82 /* undo.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360620472A8A009F0B82 /* undo.png */; };
+		123E360920472A8A009F0B82 /* redo.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360720472A8A009F0B82 /* redo.png */; };
+		123E360B20472B54009F0B82 /* reset.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360A20472B54009F0B82 /* reset.png */; };
+		123E360D20472C64009F0B82 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360C20472C64009F0B82 /* back.png */; };
+		123E361220473069009F0B82 /* reset20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360E20473068009F0B82 /* reset20.png */; };
+		123E361320473069009F0B82 /* back20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360F20473068009F0B82 /* back20.png */; };
+		123E361420473069009F0B82 /* redo20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E361020473069009F0B82 /* redo20.png */; };
+		123E361520473069009F0B82 /* undo20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E361120473069009F0B82 /* undo20.png */; };
 		125082152034F16000AF0BCC /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 125082142034F16000AF0BCC /* Play.png */; };
 		125082172034F24800AF0BCC /* Rules.png in Resources */ = {isa = PBXBuildFile; fileRef = 125082162034F24800AF0BCC /* Rules.png */; };
 		125082192034F28800AF0BCC /* Tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 125082182034F28800AF0BCC /* Tutorial.png */; };
@@ -54,6 +63,15 @@
 		123E35FE2046EEC3009F0B82 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = logo/Media.xcassets; sourceTree = "<group>"; };
 		123E36002046EFCB009F0B82 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		123E36022046F1B2009F0B82 /* background2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background2.png; path = logo/background2.png; sourceTree = "<group>"; };
+		123E3604204710A5009F0B82 /* Background3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Background3.png; path = logo/Background3.png; sourceTree = "<group>"; };
+		123E360620472A8A009F0B82 /* undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = undo.png; path = logo/undo.png; sourceTree = "<group>"; };
+		123E360720472A8A009F0B82 /* redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redo.png; path = logo/redo.png; sourceTree = "<group>"; };
+		123E360A20472B54009F0B82 /* reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = reset.png; path = logo/reset.png; sourceTree = "<group>"; };
+		123E360C20472C64009F0B82 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = logo/back.png; sourceTree = "<group>"; };
+		123E360E20473068009F0B82 /* reset20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = reset20.png; path = logo/reset20.png; sourceTree = "<group>"; };
+		123E360F20473068009F0B82 /* back20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back20.png; path = logo/back20.png; sourceTree = "<group>"; };
+		123E361020473069009F0B82 /* redo20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redo20.png; path = logo/redo20.png; sourceTree = "<group>"; };
+		123E361120473069009F0B82 /* undo20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = undo20.png; path = logo/undo20.png; sourceTree = "<group>"; };
 		125082142034F16000AF0BCC /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Play.png; sourceTree = "<group>"; };
 		125082162034F24800AF0BCC /* Rules.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rules.png; sourceTree = "<group>"; };
 		125082182034F28800AF0BCC /* Tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tutorial.png; sourceTree = "<group>"; };
@@ -139,16 +157,25 @@
 				123E35FE2046EEC3009F0B82 /* Media.xcassets */,
 				1250822020359D2E00AF0BCC /* Datas */,
 				12B095F01FFFD94A002C57D5 /* Assets.xcassets */,
+				123E360F20473068009F0B82 /* back20.png */,
+				123E361020473069009F0B82 /* redo20.png */,
+				123E360E20473068009F0B82 /* reset20.png */,
+				123E361120473069009F0B82 /* undo20.png */,
+				123E360C20472C64009F0B82 /* back.png */,
 				123E36002046EFCB009F0B82 /* background.png */,
 				123E36022046F1B2009F0B82 /* background2.png */,
+				123E3604204710A5009F0B82 /* Background3.png */,
 				125082142034F16000AF0BCC /* Play.png */,
 				1250821A2034F2F100AF0BCC /* rect_jaune.png */,
 				1250821C2034F35200AF0BCC /* rect_rose.png */,
 				1250821E2034F3AA00AF0BCC /* rect_turq.png */,
+				123E360720472A8A009F0B82 /* redo.png */,
+				123E360A20472B54009F0B82 /* reset.png */,
 				125082162034F24800AF0BCC /* Rules.png */,
 				129402DE2041734E00AA3D42 /* setting.png */,
 				120D2496203BA9D70000CAAD /* transparent.png */,
 				125082182034F28800AF0BCC /* Tutorial.png */,
+				123E360620472A8A009F0B82 /* undo.png */,
 				12B095F21FFFD94A002C57D5 /* LaunchScreen.storyboard */,
 				12B095F51FFFD94A002C57D5 /* Info.plist */,
 				12B095ED1FFFD94A002C57D5 /* Pentatonic.xcdatamodeld */,
@@ -215,19 +242,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				123E361220473069009F0B82 /* reset20.png in Resources */,
 				12B095F41FFFD94A002C57D5 /* LaunchScreen.storyboard in Resources */,
 				1250821F2034F3AA00AF0BCC /* rect_turq.png in Resources */,
+				123E361420473069009F0B82 /* redo20.png in Resources */,
 				123E35FF2046EEC4009F0B82 /* Media.xcassets in Resources */,
 				1250821B2034F2F200AF0BCC /* rect_jaune.png in Resources */,
 				12B095F11FFFD94A002C57D5 /* Assets.xcassets in Resources */,
+				123E3605204710A5009F0B82 /* Background3.png in Resources */,
 				120D2497203BA9D70000CAAD /* transparent.png in Resources */,
+				123E360B20472B54009F0B82 /* reset.png in Resources */,
 				12CCD2B82045BE10003AD04C /* all.json in Resources */,
 				123E36032046F1B2009F0B82 /* background2.png in Resources */,
 				12B095EC1FFFD94A002C57D5 /* Main.storyboard in Resources */,
+				123E361320473069009F0B82 /* back20.png in Resources */,
 				125082152034F16000AF0BCC /* Play.png in Resources */,
+				123E360920472A8A009F0B82 /* redo.png in Resources */,
 				123E36012046EFCB009F0B82 /* background.png in Resources */,
+				123E360820472A8A009F0B82 /* undo.png in Resources */,
 				1250821D2034F35200AF0BCC /* rect_rose.png in Resources */,
+				123E360D20472C64009F0B82 /* back.png in Resources */,
 				125082172034F24800AF0BCC /* Rules.png in Resources */,
+				123E361520473069009F0B82 /* undo20.png in Resources */,
 				129402DF2041734F00AA3D42 /* setting.png in Resources */,
 				125082192034F28800AF0BCC /* Tutorial.png in Resources */,
 			);

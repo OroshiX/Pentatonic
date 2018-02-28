@@ -73,7 +73,7 @@ class playViewController: UIViewController {
     @IBOutlet var myBackgroundImage: UIImageView!
     @IBOutlet var myviewImage: UIImageView!
     @IBOutlet var myNumbersImage: UIImageView!
-    @IBOutlet var labelTitlePenta:UILabel!
+    @IBOutlet var labelTitlePenta:UIButton!
     
     //MARK: The functions
     /// This function set default value for the controller to be able to display the Penta
@@ -509,7 +509,7 @@ class playViewController: UIViewController {
         context.addLine(to: endPoint)
         if dash {
             context.setLineWidth(1)
-            context.setLineDash(phase: 0, lengths: [4, 4])
+            context.setLineDash(phase: 0, lengths: [1, 2])
         } else {
             context.setLineWidth(2)
             context.setLineDash(phase: 0, lengths: [])
@@ -520,7 +520,9 @@ class playViewController: UIViewController {
     
     
     public func setVSet(vset:[Set<Int>], index:Int) {
+        if !ldefine.helpButtonValue {
         vSet = vset
+        }
         globalIndex = index
     }
     func savePreferences () {
@@ -583,50 +585,73 @@ class playViewController: UIViewController {
         
     }
     
-    
+    enum butType:Int {
+        case back = 999
+        case Undo = 998
+        case Redo = 997
+        case Reset = 996
+        case label = 995
+    }
     
     func addBackButton() {
         
         
         
-        let titles = [ 999:"Back", 998:"Undo", 997:"Redo", 996:"Reset" ]
-        
+        let titles:[butType:String] = [ .back:"Back", .Undo:"Undo", .Redo:"Redo", .Reset:"Reset" ]
+        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back20.png")!,.Undo:UIImage(named: "undo20.png")!,.Redo:UIImage(named: "redo20.png")!,.Reset:UIImage(named: "reset20.png")!]
         var trailing = self.view.layoutMarginsGuide.trailingAnchor
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
         
-        for i in titles {
-            let myTitle = i.value
+        for i in tImages {
+            let myImage = i.value
             let tempButton = UIButton()
             self.view.addSubview(tempButton)
             
-            tempButton.setTitle(myTitle, for: UIControlState.normal)
+            //tempButton.setTitle(myTitle, for: UIControlState.normal)
+            tempButton.setImage(tImages[i.key], for: [])
             tempButton.backgroundColor = UIColor.white
-            tempButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
+            //tempButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
             tempButton.layer.cornerRadius = 3
-            tempButton.sizeToFit()
+            //tempButton.sizeToFit()
+            tempButton.widthAnchor.constraint(equalToConstant: CGFloat(20))
+            //tempButton.sizeThatFits(CGSize(width: 20, height: 20))
             tempButton.translatesAutoresizingMaskIntoConstraints = false
-            tempButton.bottomAnchor.constraint(equalTo: bottom, constant: -20).isActive = true
+            tempButton.bottomAnchor.constraint(equalTo: bottom, constant: 0).isActive = true
             tempButton.trailingAnchor.constraint(equalTo: trailing, constant: -20).isActive = true
             trailing = tempButton.layoutMarginsGuide.leadingAnchor
-            tempButton.tag = i.key
+            tempButton.tag = i.key.rawValue
             tempButton.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
         }
-        labelTitlePenta = UILabel()
-        var top = self.view.layoutMarginsGuide.topAnchor
+        labelTitlePenta = UIButton()
+        let top = self.view.layoutMarginsGuide.topAnchor
+        let leading = self.view.layoutMarginsGuide.leadingAnchor
+        trailing = self.view.layoutMarginsGuide.trailingAnchor
         self.view.addSubview(labelTitlePenta)
-        labelTitlePenta.topAnchor.constraint(equalTo: top, constant: 20).isActive = true
-        labelTitlePenta.text = currentPenta?.name
+        let middle = self.view.layoutMarginsGuide.centerXAnchor
+        
+        labelTitlePenta.topAnchor.constraint(equalTo: top, constant: 0).isActive = true
+        labelTitlePenta.widthAnchor.constraint(equalToConstant: screenWidth/2).isActive = true
+        labelTitlePenta.centerXAnchor.constraint(equalTo: middle, constant: 0).isActive = true
+        labelTitlePenta.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
+        labelTitlePenta.titleLabel?.textAlignment = .center
+        labelTitlePenta.setTitle(currentPenta?.name, for: [])
+        labelTitlePenta.backgroundColor = UIColor(rgb: 0xcccccc)
+        labelTitlePenta.titleLabel?.textColor = UIColor.black
         labelTitlePenta.translatesAutoresizingMaskIntoConstraints = false
-
+        labelTitlePenta.tag = (butType.label).rawValue
+        labelTitlePenta.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
     }
     @IBAction func buttonNBAction(_ sender: UIButton) {
         var number:Int = sender.tag
         
         switch number {
-        case 999:
+        case butType.label.rawValue:
+            sender.isHidden = true
+            return
+        case butType.back.rawValue:
             dismiss(animated: true, completion: nil)
             return
-        case 996:
+        case butType.Reset.rawValue:
             selectedValue = -1
             for i  in 0..<vSet.count {
                 if vSet[i].count == 1 && (vSet[i].first)! < 0 { continue } else {
@@ -641,7 +666,7 @@ class playViewController: UIViewController {
         default:
             var thisAction:action? = nil
             
-            if (number == 998) {
+            if (number == butType.Undo.rawValue) {
                 if pastAction.count != 0 {
                     thisAction = pastAction.popLast()
                     futurAction.append(thisAction!)
@@ -650,7 +675,7 @@ class playViewController: UIViewController {
                 }
             } else
                 
-                if (number == 997) {
+                if (number == butType.Redo.rawValue) {
                     if futurAction.count != 0 {
                         thisAction = futurAction.popLast()
                         pastAction.append(thisAction!)
@@ -696,16 +721,16 @@ class playViewController: UIViewController {
         
         let buttonID:Int = sender.tag
         switch buttonID {
-        case 999:
+        case butType.back.rawValue:
             // We did press Back button
             
             dismiss(animated: true, completion: nil)
             return
-        case 998:
+        case butType.Undo.rawValue:
             // Undo
             break
             
-        case 997:
+        case butType.Redo.rawValue:
             // Redo
             break
         default:
