@@ -21,17 +21,25 @@ class listNiveauViewController: UIViewController {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var labelCurrentLevel: UILabel!
     @IBOutlet var difficultySegment: UISegmentedControl!
+    @IBOutlet var backgroundImage: UIImageView!
     
     @IBOutlet var sliderYIncrement: UISlider!
     @IBOutlet var sliderIncrement: UISlider!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        /* Debug use only - so dont display it */
         sliderIncrement.value = Float(incrementPenta)
         labelIncrement.text = "X\(incrementPenta)"
         
         sliderYIncrement.value = Float(incrementYPenta)
         labelYIncrement.text = "Y\(incrementYPenta)"
 
+            sliderIncrement.isHidden = true
+        sliderYIncrement.isHidden = true
+        labelIncrement.isHidden = true
+        labelYIncrement.isHidden = true
+        
         // Do any additional setup after loading the view.
         /* Read the JSON File with all level available */
         
@@ -55,6 +63,9 @@ class listNiveauViewController: UIViewController {
         }
         // Create the table of buttons
         createButtons()
+        //Temporary code to be removed - just to test 
+        tempPenta = pentas[31]
+        
         // Loading the available Levels
         let segment = difficultySegment.selectedSegmentIndex
         
@@ -64,6 +75,7 @@ class listNiveauViewController: UIViewController {
         displayButtons(currentMaxLevel)
         print ("Levels loaded : \(arrayLevels)")
         labelCurrentLevel.text = ""
+        
     }
     
     @IBAction func incrementYAction(_ sender: UISlider) {
@@ -91,22 +103,25 @@ class listNiveauViewController: UIViewController {
         var heightBut:Int
         var initialX:Int
         var initialY:Int
-        let NBButton = 8
-        
-        let divSize:Int = NBButton + 2
+        let NBButtonH = 4
+        let NBButtonV = 6
+
+        let divSize:Int = NBButtonH + 1
         widthBut = minW / divSize
         heightBut = widthBut
-        initialX = widthBut
-        initialY = heightBut*2
+        initialX = widthBut/4
+        initialY = heightBut/2
         
-        for j in 0..<NBButton-1 {
-            for i in 0..<NBButton {
+        var tagA:Int = -1
+        for j in 0..<NBButtonV-1 {
+            for i in 0..<NBButtonH {
+                tagA = tagA+1
                 let button = UIButton(frame: CGRect(x: initialX+i*widthBut, y: initialY+j*heightBut, width: widthBut, height: heightBut))
-                button.backgroundColor = .green
-                button.setTitle("button\(i)", for: [])
-                button.setImage(tableImage[(i*NBButton+j)%tableImage.count], for: [])
+                //button.backgroundColor = .green
+                //button.setTitle("button\(i)", for: [])
+                button.setImage(tableImage[(i*NBButtonH+j)%tableImage.count], for: [])
                 button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-                button.tag = j*NBButton+i
+                button.tag = tagA
                 arrayLevelButtons.append(button)
                 self.view.addSubview(button)
                 
@@ -217,10 +232,20 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
     
     func displayButtons(_ nombre:Int) {
         var i:Int = 0
-        
+        let segment = difficultySegment.selectedSegmentIndex
+        let difficulty = ldefine.allLevel[segment]
+
         for button in arrayLevelButtons {
             if (i<nombre) {
                 button.isHidden = false
+                var penta:APenta? = nil
+                for anyPenta in pentas {
+                    if anyPenta.name == arrayLevels[difficulty]![button.tag] {
+                        penta = anyPenta
+                        break
+                    }
+                }
+                drawMiniPenta(button: button, penta: penta!)
             } else {
                 button.isHidden = true
             }
@@ -289,7 +314,110 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         // Dispose of any resources that can be recreated.
     }
     
+    func get_neighbour(penta:APenta, _ i:Int, _ j:Int) -> neighbour {
+        let maxj=penta.data!.count-1
+        let maxi=penta.data![i].count-1
+        var myNeighbour:neighbour = neighbour.init(up: false, down: false, right: false, left: false)
+        let val = penta.data![i][j]
+        
+        if j == 0 { myNeighbour.left = false }
+        else { myNeighbour.left = penta.data![i][j-1] == val }
+        
+        if i == 0 { myNeighbour.up = false }
+        else { myNeighbour.up = penta.data![i-1][j] == val }
+        
+        if j == maxi { myNeighbour.right = false }
+        else { myNeighbour.right = penta.data![i][j+1] == val }
+        
+        if i == maxj { myNeighbour.down = false }
+        else { myNeighbour.down = penta.data![i+1][j] == val }
+        
+        return myNeighbour
+    }
     
+    func drawRect(_ ctx:CGContext, _ x:CGFloat,_ y:CGFloat,_ width:CGFloat,_ height:CGFloat,_ up:Bool,_ down:Bool,_ right:Bool,_ left:Bool) {
+        let color = UIColor.black.cgColor
+        
+        drawLine(ctx,x,y,x+width,y,up,color)
+        drawLine(ctx,x,y+height,x+width,y+height,down,color)
+        drawLine(ctx,x,y,x,y+height,left,color)
+        drawLine(ctx,x+width,y,x+width,y+height,right,color)
+    }
+    
+    func drawLine(_ context:CGContext,_ x:CGFloat,_ y:CGFloat, _ xdest:CGFloat, _ ydest:CGFloat, _ dash:Bool, _ color:CGColor ) {
+        let startPoint = CGPoint(x: x, y: y)
+        let endPoint = CGPoint(x: xdest, y: ydest)
+        context.move(to: startPoint)
+        context.addLine(to: endPoint)
+        if dash {
+            context.setLineWidth(1)
+            context.setLineDash(phase: 0, lengths: [4, 4])
+        } else {
+            context.setLineWidth(2)
+            context.setLineDash(phase: 0, lengths: [])
+        }
+        context.setStrokeColor(color)
+        context.strokePath()
+    }
+    
+
+    func drawMiniPenta(button:UIButton, penta:APenta) {
+        let width:Int = penta.width!
+        let height:Int = penta.height!
+        let myImageView:UIImageView = button.imageView!
+        var sizeSquare : CGFloat
+        var dwidth:CGFloat = CGFloat(0)
+        var dheight:CGFloat = CGFloat(0)
+        let diff = abs((myImageView.bounds.size.height - myImageView.bounds.size.width)/2)
+        if myImageView.bounds.size.height < myImageView.bounds.size.width {
+            sizeSquare = myImageView.bounds.size.height-5
+        } else {
+            sizeSquare = myImageView.bounds.size.width-5
+        }
+        let divSize = CGFloat(max(width,height))
+        let sizeBut = sizeSquare / divSize
+        
+        let sizeFont = CGFloat(sizeBut) * 0.8
+        if width < height {
+            dwidth = CGFloat(height - width) * sizeBut / 2
+        } else {
+            dheight = CGFloat(width - height) * sizeBut / 2
+        }
+        
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: sizeSquare, height: sizeSquare))
+        
+        let img = renderer.image { ctx in
+            
+            let color = UIColor(rgb: 0xcccccc)
+            
+            ctx.cgContext.setFillColor(color.cgColor)
+            ctx.cgContext.fill(CGRect(x: 0, y: 0, width: sizeSquare, height: sizeSquare))
+            
+            for i in 0..<height {
+                for j in 0..<width {
+                    let x=sizeBut/6+CGFloat(j)*sizeBut
+                    let y=CGFloat(i)*sizeBut
+                    let itsNeighbour = get_neighbour(penta:penta,i,j)
+                    print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
+                    drawRect(ctx.cgContext, CGFloat(x)+dwidth, CGFloat(y)+dheight, CGFloat(sizeBut), CGFloat(sizeBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
+                    
+                }
+            }
+            var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
+            
+            for arrayValeur in penta.valeurs! {
+                
+                let x = dwidth + sizeBut*0.5 + CGFloat(arrayValeur.j!)*sizeBut
+                let y = dheight + CGFloat(arrayValeur.i!)*sizeBut
+                
+                ("\(arrayValeur.val!)" as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
+            }
+        }
+        button.setImage(img, for: UIControlState.normal)
+        //image.image = img
+    }
+    
+
     
     /*
     // MARK: - Navigation

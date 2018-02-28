@@ -9,6 +9,10 @@
 import UIKit
 var arrayLevels:[define.Level:[String]] = [:]
 var ldefine:define = define.init()
+
+//Temporary code to be removed - just to test
+var tempPenta:APenta? = nil
+
 extension String {
     
     subscript (_ i: Int) -> Character {

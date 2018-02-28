@@ -7,6 +7,8 @@
 //
 
 import UIKit
+
+//MARK: Some Classes used by the playViewController
 struct neighbour {
     var up:Bool
     var down:Bool
@@ -27,7 +29,12 @@ struct IJ {
         return index
     }
 }
+struct action {
+    var cell:Int
+    var value:Int
+}
 class playViewController: UIViewController {
+    //MARK: The variables used by the class
     var arrayPlayButtons:[UIButton] = []
     var initialized:Bool = false
     var currentPenta:APenta? = nil
@@ -43,7 +50,7 @@ class playViewController: UIViewController {
     var dyu:CGFloat = 0
     var dym:CGFloat = 0
     var dyd:CGFloat = 0
-
+    
     var globalIndex = -1
     
     var screenWidth:CGFloat = 0
@@ -58,17 +65,23 @@ class playViewController: UIViewController {
     var possibleValue : [Set<Int>] = [[]]
     var selectedValue:Int = -1
     var whatTag = ["a","b","c","d","e","x","y","z","v","w"]
-
-    struct action {
-        var cell:Int
-        var value:Int
-    }
+    
+    
     var pastAction:[action] = []
     var futurAction:[action] = []
-
+    
+    @IBOutlet var myBackgroundImage: UIImageView!
     @IBOutlet var myviewImage: UIImageView!
     @IBOutlet var myNumbersImage: UIImageView!
-
+    @IBOutlet var labelTitlePenta:UILabel!
+    
+    //MARK: The functions
+    /// This function set default value for the controller to be able to display the Penta
+    /// This function must be called before any invocation of this controller.
+    ///
+    /// - Parameter penta: This is the next penta to be display and played in this controller
+    ///
+    
     public func setPenta (_ penta:APenta) {
         currentPenta = penta
         
@@ -205,7 +218,7 @@ class playViewController: UIViewController {
                     }
                     for pentaVal in 1...cell.value.count {
                         local = []
-
+                        
                         for value in cell.value {
                             
                             if possibleValue[value].contains(pentaVal) {
@@ -239,18 +252,38 @@ class playViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        let image = UIImage(named: "background2.png")!
+        myBackgroundImage = UIImageView(image: image)
+        
+        self.view.addSubview(myBackgroundImage)
+        
+        let trailing = self.view.layoutMarginsGuide.trailingAnchor
+        let leading = self.view.layoutMarginsGuide.leadingAnchor
+        let top = self.view.layoutMarginsGuide.topAnchor
+        let bottom = self.view.layoutMarginsGuide.bottomAnchor
+
+        myBackgroundImage.translatesAutoresizingMaskIntoConstraints = false
+        
+        myBackgroundImage.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
+        myBackgroundImage.leadingAnchor.constraint(equalTo: leading, constant: 0).isActive = true
+        myBackgroundImage.topAnchor.constraint(equalTo: top, constant: 0).isActive = true
+        myBackgroundImage.bottomAnchor.constraint(equalTo: bottom, constant: 0).isActive = true
+        
+        
+        
+        
         myviewImage = UIImageView(frame:CGRect(x: 0, y: 0, width: minW, height: minW))
         self.view.addSubview(myviewImage)
+        
+
         
         myNumbersImage = UIImageView(frame:CGRect(x:0,y:minW,width:minW,height:(Int(screenHeight) - minW)))
         self.view.addSubview(myNumbersImage)
         
-        
-        
         //***********
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: Int(minW), height: (Int(screenHeight) - minW)))
         let img = renderer.image { ctx in
-
+            
             ctx.cgContext.setFillColor(UIColor.gray.cgColor)
             let widthAreaBut = CGFloat(((currentPenta?.width)!+1)*sizeBut)
             let heightAreaBut = screenHeight - CGFloat(minW) - 10.0
@@ -283,52 +316,8 @@ class playViewController: UIViewController {
         }
     }
     
-    func addButton (x:Int, y:Int, size:Int, color: UIColor, tag:Int) -> UIButton {
-        let myImage:UIImage = UIImage(named: "transparent.png")!
-        let button = UIButton(type: UIButtonType.custom)
-        let rect = CGRect(x:x,y:y,width:size,height:size)
-        button.frame = rect
-        button.setImage(myImage, for: UIControlState.normal)
-        button.backgroundColor = color
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        button.tag = tag
-        self.view.addSubview(button)
-        return button
-    }
-    func addBackButton() {
-        
-        
-        
-            let titles = [ 999:"Back", 998:"Undo", 997:"Redo" ]
-            
-            var trailing = self.view.layoutMarginsGuide.trailingAnchor
-            let bottom = self.view.layoutMarginsGuide.bottomAnchor
-            
-            for i in titles {
-                let myTitle = i.value
-                let tempButton = UIButton()
-                self.view.addSubview(tempButton)
-
-                tempButton.setTitle(myTitle, for: UIControlState.normal)
-                tempButton.backgroundColor = UIColor.white
-                tempButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
-                tempButton.layer.cornerRadius = 3
-                tempButton.sizeToFit()
-                tempButton.translatesAutoresizingMaskIntoConstraints = false
-                tempButton.bottomAnchor.constraint(equalTo: bottom, constant: -20).isActive = true
-                tempButton.trailingAnchor.constraint(equalTo: trailing, constant: -20).isActive = true
-                trailing = tempButton.layoutMarginsGuide.leadingAnchor
-                tempButton.tag = i.key
-                tempButton.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
-            }
-
     
-
-    }
-        
-
-        
-        
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -362,7 +351,7 @@ class playViewController: UIViewController {
                 let h = CGFloat(cote)
                 let tag = j*nbNButtonsX+i+1
                 ctx.setFillColor(UIColor.gray.cgColor)
-
+                
                 ctx.fill(CGRect(x:x, y:y, width:w,height:h ))
                 addNButton(x:x, y:y, width:w, height:h, color:UIColor.clear, tag:tag)
                 
@@ -377,29 +366,16 @@ class playViewController: UIViewController {
         switch val {
         case 1...5:
             ret="\(val)"
-        
+            
         case 6..<whatTag.count+6:
             ret=whatTag[val-6]
-        
+            
         default:
             ret="?"
         }
         return ret
     }
-    func addNButton (x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat, color: UIColor, tag:Int) {
-        let myImage:UIImage = UIImage(named: "transparent.png")!
-        let button = UIButton(type: UIButtonType.custom)
-        let rect = CGRect(x:x,y:y+CGFloat(minW),width:width,height:height)
-        button.frame = rect
-        button.setImage(myImage, for: UIControlState.normal)
-        button.backgroundColor = color
-        button.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
-        button.tag = tag
-        self.view.addSubview(button)
-    }
-    
-    
-    
+
     
     
     
@@ -408,7 +384,7 @@ class playViewController: UIViewController {
     func drawPenta(penta:APenta, valSelected:Int, darker:Set<Int> ) {
         let width:Int = penta.width!
         let height:Int = penta.height!
-
+        
         let maxI = initialX/4+height*sizeBut
         let maxJ = initialY/2+width*sizeBut + sizeBut
         if (Int(screenWidth) - maxI) > (Int(screenHeight) - maxJ) {
@@ -417,7 +393,7 @@ class playViewController: UIViewController {
             print ("USING J \((screenHeight - CGFloat(maxJ))/5.0)  and not  \((screenWidth - CGFloat(maxI))/5.0) ")
             print ("from ")
         }
-       
+        
         
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: minW, height: minW))
         
@@ -432,7 +408,7 @@ class playViewController: UIViewController {
                     let val:Int = lIJ.getIndex(penta,i,j)
                     if darker.contains(val) { color = 1} else { color = 2}
                     if val == valSelected { color = 0}
-
+                    
                     ctx.cgContext.setFillColor(listColor[color]!)
                     let x=initialX+j*sizeBut
                     let y=initialY+i*sizeBut
@@ -450,7 +426,7 @@ class playViewController: UIViewController {
             for arrayValeur in vSet {
                 index = index+1
                 let lIJ = IJ(p: currentPenta!, val: index)
-
+                
                 if arrayValeur.count == 1 {
                     let x = (initialX/4+(lIJ.j+1)*sizeBut)
                     let y = (initialY/2+(lIJ.i+1)*sizeBut)
@@ -501,7 +477,7 @@ class playViewController: UIViewController {
         let maxi=penta.data![i].count-1
         var myNeighbour:neighbour = neighbour.init(up: false, down: false, right: false, left: false)
         let val = penta.data![i][j]
-
+        
         if j == 0 { myNeighbour.left = false }
         else { myNeighbour.left = penta.data![i][j-1] == val }
         
@@ -543,6 +519,106 @@ class playViewController: UIViewController {
     }
     
     
+    public func setVSet(vset:[Set<Int>], index:Int) {
+        vSet = vset
+        globalIndex = index
+    }
+    func savePreferences () {
+        if globalIndex >= 0 { globalUserGameData.totale![globalIndex].vSet = vSet }
+        else {
+            let currBackup:ABackup = ABackup()
+            currBackup.name = currentPenta?.name
+            currBackup.vSet = vSet
+            globalUserGameData.totale?.append(currBackup)
+            globalIndex = (globalUserGameData.totale?.count)! - 1
+        }
+        
+        
+        // let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let myDataPath = paths[0].appending("/globalUserData.json")
+        
+        
+        let url = URL(fileURLWithPath:myDataPath)
+        let encodedData = try? JSONEncoder().encode(globalUserGameData)
+        try? encodedData?.write(to: url)
+        
+        
+    }
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    func addButton (x:Int, y:Int, size:Int, color: UIColor, tag:Int) -> UIButton {
+        let myImage:UIImage = UIImage(named: "transparent.png")!
+        let button = UIButton(type: UIButtonType.custom)
+        let rect = CGRect(x:x,y:y,width:size,height:size)
+        button.frame = rect
+        button.setImage(myImage, for: UIControlState.normal)
+        button.backgroundColor = color
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        button.tag = tag
+        self.view.addSubview(button)
+        return button
+    }
+    
+    func addNButton (x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat, color: UIColor, tag:Int) {
+        let myImage:UIImage = UIImage(named: "transparent.png")!
+        let button = UIButton(type: UIButtonType.custom)
+        let rect = CGRect(x:x,y:y+CGFloat(minW),width:width,height:height)
+        button.frame = rect
+        button.setImage(myImage, for: UIControlState.normal)
+        button.backgroundColor = color
+        button.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
+        button.tag = tag
+        self.view.addSubview(button)
+        
+        
+    }
+    
+    
+    
+    func addBackButton() {
+        
+        
+        
+        let titles = [ 999:"Back", 998:"Undo", 997:"Redo", 996:"Reset" ]
+        
+        var trailing = self.view.layoutMarginsGuide.trailingAnchor
+        let bottom = self.view.layoutMarginsGuide.bottomAnchor
+        
+        for i in titles {
+            let myTitle = i.value
+            let tempButton = UIButton()
+            self.view.addSubview(tempButton)
+            
+            tempButton.setTitle(myTitle, for: UIControlState.normal)
+            tempButton.backgroundColor = UIColor.white
+            tempButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
+            tempButton.layer.cornerRadius = 3
+            tempButton.sizeToFit()
+            tempButton.translatesAutoresizingMaskIntoConstraints = false
+            tempButton.bottomAnchor.constraint(equalTo: bottom, constant: -20).isActive = true
+            tempButton.trailingAnchor.constraint(equalTo: trailing, constant: -20).isActive = true
+            trailing = tempButton.layoutMarginsGuide.leadingAnchor
+            tempButton.tag = i.key
+            tempButton.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
+        }
+        labelTitlePenta = UILabel()
+        var top = self.view.layoutMarginsGuide.topAnchor
+        self.view.addSubview(labelTitlePenta)
+        labelTitlePenta.topAnchor.constraint(equalTo: top, constant: 20).isActive = true
+        labelTitlePenta.text = currentPenta?.name
+        labelTitlePenta.translatesAutoresizingMaskIntoConstraints = false
+
+    }
     @IBAction func buttonNBAction(_ sender: UIButton) {
         var number:Int = sender.tag
         
@@ -550,7 +626,18 @@ class playViewController: UIViewController {
         case 999:
             dismiss(animated: true, completion: nil)
             return
-            
+        case 996:
+            selectedValue = -1
+            for i  in 0..<vSet.count {
+                if vSet[i].count == 1 && (vSet[i].first)! < 0 { continue } else {
+                    vSet[i] = []
+                }
+            }
+            savePreferences()
+            drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
+            pastAction = []
+            futurAction = []
+            return
         default:
             var thisAction:action? = nil
             
@@ -632,45 +719,14 @@ class playViewController: UIViewController {
             drawPenta(penta: currentPenta!, valSelected: selectedValue, darker: theSisters)
         }
     }
-    public func setVSet(vset:[Set<Int>], index:Int) {
-        vSet = vset
-        globalIndex = index
-    }
-    func savePreferences () {
-        if globalIndex >= 0 { globalUserGameData.totale![globalIndex].vSet = vSet }
-        else {
-            let currBackup:ABackup = ABackup()
-            currBackup.name = currentPenta?.name
-            currBackup.vSet = vSet
-            globalUserGameData.totale?.append(currBackup)
-            globalIndex = (globalUserGameData.totale?.count)! - 1
-        }
-        
-        
-        // let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let myDataPath = paths[0].appending("/globalUserData.json")
-        
-        
-        let url = URL(fileURLWithPath:myDataPath)
-        let encodedData = try? JSONEncoder().encode(globalUserGameData)
-        try? encodedData?.write(to: url)
-        
-        
-    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
+    
+    
 }
+
+
+
+
 extension UIColor {
     convenience init(rgb: UInt) {
         self.init(
