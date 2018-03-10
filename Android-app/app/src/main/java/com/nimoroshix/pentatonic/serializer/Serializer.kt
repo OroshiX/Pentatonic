@@ -2,14 +2,12 @@ package com.nimoroshix.pentatonic.serializer
 
 import android.util.Log
 import com.nimoroshix.pentatonic.action.*
-import com.nimoroshix.pentatonic.model.Area
-import com.nimoroshix.pentatonic.model.Cell
-import com.nimoroshix.pentatonic.model.Grid
-import com.nimoroshix.pentatonic.model.Position
+import com.nimoroshix.pentatonic.model.*
 import com.nimoroshix.pentatonic.persistence.Pentatonic
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.util.*
 
 /**
  * Project Pentatonic
@@ -87,42 +85,29 @@ class Serializer {
             penta.areas = grid.cells.joinToString("\n") { row ->
                 row.joinToString("") { c -> c.area.id.toString() }
             }
-            val set = HashSet<Position>()
-            penta.enonce = grid.cells.flatten().filter { c -> c.enonce || c.sister != null || c.differenceOne != null }.joinToString(
+            // put difference ones
+            val diffOnes = grid.diffOnes.joinToString("\n") { diffOne ->
+                "-${diffOne.position1.nLine},${diffOne.position1.nColumn},${diffOne.position2.nLine},${diffOne.position2.nColumn}"
+            }
+
+            val enonce = grid.cells.flatten().filter { c -> c.enonce || c.sister != null }.joinToString(
                     "\n") { cell ->
                 when {
                     cell.enonce -> "${cell.values[0]},${cell.position.nLine},${cell.position.nColumn}"
-                    else        -> {
-                        val sb = StringBuilder()
-
-                        if (cell.sister != null) {
-                            sb.append(
-                                    "${cell.sister},${cell.position.nLine},${cell.position.nColumn}")
-                        }
-                        if (sb.isNotEmpty()) {
-                            sb.append("\n")
-                        }
-                        if (cell.differenceOne != null) {
-                            // check that the diffOne was not already registered here before
-                            if (!set.contains(cell.position) && !set.contains(
-                                            cell.differenceOne!!)) {
-                                sb.append(
-                                        "-${cell.position.nLine},${cell.position.nColumn},${cell.differenceOne!!.nLine},${cell.differenceOne!!.nColumn}")
-                                set.add(cell.position)
-                                set.add(cell.differenceOne!!)
-                            }
-                        }
-
-                        sb.toString()
-                    }
+                    else        -> "${cell.sister},${cell.position.nLine},${cell.position.nColumn}"
                 }
             }
+            penta.enonce = when {
+                diffOnes.isNotEmpty() -> enonce + "\n" + diffOnes
+                else                  -> enonce
+            }
+
             penta.progress = grid.cells.flatten().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString(
                     "\n") { cell ->
                 "${cell.position.nLine},${cell.position.nColumn}:${cell.values.joinToString(
                         ",") { c -> c.toString() }}"
             }
-            penta.hasDiffOne = grid.cells.flatten().any { c -> c.differenceOne != null }
+            penta.hasDiffOne = grid.diffOnes.isNotEmpty()
             penta.hasSister = grid.cells.flatten().any { c -> c.sister != null }
             penta.version = grid.version
             penta.difficulty = grid.difficulty
@@ -168,8 +153,13 @@ class Serializer {
                 if (line.startsWith('-')) {
                     // It is a constraint [diffOne]
                     val (i1, j1, i2, j2) = line.substring(1).split(",").map { nb -> nb.toInt() }
-                    grid.cells[i1][j1].differenceOne = grid.cells[i2][j2].position
-                    grid.cells[i2][j2].differenceOne = grid.cells[i1][j1].position
+                    val pos1 = Position(i1, j1)
+                    val pos2 = Position(i2, j2)
+                    if (pos1 == pos2) throw IllegalArgumentException(
+                            "Difference one should concern 2 different positions")
+                    if (!pos1.isNear(pos2)) throw IllegalArgumentException(
+                            "Difference one should concert 2 near positions")
+                    grid.diffOnes.add(DiffOne(pos1, pos2))
                     continue
                 }
 

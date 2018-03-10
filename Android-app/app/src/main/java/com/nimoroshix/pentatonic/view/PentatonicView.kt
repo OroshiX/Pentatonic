@@ -12,6 +12,7 @@ import com.nimoroshix.pentatonic.model.RelativePosition.*
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_MARGIN_SMALL_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextHeightForSize
 import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextSizeForWidth
+import com.nimoroshix.pentatonic.util.getOtherPosition
 import java.util.*
 
 /**
@@ -144,7 +145,7 @@ class PentatonicView : PentatonicAbstractView {
                             paint)
                 }
 
-                val otherPosition = cell.differenceOne
+                val otherPosition = grid.diffOnes.getOtherPosition(i, j)
                 @SuppressLint("DrawAllocation")
                 if (otherPosition != null) {
                     val relation: RelativePosition = cell.position.getPositionRelativeToMe(

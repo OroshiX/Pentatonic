@@ -4,10 +4,7 @@ import android.graphics.Matrix
 import android.os.Parcel
 import android.os.Parcelable
 import com.nimoroshix.pentatonic.action.*
-import com.nimoroshix.pentatonic.util.getNumericValue
-import com.nimoroshix.pentatonic.util.getOnlyValueList
-import com.nimoroshix.pentatonic.util.getOnlyValueSet
-import com.nimoroshix.pentatonic.util.parcelableCreator
+import com.nimoroshix.pentatonic.util.*
 import java.lang.Math.abs
 import java.util.*
 import kotlin.collections.HashSet
@@ -45,6 +42,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     var filename: String = ""
     var author: String = ""
     var dbId: Long = 0
+    var diffOnes: MutableList<DiffOne> = mutableListOf()
     private var undo = UndoAction()
 
     /**
@@ -268,12 +266,12 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     private fun getDiffOneCells(cell: Cell): Set<Cell> {
-        if (cell.differenceOne == null) return emptySet()
-        return setOf(cells[cell.differenceOne!!.nLine][cell.differenceOne!!.nColumn])
+        return getDiffOneCells(cell.position.nLine, cell.position.nColumn)
     }
 
     private fun getDiffOneCells(nLine: Int, nColumn: Int): Set<Cell> {
-        return getDiffOneCells(cells[nLine][nColumn])
+        val otherPosition = diffOnes.getOtherPosition(nLine, nColumn) ?: return emptySet()
+        return setOf(cells[otherPosition.nLine][otherPosition.nColumn])
     }
 
 
@@ -405,6 +403,9 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt()) {
+        mutableListOf<DiffOne>().apply {
+            parcel.readList(this, DiffOne::class.java.classLoader)
+        }
         positionSelected = parcel.readParcelable(Position::class.java.classLoader)
         undo = parcel.readParcelable(UndoAction::class.java.classLoader)
         for (i in 0 until nbLines) {
@@ -416,6 +417,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(nbLines)
         parcel.writeInt(nbColumns)
+        parcel.writeList(diffOnes)
         parcel.writeParcelable(positionSelected, flags)
         parcel.writeParcelable(undo, flags)
         for (i in 0 until nbLines) {
