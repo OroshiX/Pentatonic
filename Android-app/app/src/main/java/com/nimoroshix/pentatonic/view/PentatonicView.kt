@@ -1,18 +1,15 @@
 package com.nimoroshix.pentatonic.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import com.nimoroshix.pentatonic.R
 import com.nimoroshix.pentatonic.model.Grid
-import com.nimoroshix.pentatonic.model.RelativePosition
 import com.nimoroshix.pentatonic.model.RelativePosition.*
 import com.nimoroshix.pentatonic.util.Constants.Companion.PROPORTION_MARGIN_SMALL_NUMBER_CELL
 import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextHeightForSize
 import com.nimoroshix.pentatonic.util.ViewUtils.Companion.getTextSizeForWidth
-import com.nimoroshix.pentatonic.util.getOtherPosition
 import java.util.*
 
 /**
@@ -33,6 +30,9 @@ class PentatonicView : PentatonicAbstractView {
     private var strokeWidthLarge: Float
     private var strokeWidthThin: Float
     private var strokeWidthNumber: Float
+
+    private var xArray: Array<Float> = Array(5) { _ -> 0f }
+    private var yArray: Array<Float> = Array(5) { _ -> 0f }
 
 //    private val backgroundDrawable: Drawable?
 
@@ -144,79 +144,78 @@ class PentatonicView : PentatonicAbstractView {
                             offsetTop + i * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize,
                             paint)
                 }
-
-                val otherPosition = grid.diffOnes.getOtherPosition(i, j)
-                @SuppressLint("DrawAllocation")
-                if (otherPosition != null) {
-                    val relation: RelativePosition = cell.position.getPositionRelativeToMe(
-                            otherPosition)
-                    val xArray: Array<Float> = Array(5,
-                            { k -> offsetLeft + j * cellSize + (cellSize * k) / 4 })
-                    val yArray: Array<Float> = Array(5,
-                            { k -> offsetTop + i * cellSize + (cellSize * k) / 4 })
-                    var xStart: Float
-                    var xEnd: Float
-                    var yStart: Float
-                    var yEnd: Float
-                    when (relation) {
-                        TOP          -> {
-                            xStart = xArray[2]
-                            xEnd = xArray[2]
-                            yStart = yArray[0]
-                            yEnd = yArray[1]
-                        }
-                        RIGHT        -> {
-                            xStart = xArray[4]
-                            xEnd = xArray[3]
-                            yStart = yArray[2]
-                            yEnd = yArray[2]
-                        }
-                        BOTTOM       -> {
-                            xStart = xArray[2]
-                            xEnd = xArray[2]
-                            yStart = yArray[4]
-                            yEnd = yArray[3]
-                        }
-                        LEFT         -> {
-                            xStart = xArray[0]
-                            xEnd = xArray[1]
-                            yStart = yArray[2]
-                            yEnd = yArray[2]
-                        }
-                        TOP_RIGHT    -> {
-                            xStart = xArray[4]
-                            xEnd = xArray[3]
-                            yStart = yArray[0]
-                            yEnd = yArray[1]
-                        }
-                        BOTTOM_RIGHT -> {
-                            xStart = xArray[4]
-                            xEnd = xArray[3]
-                            yStart = yArray[4]
-                            yEnd = yArray[3]
-                        }
-                        BOTTOM_LEFT  -> {
-                            xStart = xArray[0]
-                            xEnd = xArray[1]
-                            yStart = yArray[4]
-                            yEnd = yArray[3]
-                        }
-                        TOP_LEFT     -> {
-                            xStart = xArray[0]
-                            xEnd = xArray[1]
-                            yStart = yArray[0]
-                            yEnd = yArray[1]
-                        }
-                        ILLEGAL      -> {
-                            Log.e(TAG, "illegal position")
-                            return
-                        }
-                    }
-                    canvas.drawLine(xStart, yStart, xEnd, yEnd, paint)
-                }
             }
         }
+        drawDiffOnes(paint, canvas)
+    }
 
+    private fun drawDiffOnes(paint: Paint, canvas: Canvas) {
+        // Draw all the diff Ones
+        grid.diffOnes.forEach { diffOne ->
+            for (k in 0 until xArray.size) {
+                xArray[k] = offsetLeft + diffOne.position1.nColumn * cellSize + (cellSize * k) / 4
+                yArray[k] = offsetTop + diffOne.position1.nLine * cellSize + (cellSize * k) / 4
+            }
+            val xStart: Float
+            val xEnd: Float
+            val yStart: Float
+            val yEnd: Float
+            when (diffOne.position1.getPositionRelativeToMe(diffOne.position2)) {
+                TOP          -> {
+                    xStart = xArray[2]
+                    xEnd = xArray[2]
+                    yStart = 2 * yArray[0] - yArray[1]
+                    yEnd = yArray[1]
+                }
+                RIGHT        -> {
+                    xStart = 2 * xArray[4] - xArray[3]
+                    xEnd = xArray[3]
+                    yStart = yArray[2]
+                    yEnd = yArray[2]
+                }
+                BOTTOM       -> {
+                    xStart = xArray[2]
+                    xEnd = xArray[2]
+                    yStart = 2 * yArray[4] - yArray[3]
+                    yEnd = yArray[3]
+                }
+                LEFT         -> {
+                    xStart = 2 * xArray[0] - xArray[1]
+                    xEnd = xArray[1]
+                    yStart = yArray[2]
+                    yEnd = yArray[2]
+                }
+                TOP_RIGHT    -> {
+                    xStart = 2 * xArray[4] - xArray[3]
+                    xEnd = xArray[3]
+                    yStart = 2 * yArray[0] - yArray[1]
+                    yEnd = yArray[1]
+                }
+                BOTTOM_RIGHT -> {
+                    xStart = 2 * xArray[4] - xArray[3]
+                    xEnd = xArray[3]
+                    yStart = 2 * yArray[4] - yArray[3]
+                    yEnd = yArray[3]
+                }
+                BOTTOM_LEFT  -> {
+                    xStart = 2 * xArray[0] - xArray[1]
+                    xEnd = xArray[1]
+                    yStart = 2 * yArray[4] - yArray[3]
+                    yEnd = yArray[3]
+                }
+                TOP_LEFT     -> {
+                    xStart = 2 * xArray[0] - xArray[1]
+                    xEnd = xArray[1]
+                    yStart = 2 * yArray[0] - yArray[1]
+                    yEnd = yArray[1]
+                }
+                ILLEGAL      -> {
+                    Log.e(TAG, "illegal position")
+                    return
+                }
+            }
+            canvas.drawLine(xStart, yStart, xEnd, yEnd, paint)
+        }
     }
 
 }

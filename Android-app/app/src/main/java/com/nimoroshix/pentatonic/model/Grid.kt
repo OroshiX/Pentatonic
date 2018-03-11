@@ -217,13 +217,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     private fun getAllAreas(): Set<Area> {
-        val set = HashSet<Area>()
-        (0 until cells.size).flatMapTo(set) { row ->
-            (0 until cells[row].size).map { col ->
-                cells[row][col].area
-            }
-        }
-        return set
+        return cells.flatten().map { c -> c.area }.toSet()
     }
 
     fun fillAreaSize() {
