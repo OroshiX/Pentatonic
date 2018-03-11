@@ -26,7 +26,7 @@ cat $filename | tail +3 | grep "^[0-9A-z][0-9A-z]*$" | sed -e "/^[0-9A-Za-z][0-9
 echo "],"
 
 #Valeurs....
-echo "\"valeurs\":["
+echo "\"values\":["
 cat $filename | grep "^[0-9],[0-9][0-9]*,[0-9][0-9]*$" | sed -e "s/\([0-9]\),\([0-9][0-9]*\),\([0-9][0-9]*\)/{ \"val\":\1, \"i\":\2, \"j\":\3 },/"
 echo "],"
 
@@ -43,7 +43,7 @@ for i in `cat $filename | grep "^[^0-9],[0-9][0-9]*,[0-9][0-9]*$"| sed -e "s/^\(
 	#Arnaque au shell pour eviter les problemes de completion de fichier
         cat $filename | sed -e "s/^\(.\)/XXXX\1XXXX/" > $TEMP
 
-        echo "{ \"id\":$o, \"positions\":[ "
+        echo "{ \"id\":$o, \"symbol\":\".\", \"positions\":[ "
 	grep --fixed-strings "${i}," $TEMP | sed -e "s/^XXXX.XXXX,\([0-9][0-9]*\),\([0-9][0-9]*\)$/{\"i\":\1,\"j\":\2},/"
 	rm -f $TEMP
 
@@ -53,7 +53,7 @@ echo "],"
 
 #Differences
 echo "\"differences\": ["
-cat $filename | grep "^-[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*$" | sed -e "s/-\([0-9][0-9]*\),\([0-9][0-9]*\),\([0-9][0-9]*\),\([0-9][0-9]*\)/{\"point1\":{\"i\":\1,\"j\":2},\"point2\":{\"i\":\3,\"j\":\4}},/"
+cat $filename | grep "^-[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*$" | sed -e "s/-\([0-9][0-9]*\),\([0-9][0-9]*\),\([0-9][0-9]*\),\([0-9][0-9]*\)/{\"position1\":{\"i\":\1,\"j\":2},\"position2\":{\"i\":\3,\"j\":\4}},/"
 echo "]},"
 
 done
