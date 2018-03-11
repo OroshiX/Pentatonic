@@ -63,8 +63,6 @@ class listNiveauViewController: UIViewController {
         }
         // Create the table of buttons
         createButtons()
-        //Temporary code to be removed - just to test 
-        tempPenta = pentas[31]
         
         // Loading the available Levels
         let segment = difficultySegment.selectedSegmentIndex
@@ -145,7 +143,7 @@ class listNiveauViewController: UIViewController {
                 print ("dataXY = \(data)")
                 
             }
-            for valeur in p.valeurs! {
+            for valeur in p.values! {
                 print ("valeurI = \(valeur.i!) - valeur of type \(type(of: valeur))")
                 
             }
@@ -158,9 +156,6 @@ class listNiveauViewController: UIViewController {
             }
             if (p.differences != nil) {
                 for diff in p.differences! {
-                    print ("diff = \(diff)")
-                    print ("diff.point1 = \(diff.point1!)")
-                    print ("----Difference entre 1 {\(diff.point1!.i!),\(diff.point1!.j!)} et {\(diff.point2!.i!),\(diff.point2!.j!)}")
                 }
             }
         }
@@ -411,7 +406,7 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
             }
             var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
             
-            for arrayValeur in penta.valeurs! {
+            for arrayValeur in penta.values! {
                 
                 let x = dwidth + sizeBut*0.5 + CGFloat(arrayValeur.j!)*sizeBut
                 let y = dheight + CGFloat(arrayValeur.i!)*sizeBut
