@@ -7,7 +7,7 @@ import com.nimoroshix.pentatonic.action.*
 import com.nimoroshix.pentatonic.util.*
 import java.lang.Math.abs
 import java.util.*
-import kotlin.collections.HashSet
+import kotlin.coroutines.experimental.buildSequence
 
 /**
  * Project Pentatonic
@@ -100,14 +100,14 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
                     .forEach { it.dirty = true }
 
 
-    private fun dirtifyEverything() = cells.flatten().forEach { it.dirty = true }
+    private fun dirtifyEverything() = cellSequence().forEach { it.dirty = true }
     /**
      * Adjust the cells whether they are valid or not, when they are dirty
      *
      * => See if the dirty cells are valid or not
      */
     private fun checkDirtyValidity() {
-        cells.flatten().filter { it.dirty }.forEach { c ->
+        cellSequence().filter { it.dirty }.forEach { c ->
             if (c.values.size > 1 || c.values.isEmpty()) { // if more than 1 value or 0 values, it is valid
                 c.valid = true
                 c.dirty = false
@@ -196,7 +196,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
      */
     fun unselect() {
         positionSelected = null
-        cells.flatten().forEach { c -> c.selection = CellState.UNSELECTED }
+        cellSequence().forEach { c -> c.selection = CellState.UNSELECTED }
     }
 
     /**
@@ -217,7 +217,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     private fun getAllAreas(): Set<Area> {
-        return cells.flatten().map { c -> c.area }.toSet()
+        return cellSequence().map { c -> c.area }.toSet()
     }
 
     fun fillAreaSize() {
@@ -232,7 +232,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     fun getAdjacentCells(nLine: Int, nColumn: Int): Set<Cell> {
-        return cells.flatten().filter { cell ->
+        return cellSequence().filter { cell ->
             when {
                 cell.position.nLine == nLine && cell.position.nColumn == nColumn -> false // We don't want the same cell
                 abs(cell.position.nLine - nLine) <= 1 && abs(
@@ -244,7 +244,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
 
     fun getSisterCells(cell: Cell): Set<Cell> {
         if (cell.sister == null) return emptySet()
-        return cells.flatten().filter { c ->
+        return cellSequence().filter { c ->
             when {
                 c.position.nLine == cell.position.nLine && c.position.nColumn == cell.position.nColumn -> false // we don't want the same cell
                 c.sister == cell.sister                                                                -> true // We want the sister
@@ -289,7 +289,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
 
     fun getAreaCells(cell: Cell): Set<Cell> {
         val idArea = cell.area.id
-        return cells.flatten().filter { c ->
+        return cellSequence().filter { c ->
             when {
                 c.area.id != idArea         -> false // We want the same area
                 c.position == cell.position -> false // We don't want the same cell
@@ -299,9 +299,12 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     }
 
     fun getAreaCells(area: Area): Set<Cell> {
-        return cells.flatten().filter { c -> c.area.id == area.id }.toSet()
+        return cellSequence().filter { c -> c.area.id == area.id }.toSet()
     }
 
+    fun cellSequence() = buildSequence {
+        cells.forEach { it.forEach { yield(it) } }
+    }
     /**
      * Replace all occurrences of one char into another one in the grid
      *
@@ -317,7 +320,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         }
         val positions = mutableListOf<PositionReplace>()
 
-        cells.flatten().forEach { c ->
+        cellSequence().forEach { c ->
             val posReplace = c.replace(oldValue, newValue)
             if (posReplace != null) {
                 positions.add(posReplace)
@@ -341,7 +344,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         var res: RemoveMultipleAction? = null
         val positions = mutableListOf<Position>()
 
-        cells.flatten().filter { !it.enonce }.forEach { c ->
+        cellSequence().filter { !it.enonce }.forEach { c ->
             if (c.values.contains(oldValue)) {
                 c.values.remove(oldValue)
                 positions.add(Position(c.position))
@@ -363,7 +366,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
 
 
     fun reset() {
-        cells.flatten().forEach { cell ->
+        cellSequence().forEach { cell ->
             if (!cell.enonce) {
                 cell.values.clear()
                 cell.dirty = false

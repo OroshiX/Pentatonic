@@ -67,3 +67,8 @@ dependencies {
     // For JSON
     compile 'com.google.code.gson:gson:2.8.0'
 }
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

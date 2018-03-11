@@ -27,9 +27,9 @@ class PentatonicView : PentatonicAbstractView {
     private var colorGrid: Int
 
     private var pathEffectDotted: PathEffect
-    private var strokeWidthLarge: Float
-    private var strokeWidthThin: Float
-    private var strokeWidthNumber: Float
+    private var strokeWidthLarge: Float = 6f
+    private var strokeWidthThin: Float = 3f
+    private var strokeWidthNumber: Float = 2.5f
 
     private var xArray: Array<Float> = Array(5) { _ -> 0f }
     private var yArray: Array<Float> = Array(5) { _ -> 0f }
@@ -40,9 +40,6 @@ class PentatonicView : PentatonicAbstractView {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
             defStyleAttr) {
-        strokeWidthLarge = 6f
-        strokeWidthThin = 3f
-        strokeWidthNumber = 2.5f
         val array = context.obtainStyledAttributes(attrs, R.styleable.PentatonicView)
         colorGrid = array.getColor(R.styleable.PentatonicView_gridColor, Color.BLACK)
 
@@ -118,32 +115,29 @@ class PentatonicView : PentatonicAbstractView {
         // Draw the initial numbers
         paint.strokeWidth = strokeWidthNumber
         paint.style = Paint.Style.FILL_AND_STROKE
-        for (i in 0 until grid.nbLines) {
-            for (j in 0 until grid.nbColumns) {
-                val cell = grid.cells[i][j]
-                val values = cell.values
-                // We want to draw the unique value from the initial numbers
-                if (cell.enonce) {
-                    assert(values.size == 1)
-                    // Draw the unique value in the center of the cell
-                    paint.textSize = desiredTextSizeUnique
-                    canvas.drawText(values[0].toString(),
-                            offsetLeft + j * cellSize + (cellSize - desiredWidthUnique) / 2,
-                            offsetTop + i * cellSize + (cellSize + textHeightUnique) / 2,
-                            paint)
-                }
-                if (cell.sister != null) {
-                    paint.textSize = desiredHintTextSizeMultiple
-                    // Draw the sister symbol on the bottom-right corner
-                    desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple,
-                            cell.sister.toString(), paint)
-                    textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple,
-                            cell.sister.toString(), paint)
-                    canvas.drawText(cell.sister.toString(),
-                            offsetLeft + j * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize - desiredHintWidthMultiple,
-                            offsetTop + i * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize,
-                            paint)
-                }
+
+        grid.cellSequence().filter { c -> c.enonce || c.sister != null }.forEach {
+            // We want to draw the unique value from the initial numbers
+            if (it.enonce) {
+                // Draw the unique value in the center of the cell
+                paint.textSize = desiredTextSizeUnique
+                canvas.drawText(it.values[0].toString(),
+                        offsetLeft + it.position.nColumn * cellSize + (cellSize - desiredWidthUnique) / 2,
+                        offsetTop + it.position.nLine * cellSize + (cellSize + textHeightUnique) / 2,
+                        paint)
+            }
+            if (it.sister != null) {
+                paint.textSize = desiredHintTextSizeMultiple
+                // Draw the sister symbol on the bottom-right corner
+                desiredHintTextSizeMultiple = getTextSizeForWidth(desiredHintWidthMultiple,
+                        it.sister.toString(), paint)
+                textHintHeightMultiple = getTextHeightForSize(desiredHintTextSizeMultiple,
+                        it.sister.toString(), paint)
+                canvas.drawText(it.sister.toString(),
+                        offsetLeft + it.position.nColumn * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize - desiredHintWidthMultiple,
+                        offsetTop + it.position.nLine * cellSize + (1f - PROPORTION_MARGIN_SMALL_NUMBER_CELL) * cellSize,
+                        paint)
+
             }
         }
         drawDiffOnes(paint, canvas)
