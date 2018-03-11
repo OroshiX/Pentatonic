@@ -33,7 +33,7 @@ struct action {
     var cell:Int
     var value:Int
 }
-class playViewController: UIViewController {
+class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDataSource{
     //MARK: The variables used by the class
     var arrayPlayButtons:[UIButton] = []
     var initialized:Bool = false
@@ -74,7 +74,8 @@ class playViewController: UIViewController {
     @IBOutlet var myviewImage: UIImageView!
     @IBOutlet var myNumbersImage: UIImageView!
     @IBOutlet var labelTitlePenta:UIButton!
-    
+    @IBOutlet var labelSolved:UIButton!
+
     //MARK: The functions
     /// This function set default value for the controller to be able to display the Penta
     /// This function must be called before any invocation of this controller.
@@ -181,7 +182,7 @@ class playViewController: UIViewController {
             }
         }
         
-        for valeur in (currentPenta?.valeurs)! {
+        for valeur in (currentPenta?.values)! {
             let val:Int = valeur.val!
             let lIJ:IJ = IJ.init(p: currentPenta!, val: 0)
             let i:Int = valeur.i!
@@ -396,7 +397,7 @@ class playViewController: UIViewController {
         
         
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: minW, height: minW))
-        
+        var nbGoodColor = 0
         let img = renderer.image { ctx in
             let listColor = [ldefine.currentTheme[define.LColor.dark]?.cgColor,
                              ldefine.currentTheme[define.LColor.light]?.cgColor,
@@ -414,12 +415,12 @@ class playViewController: UIViewController {
                     let y=initialY+i*sizeBut
                     ctx.cgContext.fill(CGRect(x: x, y: y, width: sizeBut, height: sizeBut))
                     let itsNeighbour = get_neighbour(penta:penta,i,j)
-                    print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
+                    // print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
                     drawRect(ctx.cgContext, CGFloat(x), CGFloat(y), CGFloat(sizeBut), CGFloat(sizeBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
                     
                 }
             }
-            print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY) width \(sizeBut)")
+            //print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY) width \(sizeBut)")
             var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
             var index:Int = -1
             let petiteListeXY:[[CGFloat]] = [ [dxl,dyu],[dxr,dyu],[dxl,dyd],[dxr,dyd],[dxm,dym],[dxm,dyu],[dxm,dyd],[dxl,dym],[dxr,dym]]
@@ -436,14 +437,23 @@ class playViewController: UIViewController {
                         // black
                         atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: UIColor.black]
                         valeur = -valeur
+                        nbGoodColor = nbGoodColor + 1
                     } else {
                         // blue or red
                         var col:UIColor = UIColor.blue
+                        if vSet[index].count == 1 && vSet[index].first! > regionCount[index]  {
+                            col = UIColor.red
+                        } else {
                         for sis in sisters[index] {
                             
                             if sis != index && vSet[sis].count == 1 && abs(vSet[sis].first!) == abs(valeur) {
                                 col = UIColor.red
                             }
+                            
+                        }
+                        }
+                        if col == UIColor.blue {
+                            nbGoodColor = nbGoodColor + 1
                         }
                         atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: col]
                         
@@ -467,7 +477,40 @@ class playViewController: UIViewController {
                     }
                 }
             }
-            
+            if (labelSolved != nil) { labelSolved.isHidden == true }
+            if nbGoodColor == penta.width!*penta.height! {
+                print ("All color are OK !!!!")
+                if labelSolved == nil { labelSolved = UIButton()
+                    let top = self.view.layoutMarginsGuide.topAnchor
+                    let leading = self.view.layoutMarginsGuide.leadingAnchor
+                    let trailing = self.view.layoutMarginsGuide.trailingAnchor
+                    self.view.addSubview(labelSolved)
+                    let middle = self.view.layoutMarginsGuide.centerXAnchor
+                    
+                    labelSolved.topAnchor.constraint(equalTo: top, constant: 100).isActive = true
+                    labelSolved.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                    labelSolved.widthAnchor.constraint(equalToConstant: screenWidth).isActive = true
+                    labelSolved.centerXAnchor.constraint(equalTo: middle, constant: 0).isActive = true
+                    labelSolved.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
+                    labelSolved.titleLabel?.textAlignment = .center
+                    labelSolved.setTitle((currentPenta?.name)! + " IS SOLVED", for: [])
+                    labelSolved.backgroundColor = UIColor(rgb: 0xcccccc)
+                    labelSolved.titleLabel?.textColor = UIColor.green
+                    labelSolved.setTitleColor(UIColor.green, for: UIControlState.normal)
+                    
+                    labelSolved.translatesAutoresizingMaskIntoConstraints = false
+                    labelSolved.tag = (butType.label).rawValue
+                    labelSolved.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
+                } else {
+                    labelSolved.isHidden = false
+                }
+                //labelSolved.setTitleColor(UIColor.green, for: UIControlState.normal)
+                //labelSolved.setTitle("Solved", for: UIControlState.normal)
+            } else {
+                if labelSolved != nil {
+                    labelSolved.isHidden = true
+                }
+            }
         }
         
         myviewImage.image = img
@@ -591,14 +634,16 @@ class playViewController: UIViewController {
         case Redo = 997
         case Reset = 996
         case label = 995
+        case regexp = 994
     }
     
     func addBackButton() {
         
         
         
-        let titles:[butType:String] = [ .back:"Back", .Undo:"Undo", .Redo:"Redo", .Reset:"Reset" ]
-        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back20.png")!,.Undo:UIImage(named: "undo20.png")!,.Redo:UIImage(named: "redo20.png")!,.Reset:UIImage(named: "reset20.png")!]
+        let titles:[butType:String] = [ .back:"Back", .Undo:"Undo", .Redo:"Redo", .Reset:"Reset" , .regexp:"Regexp"]
+        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back20.png")!,.Undo:UIImage(named: "undo20.png")!,.Redo:UIImage(named: "redo20.png")!,.Reset:UIImage(named: "reset20.png")!, .regexp:UIImage(named: "regexp20.png")!]
+
         var trailing = self.view.layoutMarginsGuide.trailingAnchor
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
         
@@ -663,6 +708,29 @@ class playViewController: UIViewController {
             pastAction = []
             futurAction = []
             return
+        case butType.regexp.rawValue:
+                if myPickerView == nil {
+                    createPicker()
+                    
+                } else {
+                    if !myPickerView.isHidden {
+                        for i in 0..<vSet.count {
+                            let value = myPickerView.selectedRow(inComponent: 0)+6
+                            let replace = myPickerView.selectedRow(inComponent: 1)
+                            if replace != 0 && vSet[i].contains(value) {
+                                vSet[i].remove(value)
+                                vSet[i].insert(replace)
+                            }
+                        }
+                    }
+                    myPickerView.isHidden = !myPickerView.isHidden
+                    selectedValue = -1
+                    drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
+                    savePreferences()
+
+                    return
+                }
+
         default:
             var thisAction:action? = nil
             
@@ -690,7 +758,7 @@ class playViewController: UIViewController {
                 selectedValue = (thisAction?.cell)!
                 number = (thisAction?.value)!
             }
-            print ("Number = \(number) in buttonNBAction")
+            //print ("Number = \(number) in buttonNBAction")
             // No cell selected in the penta ... nothing to do
             if selectedValue == -1 {
                 print("Nothing to do - no value selected")
@@ -712,8 +780,16 @@ class playViewController: UIViewController {
             }
             drawPenta(penta: currentPenta!, valSelected: selectedValue, darker:sisters[selectedValue]
             )
+            print ("number = \(number)")
+
             savePreferences()
         }
+    }
+    
+    
+    @IBAction func pickerAction(_ sender: UIPickerView) {
+    print ("Action PICKER")
+        sender.isHidden = true
     }
     
     @IBAction func buttonAction(_ sender: UIButton) {
@@ -745,6 +821,49 @@ class playViewController: UIViewController {
         }
     }
     
+    // MARK: Picker functions
+    
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 2
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if component == 0 {
+            return whatTag.count
+        } else { return 6 }
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if component == 0 {
+            return whatTag[row]
+        } else {
+            if (row == 0) {
+                return "-"
+            } else {
+            return String(row)
+            }
+        }
+        
+    }
+    @IBOutlet var myPickerView: UIPickerView!
+    func createPicker() {
+        myPickerView = UIPickerView(frame: CGRect(x: 100, y: 100, width: 20, height: 40))
+        myPickerView.self.delegate = self as! UIPickerViewDelegate
+        myPickerView.self.dataSource = self as! UIPickerViewDataSource
+        self.view.addSubview(myPickerView)
+        let bottom = self.view.layoutMarginsGuide.bottomAnchor
+        let trailing = self.view.layoutMarginsGuide.trailingAnchor
+        let h = screenHeight/12
+        
+        myPickerView.bottomAnchor.constraint(equalTo: bottom, constant:-20).isActive = true
+        myPickerView.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
+        myPickerView.backgroundColor = UIColor.brown
+        myPickerView.translatesAutoresizingMaskIntoConstraints = false
+        myPickerView.target(forAction: #selector(pickerAction), withSender: myPickerView )
+        myPickerView.widthAnchor.constraint(equalToConstant: screenWidth/4).isActive = true
+        myPickerView.heightAnchor.constraint(equalToConstant: h).isActive = true
+    }
+
     
     
 }
