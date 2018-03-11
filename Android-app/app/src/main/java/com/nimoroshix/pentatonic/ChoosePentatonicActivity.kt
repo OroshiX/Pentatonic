@@ -3,7 +3,7 @@ package com.nimoroshix.pentatonic
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import com.nimoroshix.pentatonic.adapter.ChoosePentatonicAdapter
 import com.nimoroshix.pentatonic.model.Grid
 import com.nimoroshix.pentatonic.persistence.AppDatabase
@@ -25,9 +25,14 @@ class ChoosePentatonicActivity : AppCompatActivity() {
         recycler_choose.setHasFixedSize(true)
 
         // linear layout manager
-        val layoutManager = LinearLayoutManager(this)
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        val layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.nb_columns))
         recycler_choose.layoutManager = layoutManager
+
+        recycler_choose.adapter = ChoosePentatonicAdapter(emptyList(), {
+            val intent = Intent(this@ChoosePentatonicActivity, GameActivity::class.java)
+            intent.putExtra(BUNDLE_ID_PENTA, it.dbId)
+            startActivity(intent)
+        })
 
         Observable.fromCallable {
             return@fromCallable AppDatabase.getInstance(this).pentatonicDao().findPentatonicByDifficulty(difficulty)
@@ -35,12 +40,9 @@ class ChoosePentatonicActivity : AppCompatActivity() {
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ list: List<Grid> ->
-                    recycler_choose.adapter = ChoosePentatonicAdapter(list, {
-                        val intent = Intent(this@ChoosePentatonicActivity, GameActivity::class.java)
-                        intent.putExtra(BUNDLE_ID_PENTA, it.dbId)
-                        startActivity(intent)
-                    })
-                })
+                .subscribe { list: List<Grid> ->
+                    (recycler_choose.adapter as ChoosePentatonicAdapter).items = list
+                    recycler_choose.adapter.notifyDataSetChanged()
+                }
     }
 }

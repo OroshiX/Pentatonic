@@ -55,7 +55,6 @@ class ExampleUnitTest {
 
         cell = Cell(2, 0)
         cell.area = Area('4', 1)
-        cell.differenceOne = Position(3, 1)
         assertEquals(cell, grid.cells[2][0])
 
         assertEquals("toto.penta", grid.filename)

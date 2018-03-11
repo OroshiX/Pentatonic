@@ -11,8 +11,7 @@ import com.nimoroshix.pentatonic.util.parcelableCreator
 class DiffOne(var position1: Position, var position2: Position) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Position::class.java.classLoader),
-            parcel.readParcelable(Position::class.java.classLoader)) {
-    }
+            parcel.readParcelable(Position::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(position1, flags)

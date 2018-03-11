@@ -13,7 +13,8 @@ import kotlinx.android.synthetic.main.item_pentatonic.view.*
  *
  * Created by OroshiX on 24/01/2018.
  */
-class ChoosePentatonicAdapter(val items: List<Grid>, val listener: (Grid) -> Unit) : RecyclerView.Adapter<ChoosePentatonicAdapter.ViewHolder>() {
+class ChoosePentatonicAdapter(var items: List<Grid>, private val listener: (Grid) -> Unit) :
+        RecyclerView.Adapter<ChoosePentatonicAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.item_pentatonic))
 
     override fun getItemCount(): Int = items.size
