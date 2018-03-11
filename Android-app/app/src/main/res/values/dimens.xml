@@ -5,4 +5,5 @@
     <dimen name="card_choose_penta_height">250dp</dimen>
     <dimen name="card_choose_penta_width">150dp</dimen>
     <dimen name="logo_padding">10dp</dimen>
+    <integer name="nb_columns">3</integer>
 </resources>

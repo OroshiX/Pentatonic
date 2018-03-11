@@ -27,7 +27,7 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
     }
 
     private var viewMatrix: Matrix = Matrix()
-    private var mode = Mode.NONE;
+    private var mode = Mode.NONE
     private var scale = 1.0f
     private var lastScaleFactor = 1f
 
@@ -148,8 +148,8 @@ class PentatonicFillView : PentatonicAbstractView, GestureDetector.OnGestureList
         const val TAG = "PentatonicFillView"
         val a = listOf(4F, 45F, 25F, 4F, 45F)
         val b = listOf(21F, 21F, 41F, 61F, 61F)
-        private val MIN_ZOOM = 0.9f
-        private val MAX_ZOOM = 4.0f
+        private const val MIN_ZOOM = 0.9f
+        private const val MAX_ZOOM = 4.0f
     }
 
     override fun update(o: Observable?, arg: Any?) {

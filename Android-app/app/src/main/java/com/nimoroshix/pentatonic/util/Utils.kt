@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.nimoroshix.pentatonic.model.Cell
+import com.nimoroshix.pentatonic.model.DiffOne
+import com.nimoroshix.pentatonic.model.Position
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
@@ -14,8 +16,10 @@ import java.util.*
  * Project Pentatonic
  *
  * Created by OroshiX on 16/01/2018.
- *
- * See https://medium.com/@BladeCoder/reducing-parcelable-boilerplate-code-using-kotlin-741c3124a49a
+ */
+
+/**
+ *  See https://medium.com/@BladeCoder/reducing-parcelable-boilerplate-code-using-kotlin-741c3124a49a
  */
 inline fun <reified T> parcelableCreator(
         crossinline create: (Parcel) -> T) =
@@ -39,7 +43,7 @@ inline fun <reified T> parcelableClassLoaderCreator(
 inline fun <reified T : Enum<T>> Parcel.readEnum() =
         readInt().let { if (it >= 0) enumValues<T>()[it] else null }
 
-inline fun <T : Enum<T>> Parcel.writeEnum(value: T?) =
+inline fun <reified T : Enum<T>> Parcel.writeEnum(value: T?) =
         writeInt(value?.ordinal ?: -1)
 
 inline fun <T> Parcel.readNullable(reader: () -> T) =
@@ -103,4 +107,14 @@ fun <T : Parcelable> Parcel.writeTypedObjectCompat(value: T?, parcelableFlags: I
 
 fun ViewGroup.inflate(layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
+}
+
+fun List<DiffOne>.getOtherPosition(nLine: Int, nColumn: Int): Position? {
+    forEach {
+        when {
+            it.position1.nLine == nLine && it.position1.nColumn == nColumn -> return it.position2
+            it.position2.nLine == nLine && it.position2.nColumn == nColumn -> return it.position1
+        }
+    }
+    return null
 }

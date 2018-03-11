@@ -20,22 +20,6 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
     var dirty = false
     var valid: Boolean = true
     var sister: Char? = null
-    var differenceOne: Position? = null
-        set(value) {
-            field = when (value) {
-                null -> value
-                else -> {
-                    if (value == position) {
-                        throw IllegalArgumentException("DifferenceOne and this position should not be the same")
-                    }
-                    if (value.isNear(position)) {
-                        value
-                    } else {
-                        throw IllegalArgumentException("DifferenceOne and this position must be near each other")
-                    }
-                }
-            }
-        }
     var enonce: Boolean = false
     var selection: CellState = CellState.UNSELECTED
 
@@ -96,7 +80,6 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
             dirty != other.dirty                 -> false
             valid != other.valid                 -> false
             sister != other.sister               -> false
-            differenceOne != other.differenceOne -> false
             position != other.position           -> false
             enonce != other.enonce               -> false
             selection != other.selection         -> false
@@ -111,7 +94,6 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
         result = 31 * result + dirty.hashCode()
         result = 31 * result + valid.hashCode()
         result = 31 * result + (sister?.hashCode() ?: 0)
-        result = 31 * result + (differenceOne?.hashCode() ?: 0)
         result = 31 * result + position.hashCode()
         result = 31 * result + enonce.hashCode()
         result = 31 * result + selection.hashCode()
@@ -123,7 +105,6 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
         dirty = parcel.readBool()
         valid = parcel.readBool()
         sister = parcel.readValue(Char::class.java.classLoader) as? Char
-        differenceOne = parcel.readParcelable(Position::class.java.classLoader)
         enonce = parcel.readBool()
         selection = parcel.readEnum<CellState>()!!
 
@@ -136,7 +117,6 @@ class Cell(nLine: Int, nColumn: Int) : Parcelable {
         parcel.writeBool(dirty)
         parcel.writeBool(valid)
         parcel.writeValue(sister)
-        parcel.writeParcelable(differenceOne, flags)
         parcel.writeBool(enonce)
         parcel.writeEnum(selection)
     }
