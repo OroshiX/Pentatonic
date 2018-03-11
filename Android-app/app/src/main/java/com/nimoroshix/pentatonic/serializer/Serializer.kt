@@ -90,7 +90,7 @@ class Serializer {
                 "-${diffOne.position1.nLine},${diffOne.position1.nColumn},${diffOne.position2.nLine},${diffOne.position2.nColumn}"
             }
 
-            val enonce = grid.cells.flatten().filter { c -> c.enonce || c.sister != null }.joinToString(
+            val enonce = grid.cellSequence().filter { c -> c.enonce || c.sister != null }.joinToString(
                     "\n") { cell ->
                 when {
                     cell.enonce -> "${cell.values[0]},${cell.position.nLine},${cell.position.nColumn}"
@@ -102,13 +102,13 @@ class Serializer {
                 else                  -> enonce
             }
 
-            penta.progress = grid.cells.flatten().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString(
+            penta.progress = grid.cellSequence().filter { c -> !c.enonce && c.values.isNotEmpty() }.joinToString(
                     "\n") { cell ->
                 "${cell.position.nLine},${cell.position.nColumn}:${cell.values.joinToString(
                         ",") { c -> c.toString() }}"
             }
             penta.hasDiffOne = grid.diffOnes.isNotEmpty()
-            penta.hasSister = grid.cells.flatten().any { c -> c.sister != null }
+            penta.hasSister = grid.cellSequence().any { c -> c.sister != null }
             penta.version = grid.version
             penta.difficulty = grid.difficulty
             penta.filename = grid.filename
