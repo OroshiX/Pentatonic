@@ -15,7 +15,7 @@ class APenta: NSObject, Codable {
     var height:Int?
     var difficulty:Int?
     var data:[ [String]]?
-    var valeurs: Set<AValeur>?
+    var values: Set<AValeur>?
     var sisters:[ASimilarites]?
     var differences:[ADifference]?
     
@@ -26,7 +26,7 @@ class APenta: NSObject, Codable {
         case height
         case difficulty
         case data
-        case valeurs
+        case values
         case sisters
         case differences
     }

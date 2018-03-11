@@ -11,9 +11,11 @@ import UIKit
 class ASimilarites: NSObject,Codable {
     var id:Int?
     var positions:[APoint]?
+    var symbol:String?
     
     enum CodingKeys:String, CodingKey {
         case positions
         case id
+        case symbol
     }
 }

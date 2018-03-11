@@ -9,11 +9,11 @@
 import UIKit
 
 class ADifference: NSObject,Codable {
-    var point1: APoint?
-    var point2: APoint?
+    var position1: APoint?
+    var position2: APoint?
     
     enum CodingKeys:String, CodingKey {
-        case point1
-        case point2
+        case position1
+        case position2
     }
 }
