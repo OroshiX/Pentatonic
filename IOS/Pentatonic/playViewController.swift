@@ -304,6 +304,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         drawPenta(penta: currentPenta!, valSelected: -1, darker: [])
         addBackButton()
+        
     }
     
     func showTheGrid(_ width:Int, _ height:Int) {
@@ -441,7 +442,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     } else {
                         // blue or red
                         var col:UIColor = UIColor.blue
-                        if vSet[index].count == 1 && vSet[index].first! > regionCount[index]  {
+                        if vSet[index].count == 1 && vSet[index].first! > regionCount[index]  && vSet[index].first! < 6 {
                             col = UIColor.red
                         } else {
                         for sis in sisters[index] {
@@ -452,7 +453,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                             
                         }
                         }
-                        if col == UIColor.blue {
+                        if col == UIColor.blue && vSet[index].first! < 6{
                             nbGoodColor = nbGoodColor + 1
                         }
                         atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: col]
@@ -611,6 +612,16 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         button.tag = tag
         self.view.addSubview(button)
+        
+        //self.view.addGestureRecognizer(longPress)
+        
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
+        longPress.minimumPressDuration = 2.0;
+        button.addGestureRecognizer(longPress)
+
+        
+        
         return button
     }
     
@@ -639,10 +650,12 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     
     func addBackButton() {
         
-        
+        let butWidth = 40
         
         let titles:[butType:String] = [ .back:"Back", .Undo:"Undo", .Redo:"Redo", .Reset:"Reset" , .regexp:"Regexp"]
-        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back20.png")!,.Undo:UIImage(named: "undo20.png")!,.Redo:UIImage(named: "redo20.png")!,.Reset:UIImage(named: "reset20.png")!, .regexp:UIImage(named: "regexp20.png")!]
+        let tImages20:[butType:UIImage] = [ .back:UIImage(named: "back20.png")!,.Undo:UIImage(named: "undo20.png")!,.Redo:UIImage(named: "redo20.png")!,.Reset:UIImage(named: "reset20.png")!, .regexp:UIImage(named: "replace20.png")!]
+        
+        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back40.png")!,.Undo:UIImage(named: "undo40.png")!,.Redo:UIImage(named: "redo40.png")!,.Reset:UIImage(named: "reset40.png")!, .regexp:UIImage(named: "replace40.png")!]
 
         var trailing = self.view.layoutMarginsGuide.trailingAnchor
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
@@ -658,7 +671,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             //tempButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
             tempButton.layer.cornerRadius = 3
             //tempButton.sizeToFit()
-            tempButton.widthAnchor.constraint(equalToConstant: CGFloat(20))
+            tempButton.widthAnchor.constraint(equalToConstant: CGFloat(butWidth))
             //tempButton.sizeThatFits(CGSize(width: 20, height: 20))
             tempButton.translatesAutoresizingMaskIntoConstraints = false
             tempButton.bottomAnchor.constraint(equalTo: bottom, constant: 0).isActive = true
@@ -679,7 +692,12 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         labelTitlePenta.centerXAnchor.constraint(equalTo: middle, constant: 0).isActive = true
         labelTitlePenta.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
         labelTitlePenta.titleLabel?.textAlignment = .center
-        labelTitlePenta.setTitle(currentPenta?.name, for: [])
+        if (currentPenta?.sisters)! != [] || (currentPenta?.differences)! != [] {
+            labelTitlePenta.setTitle((currentPenta?.name)!+" Not Supported", for: [])
+            
+        } else {
+            labelTitlePenta.setTitle(currentPenta?.name, for: [])
+        }
         labelTitlePenta.backgroundColor = UIColor(rgb: 0xcccccc)
         labelTitlePenta.titleLabel?.textColor = UIColor.black
         labelTitlePenta.translatesAutoresizingMaskIntoConstraints = false
@@ -792,6 +810,23 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         sender.isHidden = true
     }
     
+    @objc func longPressAction(_ sender: UIGestureRecognizer) {
+        
+        if sender.state == .ended {
+            print("Long press Ended")
+        } else if sender.state == .began {
+            print("Long press detected")
+            let tag:Int = (sender.view?.tag)!
+            if tag >= 0 && tag < (currentPenta?.width)!*(currentPenta?.height)! {
+                if vSet[tag].count > 0 && vSet[tag].first! > 0 {
+                    vSet[tag] = []
+                }
+                savePreferences()
+                drawPenta(penta: currentPenta!, valSelected: -1, darker: [])
+            }
+
+        }
+    }
     @IBAction func buttonAction(_ sender: UIButton) {
         var theSisters:Set<Int> = []
         

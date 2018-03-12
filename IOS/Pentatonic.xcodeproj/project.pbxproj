@@ -40,6 +40,13 @@
 		1250822A2035D8FD00AF0BCC /* define.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125082292035D8FD00AF0BCC /* define.swift */; };
 		129402DD2041716300AA3D42 /* preferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129402DC2041716300AA3D42 /* preferencesViewController.swift */; };
 		129402DF2041734F00AA3D42 /* setting.png in Resources */ = {isa = PBXBuildFile; fileRef = 129402DE2041734E00AA3D42 /* setting.png */; };
+		129874082055DE7C000ED6D9 /* back40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874012055DE79000ED6D9 /* back40.png */; };
+		129874092055DE7C000ED6D9 /* undo40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874022055DE7A000ED6D9 /* undo40.png */; };
+		1298740A2055DE7C000ED6D9 /* redo40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874032055DE7A000ED6D9 /* redo40.png */; };
+		1298740B2055DE7C000ED6D9 /* replace40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874042055DE7B000ED6D9 /* replace40.png */; };
+		1298740C2055DE7C000ED6D9 /* replace20.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874052055DE7B000ED6D9 /* replace20.png */; };
+		1298740D2055DE7C000ED6D9 /* replace.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874062055DE7B000ED6D9 /* replace.png */; };
+		1298740E2055DE7C000ED6D9 /* reset40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874072055DE7C000ED6D9 /* reset40.png */; };
 		12B095E71FFFD94A002C57D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B095E61FFFD94A002C57D5 /* AppDelegate.swift */; };
 		12B095EC1FFFD94A002C57D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12B095EA1FFFD94A002C57D5 /* Main.storyboard */; };
 		12B095EF1FFFD94A002C57D5 /* Pentatonic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 12B095ED1FFFD94A002C57D5 /* Pentatonic.xcdatamodeld */; };
@@ -86,6 +93,13 @@
 		125082292035D8FD00AF0BCC /* define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = define.swift; sourceTree = "<group>"; };
 		129402DC2041716300AA3D42 /* preferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = preferencesViewController.swift; sourceTree = "<group>"; };
 		129402DE2041734E00AA3D42 /* setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = setting.png; sourceTree = "<group>"; };
+		129874012055DE79000ED6D9 /* back40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back40.png; path = logo/back40.png; sourceTree = "<group>"; };
+		129874022055DE7A000ED6D9 /* undo40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = undo40.png; path = logo/undo40.png; sourceTree = "<group>"; };
+		129874032055DE7A000ED6D9 /* redo40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redo40.png; path = logo/redo40.png; sourceTree = "<group>"; };
+		129874042055DE7B000ED6D9 /* replace40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = replace40.png; path = logo/replace40.png; sourceTree = "<group>"; };
+		129874052055DE7B000ED6D9 /* replace20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = replace20.png; path = logo/replace20.png; sourceTree = "<group>"; };
+		129874062055DE7B000ED6D9 /* replace.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = replace.png; path = logo/replace.png; sourceTree = "<group>"; };
+		129874072055DE7C000ED6D9 /* reset40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = reset40.png; path = logo/reset40.png; sourceTree = "<group>"; };
 		12B095E31FFFD94A002C57D5 /* Pentatonic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pentatonic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		12B095E61FFFD94A002C57D5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		12B095EB1FFFD94A002C57D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -144,6 +158,13 @@
 				12BB271420371C9A0037FBBC /* tutorialViewController.swift */,
 				12B096072000E89E002C57D5 /* listNiveauViewController.swift */,
 				120D2488203B77820000CAAD /* playViewController.swift */,
+				129874012055DE79000ED6D9 /* back40.png */,
+				129874032055DE7A000ED6D9 /* redo40.png */,
+				129874062055DE7B000ED6D9 /* replace.png */,
+				129874052055DE7B000ED6D9 /* replace20.png */,
+				129874042055DE7B000ED6D9 /* replace40.png */,
+				129874072055DE7C000ED6D9 /* reset40.png */,
+				129874022055DE7A000ED6D9 /* undo40.png */,
 				125082272035C22E00AF0BCC /* rulesViewController.swift */,
 				12B095E61FFFD94A002C57D5 /* AppDelegate.swift */,
 				1250822120359DAD00AF0BCC /* Generator.swift */,
@@ -245,11 +266,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				129874082055DE7C000ED6D9 /* back40.png in Resources */,
 				123E361220473069009F0B82 /* reset20.png in Resources */,
 				12B095F41FFFD94A002C57D5 /* LaunchScreen.storyboard in Resources */,
 				1250821F2034F3AA00AF0BCC /* rect_turq.png in Resources */,
 				123E361420473069009F0B82 /* redo20.png in Resources */,
+				1298740E2055DE7C000ED6D9 /* reset40.png in Resources */,
+				1298740D2055DE7C000ED6D9 /* replace.png in Resources */,
 				123E35FF2046EEC4009F0B82 /* Media.xcassets in Resources */,
+				1298740C2055DE7C000ED6D9 /* replace20.png in Resources */,
 				1250821B2034F2F200AF0BCC /* rect_jaune.png in Resources */,
 				12B095F11FFFD94A002C57D5 /* Assets.xcassets in Resources */,
 				123E3605204710A5009F0B82 /* Background3.png in Resources */,
@@ -264,12 +289,15 @@
 				123E36012046EFCB009F0B82 /* background.png in Resources */,
 				123E360820472A8A009F0B82 /* undo.png in Resources */,
 				1250821D2034F35200AF0BCC /* rect_rose.png in Resources */,
+				129874092055DE7C000ED6D9 /* undo40.png in Resources */,
 				123E360D20472C64009F0B82 /* back.png in Resources */,
 				121DB758204874B300DDAC40 /* regexp20.png in Resources */,
 				125082172034F24800AF0BCC /* Rules.png in Resources */,
+				1298740B2055DE7C000ED6D9 /* replace40.png in Resources */,
 				123E361520473069009F0B82 /* undo20.png in Resources */,
 				129402DF2041734F00AA3D42 /* setting.png in Resources */,
 				125082192034F28800AF0BCC /* Tutorial.png in Resources */,
+				1298740A2055DE7C000ED6D9 /* redo40.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
