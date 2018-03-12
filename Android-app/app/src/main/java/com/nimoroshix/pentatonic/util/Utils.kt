@@ -58,14 +58,26 @@ inline fun <T> Parcel.writeNullable(value: T?, writer: (T) -> Unit) {
     }
 }
 
-fun Set<Cell>.getOnlyValueList() =
+/**
+ * Takes all the cells that have only one value (as a number), and transform them into the list of
+ * all the numeric values
+ */
+fun Set<Cell>.getOnlyValueList(): List<Int> =
         filter { it.values.size == 1 }.map { it.values[0] }
                 .filter { it.isDigit() }.map { it.getNumericValue() }.toList()
 
+/**
+ * Takes all the cells that have only one value (as a number), and transform them into the set of
+ * all the numeric values
+ */
 fun Set<Cell>.getOnlyValueSet() =
         filter { it.values.size == 1 }.map { it.values[0] }
                 .filter { it.isDigit() }.map { it.getNumericValue() }.toSet()
 
+/**
+ * Transform the Char into its numeric value
+ * @throws NumberFormatException if the Char does not represent an Int
+ */
 fun Char.getNumericValue(): Int {
     if (this !in '0'..'9') throw NumberFormatException()
     return this.toInt() - '0'.toInt()

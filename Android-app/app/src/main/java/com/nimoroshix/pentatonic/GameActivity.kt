@@ -193,12 +193,8 @@ class GameActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_undo    -> {
-                return grid.undo()
-            }
-            R.id.menu_redo    -> {
-                return grid.redo()
-            }
+            R.id.menu_undo    -> return grid.undo()
+            R.id.menu_redo    -> return grid.redo()
             R.id.menu_replace -> {
                 displayReplaceDialog()
                 return true
