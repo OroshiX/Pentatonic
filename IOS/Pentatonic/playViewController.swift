@@ -19,10 +19,15 @@ struct IJ {
     var i:Int
     var j:Int
     var val:String
-    init (p:APenta,val:Int) {
-        i = val / p.width!
-        j = val % p.width!
+    init (p:APenta,index:Int) {
+        i = index / p.width!
+        j = index % p.width!
         self.val = p.data![i][j]
+    }
+    init (p:APenta, i:Int, j:Int) {
+        self.i=i
+        self.j=j
+        self.val=String("\(p.data![i][j])")
     }
     func getIndex(_ p:APenta, _ i:Int,_ j:Int) -> Int {
         let index = i * p.width! + j
@@ -56,7 +61,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var screenWidth:CGFloat = 0
     var screenHeight:CGFloat = 0
     var minW:Int = 0
-    var sisters:[Set<Int>] = [[]]
+    var sameAreaCells:[Set<Int>] = [[]]
     // vSet will contain the origina values (negative)
     // and set of value user want to pre-select
     
@@ -120,7 +125,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         
         regionCount = Array(repeating:0,count:size)
-        sisters = Array(repeating:Set<Int>(), count:size)
+        sameAreaCells = Array(repeating:Set<Int>(), count:size)
         possibleValue = Array(repeating:Set<Int>(),count:size)
         
         print ("width=\(width!) height=\(height!)")
@@ -130,7 +135,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         for allVal in 0..<size {
             
-            let lIJ = IJ(p: currentPenta!, val: allVal)
+            let lIJ = IJ(p: currentPenta!, index: allVal)
             let i=lIJ.i
             let j=lIJ.j
             if (regionSet[lIJ.val]?.count == nil ) {
@@ -139,36 +144,36 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             regionSet[lIJ.val]?.insert(allVal)
             
             if i != 0 {
-                sisters[allVal].insert(lIJ.getIndex(penta, i-1, j))
+                sameAreaCells[allVal].insert(lIJ.getIndex(penta, i-1, j))
                 if j != 0 {
-                    sisters[allVal].insert(lIJ.getIndex(penta, i-1, j-1))
+                    sameAreaCells[allVal].insert(lIJ.getIndex(penta, i-1, j-1))
                 }
                 if j != (width!-1) {
-                    sisters[allVal].insert(lIJ.getIndex(penta, i-1, j+1))
+                    sameAreaCells[allVal].insert(lIJ.getIndex(penta, i-1, j+1))
                 }
             }
             if i != (height!-1) {
-                sisters[allVal].insert(lIJ.getIndex(penta,i+1,j))
+                sameAreaCells[allVal].insert(lIJ.getIndex(penta,i+1,j))
                 
             }
             
             if j != 0 {
-                sisters[allVal].insert(lIJ.getIndex(penta, i, j-1))
+                sameAreaCells[allVal].insert(lIJ.getIndex(penta, i, j-1))
                 if i != (height!-1) {
-                    sisters[allVal].insert(lIJ.getIndex(penta, i+1, j-1))
+                    sameAreaCells[allVal].insert(lIJ.getIndex(penta, i+1, j-1))
                 }
             }
             if j != (width!-1)
             {
-                sisters[allVal].insert(lIJ.getIndex(penta, i, j+1))
+                sameAreaCells[allVal].insert(lIJ.getIndex(penta, i, j+1))
                 if i != (height!-1) {
-                    sisters[allVal].insert(lIJ.getIndex(penta, i+1, j+1))
+                    sameAreaCells[allVal].insert(lIJ.getIndex(penta, i+1, j+1))
                 }
             }
             
             for allVal2 in 0..<size {
-                let dIJ = IJ(p:currentPenta!, val:allVal2)
-                if lIJ.val == dIJ.val { sisters[allVal].insert(allVal2)}
+                let dIJ = IJ(p:currentPenta!, index:allVal2)
+                if lIJ.val == dIJ.val { sameAreaCells[allVal].insert(allVal2)}
             }
             
         }
@@ -184,13 +189,13 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         for valeur in (currentPenta?.values)! {
             let val:Int = valeur.val!
-            let lIJ:IJ = IJ.init(p: currentPenta!, val: 0)
+            let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
             let i:Int = valeur.i!
             let j:Int = valeur.j!
             let index = lIJ.getIndex(currentPenta!, i, j)
             vSet[index] = [ -val ]
             possibleValue[index] = [val]
-            for i in sisters[index] {
+            for i in sameAreaCells[index] {
                 if i != index { possibleValue[i].remove(val) }
             }
         }
@@ -202,7 +207,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     if possibleValue[i].count == 1 && vSet[i].count == 0 {
                         vSet[i]=[possibleValue[i].first!]
                         change = true
-                        for j in sisters[i] {
+                        for j in sameAreaCells[i] {
                             if i != j {
                                 possibleValue[j].remove(possibleValue[i].first!)
                                 print ("on remove valeur \(possibleValue[i].first!) de case \(j)")
@@ -229,7 +234,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         if local.count == 1 && possibleValue[local.first!].count != 1 {
                             possibleValue[local.first!] = [ pentaVal]
                             vSet[local.first!] = [pentaVal]
-                            for j in sisters[local.first!] {
+                            for j in sameAreaCells[local.first!] {
                                 if local.first! != j {
                                     possibleValue[j].remove(pentaVal)
                                     print ("on remove valeur \(pentaVal) de case \(j)")
@@ -395,8 +400,19 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             print ("USING J \((screenHeight - CGFloat(maxJ))/5.0)  and not  \((screenWidth - CGFloat(maxI))/5.0) ")
             print ("from ")
         }
-        
-        
+        var index:Int = 0
+        var listSist:[String] = Array(repeating:"" , count:width * height)
+        let listSymbol:[String] = [ "-", "~", "±", "§", "^", "#"]
+        for sister in penta.sisters! {
+            var symbol = sister.symbol!
+            symbol = listSymbol[index]
+            index = (index+1)%listSymbol.count
+            // since symbol is not yet correctly initialized in json, lets use our OWN
+            // TBD
+            for position in sister.positions! {
+                listSist[position.i!*width + position.j!] = symbol
+            }
+        }
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: minW, height: minW))
         var nbGoodColor = 0
         let img = renderer.image { ctx in
@@ -404,7 +420,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                              ldefine.currentTheme[define.LColor.light]?.cgColor,
                              ldefine.currentTheme[define.LColor.lighter]?.cgColor]
             var color:Int
-            let lIJ:IJ = IJ(p: penta, val: 0)
+            let lIJ:IJ = IJ(p: penta, index: 0)
             for i in 0..<height {
                 for j in 0..<width {
                     let val:Int = lIJ.getIndex(penta,i,j)
@@ -424,10 +440,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             //print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY) width \(sizeBut)")
             var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
             var index:Int = -1
-            let petiteListeXY:[[CGFloat]] = [ [dxl,dyu],[dxr,dyu],[dxl,dyd],[dxr,dyd],[dxm,dym],[dxm,dyu],[dxm,dyd],[dxl,dym],[dxr,dym]]
+            let petiteListeXY:[[CGFloat]] = [ [dxl,dyu],[dxr,dyu],[dxl,dyd],[dxr,dym],[dxm,dym],[dxm,dyu],[dxm,dyd],[dxl,dym],[dxr,dyd]]
             for arrayValeur in vSet {
                 index = index+1
-                let lIJ = IJ(p: currentPenta!, val: index)
+                let lIJ = IJ(p: currentPenta!, index: index)
                 
                 if arrayValeur.count == 1 {
                     let x = (initialX/4+(lIJ.j+1)*sizeBut)
@@ -445,9 +461,9 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         if vSet[index].count == 1 && vSet[index].first! > regionCount[index]  && vSet[index].first! < 6 {
                             col = UIColor.red
                         } else {
-                        for sis in sisters[index] {
+                        for cellIndex in sameAreaCells[index] {
                             
-                            if sis != index && vSet[sis].count == 1 && abs(vSet[sis].first!) == abs(valeur) {
+                            if cellIndex != index && vSet[cellIndex].count == 1 && abs(vSet[cellIndex].first!) == abs(valeur) {
                                 col = UIColor.red
                             }
                             
@@ -467,7 +483,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     var coord:Int = -1
                     for valeur in arrayValeur {
                         coord = coord+1
-                        if coord >=  petiteListeXY.count {
+                        if coord >=  petiteListeXY.count-1 {
                             break
                         }
                         let x = (initialX/4+(lIJ.j+1)*sizeBut) - Int(petiteListeXY[coord][0])
@@ -475,6 +491,44 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         (getStringNButton(valeur) as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
                         
                         
+                    }
+                }
+                if listSist[index] != "" {
+                    let x = (initialX/4+(lIJ.j+1)*sizeBut) - Int(petiteListeXY.last![0]*0.9)
+                    let y = (initialY/2+(lIJ.i+1)*sizeBut) + Int(petiteListeXY.last![1]*0.9)
+                    atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: petiteFont*1.4)]
+
+                    listSist[index].draw(at: CGPoint(x: x, y: y), withAttributes: atts)
+                }
+                var pos:Int = 0
+
+                for difference in penta.differences! {
+                    pos = 0
+                    let i1:Int = (difference.position1?.i)!
+                    let j1:Int = (difference.position1?.j)!
+                    let i2:Int = (difference.position2?.i)!
+                    let j2:Int = (difference.position2?.j)!
+                    if i1 ==  i2 {
+                        pos = 10
+                    } else if i1 > i2 {
+                        pos = 20
+                    }
+                    if j1 == j2 {
+                        pos = pos + 1
+                    } else if j1 > j2 {
+                        pos = pos + 2
+                    }
+                    switch pos {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 10:
+                    case 12:
+                    case 20:
+                    case 21:
+                    case 22:
+                    default :
+                        print ("Bug:")
                     }
                 }
             }
@@ -495,9 +549,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     labelSolved.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
                     labelSolved.titleLabel?.textAlignment = .center
                     labelSolved.setTitle((currentPenta?.name)! + " IS SOLVED", for: [])
-                    labelSolved.backgroundColor = UIColor(rgb: 0xcccccc)
-                    labelSolved.titleLabel?.textColor = UIColor.green
-                    labelSolved.setTitleColor(UIColor.green, for: UIControlState.normal)
+                    labelSolved.backgroundColor = UIColor(rgb: 0x00ff00)
+                    labelSolved.setTitleColor(UIColor.black, for: UIControlState.normal)
                     
                     labelSolved.translatesAutoresizingMaskIntoConstraints = false
                     labelSolved.tag = (butType.label).rawValue
@@ -692,7 +745,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         labelTitlePenta.centerXAnchor.constraint(equalTo: middle, constant: 0).isActive = true
         labelTitlePenta.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
         labelTitlePenta.titleLabel?.textAlignment = .center
-        if (currentPenta?.sisters)! != [] || (currentPenta?.differences)! != [] {
+        if (currentPenta?.differences)! != [] {
             labelTitlePenta.setTitle((currentPenta?.name)!+" Not Supported", for: [])
             
         } else {
@@ -721,6 +774,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     vSet[i] = []
                 }
             }
+            
             savePreferences()
             drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
             pastAction = []
@@ -796,7 +850,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             } else {
                 vSet[selectedValue].insert(number)
             }
-            drawPenta(penta: currentPenta!, valSelected: selectedValue, darker:sisters[selectedValue]
+            drawPenta(penta: currentPenta!, valSelected: selectedValue, darker:sameAreaCells[selectedValue]
             )
             print ("number = \(number)")
 
@@ -828,7 +882,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
     }
     @IBAction func buttonAction(_ sender: UIButton) {
-        var theSisters:Set<Int> = []
+        var areaCells:Set<Int> = []
         
         let buttonID:Int = sender.tag
         switch buttonID {
@@ -847,12 +901,12 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         default:
             if selectedValue != buttonID {
                 selectedValue = buttonID
-                theSisters = sisters[selectedValue]
+                areaCells = sameAreaCells[selectedValue]
             } else {
                 selectedValue = -1
-                theSisters = []
+                areaCells = []
             }
-            drawPenta(penta: currentPenta!, valSelected: selectedValue, darker: theSisters)
+            drawPenta(penta: currentPenta!, valSelected: selectedValue, darker: areaCells)
         }
     }
     
