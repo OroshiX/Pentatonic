@@ -41,6 +41,7 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
     var difficulty: Int = 0
     var filename: String = ""
     var author: String = ""
+    val finished: Boolean = false
     var dbId: Long = 0
     var diffOnes: MutableList<DiffOne> = mutableListOf()
     private var undo = UndoAction()

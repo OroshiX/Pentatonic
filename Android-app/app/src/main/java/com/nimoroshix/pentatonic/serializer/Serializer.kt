@@ -113,6 +113,7 @@ class Serializer {
             penta.difficulty = grid.difficulty
             penta.filename = grid.filename
             penta.author = grid.author
+            penta.finished = grid.finished
             if (grid.dbId != 0L) {
                 penta.id = grid.dbId
             }
