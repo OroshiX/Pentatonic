@@ -178,13 +178,13 @@
 ] },
 ],
 "differences": [
-{"position1":{"i":5,"j":2},"position2":{"i":4,"j":1}},
-{"position1":{"i":6,"j":2},"position2":{"i":5,"j":12}},
-{"position1":{"i":1,"j":2},"position2":{"i":1,"j":15}},
+{"position1":{"i":5,"j":0},"position2":{"i":4,"j":1}},
+{"position1":{"i":6,"j":13},"position2":{"i":5,"j":12}},
+{"position1":{"i":1,"j":14},"position2":{"i":1,"j":15}},
 ]},
 {
 "author":"Nimo","name":"Nageons ensemble",
-"width":5,"height":10,
+"width":6,"height":10,
 "difficulty":3,
 "data":[
 ["1","2","c","c","d"],
@@ -451,8 +451,8 @@
 "sisters": [
 ],
 "differences": [
-{"position1":{"i":3,"j":2},"position2":{"i":2,"j":1}},
-{"position1":{"i":0,"j":2},"position2":{"i":1,"j":4}},
+{"position1":{"i":3,"j":0},"position2":{"i":2,"j":1}},
+{"position1":{"i":0,"j":5},"position2":{"i":1,"j":4}},
 ]},
 {
 "author":"Nimo","name":"Triplette et Pirouette",
@@ -536,7 +536,7 @@
 ] },
 ],
 "differences": [
-{"position1":{"i":14,"j":2},"position2":{"i":14,"j":5}},
+{"position1":{"i":14,"j":4},"position2":{"i":14,"j":5}},
 ]},
 {
 "author":"Nimo","name":"Etoile alignee",
@@ -843,9 +843,9 @@
 ] },
 ],
 "differences": [
-{"position1":{"i":4,"j":2},"position2":{"i":5,"j":8}},
-{"position1":{"i":18,"j":2},"position2":{"i":17,"j":0}},
-{"position1":{"i":18,"j":2},"position2":{"i":18,"j":5}},
+{"position1":{"i":4,"j":9},"position2":{"i":5,"j":8}},
+{"position1":{"i":18,"j":0},"position2":{"i":17,"j":0}},
+{"position1":{"i":18,"j":6},"position2":{"i":18,"j":5}},
 ]},
 {
 "author":"Nimo","name":"Le serpent qui danse",
@@ -876,9 +876,9 @@
 "sisters": [
 ],
 "differences": [
-{"position1":{"i":1,"j":2},"position2":{"i":0,"j":2}},
-{"position1":{"i":1,"j":2},"position2":{"i":1,"j":2}},
-{"position1":{"i":16,"j":2},"position2":{"i":17,"j":2}},
+{"position1":{"i":1,"j":1},"position2":{"i":0,"j":2}},
+{"position1":{"i":1,"j":1},"position2":{"i":1,"j":2}},
+{"position1":{"i":16,"j":1},"position2":{"i":17,"j":2}},
 ]},
 {
 "author":"Nimo","name":"Premiere oeuvre",
