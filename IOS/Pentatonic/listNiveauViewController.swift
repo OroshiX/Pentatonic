@@ -15,6 +15,8 @@ class listNiveauViewController: UIViewController {
 
     var arrayLevelButtons:[UIButton] = []
     var pentas:[APenta] = []
+    var butWidthO:CGFloat = 0
+    var butHeightO:CGFloat = 0
     
     @IBOutlet var labelIncrement: UILabel!
     @IBOutlet var labelYIncrement: UILabel!
@@ -121,6 +123,8 @@ class listNiveauViewController: UIViewController {
         for j in 0..<NBButtonV-1 {
             for i in 0..<NBButtonH {
                 tagA = tagA+1
+                butWidthO = CGFloat(widthBut)
+                butHeightO = CGFloat(heightBut)
                 let button = UIButton(frame: CGRect(x: initialX+i*widthBut, y: initialY+j*heightBut, width: widthBut, height: heightBut))
                 //button.backgroundColor = .green
                 //button.setTitle("button\(i)", for: [])
@@ -381,11 +385,18 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         var sizeSquare : CGFloat
         var dwidth:CGFloat = CGFloat(0)
         var dheight:CGFloat = CGFloat(0)
-        let diff = abs((myImageView.bounds.size.height - myImageView.bounds.size.width)/2)
-        if myImageView.bounds.size.height < myImageView.bounds.size.width {
-            sizeSquare = myImageView.bounds.size.height-5
+        
+        var h = myImageView.bounds.size.height
+        var w = myImageView.bounds.size.width
+        
+        h = butHeightO
+        w = butWidthO
+        
+        
+        if h < w {
+            sizeSquare = h-5
         } else {
-            sizeSquare = myImageView.bounds.size.width-5
+            sizeSquare = w-5
         }
         let divSize = CGFloat(max(width,height))
         let sizeBut = sizeSquare / divSize
@@ -439,7 +450,10 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                 }
             }
             if complete {
-                let image = UIImage(named: "completed100.png")!
+                print ("****************\(sizeBut*CGFloat(penta.width!))*******************")
+                var sizeStr = "100"
+                if sizeBut*max(CGFloat(penta.width!),CGFloat(penta.height!)) < 100 { sizeStr = "40" }
+                let image = UIImage(named: "completed"+sizeStr+".png")!
                 ctx.cgContext.draw(image.cgImage!, in: CGRect(x: 0.0,y: 0.0,width: image.size.width,height: image.size.height))
             }
 
