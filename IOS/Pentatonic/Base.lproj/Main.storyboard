@@ -394,6 +394,9 @@
                                     <constraint firstAttribute="width" constant="70" id="jNf-CZ-Vaq"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GNL-TX-aqa">
+                                <rect key="frame" x="203" y="623" width="22" height="22"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -402,7 +405,9 @@
                             <constraint firstItem="rO5-J4-AeR" firstAttribute="leading" secondItem="xlI-mh-Np2" secondAttribute="leading" constant="20" id="P25-Q3-nCf"/>
                             <constraint firstItem="xlI-mh-Np2" firstAttribute="trailing" secondItem="JeM-fQ-56K" secondAttribute="trailing" constant="16" id="doM-DG-DLT"/>
                             <constraint firstItem="IGW-Ki-8tM" firstAttribute="top" secondItem="xlI-mh-Np2" secondAttribute="top" constant="50" id="kDn-uo-kwD"/>
+                            <constraint firstItem="JeM-fQ-56K" firstAttribute="leading" secondItem="GNL-TX-aqa" secondAttribute="trailing" constant="94" id="qhF-k7-5Jk"/>
                             <constraint firstItem="j1O-vv-cbq" firstAttribute="top" secondItem="xlI-mh-Np2" secondAttribute="top" constant="100" id="thx-kt-Tfo"/>
+                            <constraint firstItem="xlI-mh-Np2" firstAttribute="bottom" secondItem="GNL-TX-aqa" secondAttribute="bottom" constant="22" id="v07-KF-jf4"/>
                             <constraint firstItem="IGW-Ki-8tM" firstAttribute="leading" secondItem="xlI-mh-Np2" secondAttribute="leading" id="vYP-aF-dIw"/>
                             <constraint firstItem="rO5-J4-AeR" firstAttribute="top" secondItem="j1O-vv-cbq" secondAttribute="bottom" constant="78" id="ydG-ba-DcU"/>
                         </constraints>

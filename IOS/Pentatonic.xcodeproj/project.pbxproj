@@ -16,6 +16,7 @@
 		120D2495203B942D0000CAAD /* APenta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120D2494203B942D0000CAAD /* APenta.swift */; };
 		120D2497203BA9D70000CAAD /* transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = 120D2496203BA9D70000CAAD /* transparent.png */; };
 		121DB758204874B300DDAC40 /* regexp20.png in Resources */ = {isa = PBXBuildFile; fileRef = 121DB757204874B200DDAC40 /* regexp20.png */; };
+		123830F220594AD8009C9836 /* completed100.png in Resources */ = {isa = PBXBuildFile; fileRef = 123830F120594AD8009C9836 /* completed100.png */; };
 		123E35FF2046EEC4009F0B82 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 123E35FE2046EEC3009F0B82 /* Media.xcassets */; };
 		123E36012046EFCB009F0B82 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E36002046EFCB009F0B82 /* background.png */; };
 		123E36032046F1B2009F0B82 /* background2.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E36022046F1B2009F0B82 /* background2.png */; };
@@ -69,6 +70,7 @@
 		120D2494203B942D0000CAAD /* APenta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APenta.swift; sourceTree = "<group>"; };
 		120D2496203BA9D70000CAAD /* transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = transparent.png; sourceTree = "<group>"; };
 		121DB757204874B200DDAC40 /* regexp20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = regexp20.png; sourceTree = "<group>"; };
+		123830F120594AD8009C9836 /* completed100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = completed100.png; path = logo/completed100.png; sourceTree = "<group>"; };
 		123E35FE2046EEC3009F0B82 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = logo/Media.xcassets; sourceTree = "<group>"; };
 		123E36002046EFCB009F0B82 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		123E36022046F1B2009F0B82 /* background2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background2.png; path = logo/background2.png; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				129402DC2041716300AA3D42 /* preferencesViewController.swift */,
 				12BB271420371C9A0037FBBC /* tutorialViewController.swift */,
 				12B096072000E89E002C57D5 /* listNiveauViewController.swift */,
+				123830F120594AD8009C9836 /* completed100.png */,
 				120D2488203B77820000CAAD /* playViewController.swift */,
 				129874012055DE79000ED6D9 /* back40.png */,
 				129874032055DE7A000ED6D9 /* redo40.png */,
@@ -286,6 +289,7 @@
 				123E361320473069009F0B82 /* back20.png in Resources */,
 				125082152034F16000AF0BCC /* Play.png in Resources */,
 				123E360920472A8A009F0B82 /* redo.png in Resources */,
+				123830F220594AD8009C9836 /* completed100.png in Resources */,
 				123E36012046EFCB009F0B82 /* background.png in Resources */,
 				123E360820472A8A009F0B82 /* undo.png in Resources */,
 				1250821D2034F35200AF0BCC /* rect_rose.png in Resources */,

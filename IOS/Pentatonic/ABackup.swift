@@ -10,10 +10,12 @@ import UIKit
 
 class ABackup: NSObject, Codable {
     var name:String?
+    var completed:Bool?
     var vSet :[Set<Int>]?
     
     enum CodingKeys:String, CodingKey {
         case vSet
         case name
+        case completed
     }
 }

@@ -61,6 +61,7 @@ class listNiveauViewController: UIViewController {
                 arrayLevels[ldefine.allLevel[value-1]]?.append(level.name!)
             }
         }
+        
         // Create the table of buttons
         createButtons()
         
@@ -246,7 +247,18 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                         break
                     }
                 }
+                print ("penta.data[0].count = \(String(describing: penta?.data?[0].count)) - width = \(String(describing: penta?.width))")
+                print ("penta.data.count = \(String(describing: penta?.data?.count)) - height = \(String(describing: penta?.height))")
+                if penta?.data?[0].count != penta?.width {
+                    penta?.width = penta?.data?[0].count
+                    print ("******************* Erroneous width in Json for \(String(describing: penta?.name))- fixing it ")
+                }
+                if penta?.data?.count != penta?.height {
+                    penta?.height = penta?.data?.count
+                    print ("******************* Erroneous height in Json for \(String(describing: penta?.name))- fixing it ")
+                }
                 drawMiniPenta(button: button, penta: penta!)
+
             } else {
                 button.isHidden = true
             }
@@ -413,8 +425,31 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                 
                 ("\(arrayValeur.val!)" as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
             }
+            
+            //TBD
+            var complete:Bool = false
+            for backup in globalUserGameData.totale! {
+                if backup.name == penta.name {
+                    if backup.completed == nil {
+                        complete = false
+                    } else {
+                    complete = backup.completed!
+                    }
+                    break
+                }
+            }
+            if complete {
+                let image = UIImage(named: "completed100.png")!
+                ctx.cgContext.draw(image.cgImage!, in: CGRect(x: 0.0,y: 0.0,width: image.size.width,height: image.size.height))
+            }
+
         }
         button.setImage(img, for: UIControlState.normal)
+
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
+        longPress.minimumPressDuration = 1.5;
+        button.addGestureRecognizer(longPress)
+
         //image.image = img
     }
     
@@ -465,6 +500,27 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
             default:
                 break
             }
+            
+        }
+    }
+
+    @objc func longPressAction(_ sender: UIGestureRecognizer) {
+        
+        if sender.state == .ended {
+            print("Long press Ended")
+        } else if sender.state == .began {
+            print("Long press detected")
+            var currentLevel:Int = (sender.view?.tag)!
+            let segment = difficultySegment.selectedSegmentIndex
+            let difficulty = ldefine.allLevel[segment]
+            let maxLevel = arrayLevels[difficulty]!.count
+
+            if currentLevel >= maxLevel {
+                currentLevel = maxLevel - 1
+            }
+
+            labelCurrentLevel.text = arrayLevels[difficulty]![currentLevel]
+
             
         }
     }

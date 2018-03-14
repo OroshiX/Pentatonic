@@ -56,6 +56,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var dym:CGFloat = 0
     var dyd:CGFloat = 0
     
+    var currentPentaSolved:Bool = false
     var globalIndex = -1
     
     var screenWidth:CGFloat = 0
@@ -97,6 +98,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         let width = penta.width
         let height = penta.height
+        
+
         let size:Int = width! * height!
         
         // For the buttons
@@ -500,41 +503,103 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
 
                     listSist[index].draw(at: CGPoint(x: x, y: y), withAttributes: atts)
                 }
-                var pos:Int = 0
 
-                for difference in penta.differences! {
-                    pos = 0
-                    let i1:Int = (difference.position1?.i)!
-                    let j1:Int = (difference.position1?.j)!
-                    let i2:Int = (difference.position2?.i)!
-                    let j2:Int = (difference.position2?.j)!
-                    if i1 ==  i2 {
-                        pos = 10
-                    } else if i1 > i2 {
-                        pos = 20
-                    }
-                    if j1 == j2 {
-                        pos = pos + 1
-                    } else if j1 > j2 {
-                        pos = pos + 2
-                    }
-                    switch pos {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 10:
-                    case 12:
-                    case 20:
-                    case 21:
-                    case 22:
-                    default :
-                        print ("Bug:")
-                    }
+            }
+            var pos:Int = 0
+            
+            for difference in penta.differences! {
+                pos = 0
+                print (difference)
+                let i1:Int = (difference.position1?.i)!
+                let j1:Int = (difference.position1?.j)!
+                let i2:Int = (difference.position2?.i)!
+                let j2:Int = (difference.position2?.j)!
+                if i1 ==  i2 {
+                    pos = 10
+                } else if i1 < i2 {
+                    pos = 20
+                }
+                if j1 == j2 {
+                    pos = pos + 1
+                } else if j1 < j2 {
+                    pos = pos + 2
+                }
+                let c:CGFloat = CGFloat(sizeBut)
+                var x:CGFloat = CGFloat(initialX+j1*sizeBut)
+                var y:CGFloat = CGFloat(initialY+i1*sizeBut)
+
+                switch pos {
+                case 0:
+                    //
+                    print("(\(i1),\(j1)) upper left")
+                    x = x - c/4
+                    y = y + c/4
+                    drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                case 1:
+                    //
+                    print("(\(i1),\(j1)) up")
+                    x = x + c/2
+                    y = y + c/4
+                    drawLine(ctx.cgContext, x, y, x , y - c/2, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                case 2:
+                    //
+                    print("(\(i1),\(j1)) upper right")
+                    x = x + 3*c/4
+                    y = y + c/4
+                    drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                case 10:
+                    //
+                    print("(\(i1),\(j1)) left")
+                    x = x - c/4
+                    y = y + c/2
+                    drawLine(ctx.cgContext, x, y, x + c/2, y, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                case 12:
+                    //
+                    print("(\(i1),\(j1)) right")
+                    x = x + 3*c/4
+                    y = y + c/2
+                    drawLine(ctx.cgContext, x, y, x + c/2, y, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                case 20:
+                    //
+                    print("(\(i1),\(j1)) down left")
+                    x = x - c/4
+                    y = y + 5*c/4
+                    drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                case 21:
+                    //
+                    print("(\(i1),\(j1)) down")
+                    x = x + c/2
+                    y = y + 3*c/4
+                    drawLine(ctx.cgContext, x, y, x , y + c/2, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                case 22:
+                    //
+                    print("(\(i1),\(j1)) down right")
+                    x = x + 3*c/4
+                    y = y + 3*c/4
+                    drawLine(ctx.cgContext, x, y, x + c/2, y + c/2, false, UIColor.black.cgColor)
+                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+
+                default :
+                    print ("Bug:")
                 }
             }
             if (labelSolved != nil) { labelSolved.isHidden == true }
             if nbGoodColor == penta.width!*penta.height! {
                 print ("All color are OK !!!!")
+                currentPentaSolved = true
                 if labelSolved == nil { labelSolved = UIButton()
                     let top = self.view.layoutMarginsGuide.topAnchor
                     let leading = self.view.layoutMarginsGuide.leadingAnchor
@@ -564,6 +629,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 if labelSolved != nil {
                     labelSolved.isHidden = true
                 }
+                currentPentaSolved = false
             }
         }
         
@@ -623,11 +689,16 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         globalIndex = index
     }
     func savePreferences () {
-        if globalIndex >= 0 { globalUserGameData.totale![globalIndex].vSet = vSet }
+        if globalIndex >= 0 { globalUserGameData.totale![globalIndex].vSet = vSet
+            globalUserGameData.totale![globalIndex].completed = currentPentaSolved
+
+        }
         else {
             let currBackup:ABackup = ABackup()
             currBackup.name = currentPenta?.name
             currBackup.vSet = vSet
+            currBackup.completed = currentPentaSolved
+            
             globalUserGameData.totale?.append(currBackup)
             globalIndex = (globalUserGameData.totale?.count)! - 1
         }
@@ -746,7 +817,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         labelTitlePenta.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
         labelTitlePenta.titleLabel?.textAlignment = .center
         if (currentPenta?.differences)! != [] {
-            labelTitlePenta.setTitle((currentPenta?.name)!+" Not Supported", for: [])
+            labelTitlePenta.setTitle((currentPenta?.name)!, for: [])
             
         } else {
             labelTitlePenta.setTitle(currentPenta?.name, for: [])
