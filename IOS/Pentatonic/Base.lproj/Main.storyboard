@@ -326,6 +326,48 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N6R-jh-j8q">
+                                <rect key="frame" x="20" y="247" width="335" height="31"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Using remote Pentas (on GIT)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WIk-VB-9GQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="286" height="31"/>
+                                        <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <switch opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="J5C-Ox-8R1">
+                                        <rect key="frame" x="286" y="0.0" width="51" height="31"/>
+                                        <connections>
+                                            <action selector="choosingValueAction:" destination="G5O-PZ-Blk" eventType="valueChanged" id="HRU-hs-XDW"/>
+                                        </connections>
+                                    </switch>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="J5C-Ox-8R1" firstAttribute="leading" secondItem="WIk-VB-9GQ" secondAttribute="trailing" id="etd-Op-w1r"/>
+                                    <constraint firstItem="WIk-VB-9GQ" firstAttribute="leading" secondItem="N6R-jh-j8q" secondAttribute="leading" id="qgf-ca-0eq"/>
+                                </constraints>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Erb-My-DQx">
+                                <rect key="frame" x="20" y="318" width="335" height="31"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Do not save game data during game" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f4D-Hn-Zbb">
+                                        <rect key="frame" x="0.0" y="0.0" width="286" height="31"/>
+                                        <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <switch opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="JGb-ru-ZPs">
+                                        <rect key="frame" x="286" y="0.0" width="51" height="31"/>
+                                        <connections>
+                                            <action selector="choosingValueAction:" destination="G5O-PZ-Blk" eventType="valueChanged" id="D3z-eA-TlT"/>
+                                        </connections>
+                                    </switch>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="JGb-ru-ZPs" firstAttribute="leading" secondItem="f4D-Hn-Zbb" secondAttribute="trailing" id="CbC-YQ-R1j"/>
+                                    <constraint firstItem="f4D-Hn-Zbb" firstAttribute="leading" secondItem="Erb-My-DQx" secondAttribute="leading" id="mSk-Nl-dZG"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -335,17 +377,25 @@
                             <constraint firstItem="cZf-V9-idw" firstAttribute="centerX" secondItem="qq7-bH-Ytk" secondAttribute="centerX" id="QAM-Mn-VAN"/>
                             <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="MUP-Ev-zLW" secondAttribute="trailing" constant="16" id="WAY-u1-6Gq"/>
                             <constraint firstItem="Org-D8-o67" firstAttribute="bottom" secondItem="MUP-Ev-zLW" secondAttribute="bottom" constant="20" id="XuP-ll-dxC"/>
+                            <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="Erb-My-DQx" secondAttribute="trailing" constant="20" id="a5d-Wd-npu"/>
                             <constraint firstItem="tpm-bK-5Qq" firstAttribute="top" secondItem="cZf-V9-idw" secondAttribute="bottom" constant="20" id="bAr-2D-IXa"/>
+                            <constraint firstItem="N6R-jh-j8q" firstAttribute="top" secondItem="wbd-7r-s10" secondAttribute="bottom" constant="40" id="ehB-ua-sAU"/>
+                            <constraint firstItem="Erb-My-DQx" firstAttribute="leading" secondItem="Org-D8-o67" secondAttribute="leading" constant="20" id="exS-36-sSm"/>
                             <constraint firstItem="tpm-bK-5Qq" firstAttribute="leading" secondItem="Org-D8-o67" secondAttribute="leading" id="fGY-2c-Kcm"/>
                             <constraint firstItem="wbd-7r-s10" firstAttribute="top" secondItem="f8Y-Ce-qcg" secondAttribute="bottom" constant="20" id="ixa-zD-qmH"/>
                             <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="wbd-7r-s10" secondAttribute="trailing" constant="20" id="jb6-iC-eeG"/>
                             <constraint firstItem="f8Y-Ce-qcg" firstAttribute="top" secondItem="tpm-bK-5Qq" secondAttribute="bottom" constant="20" id="lGY-do-G9K"/>
                             <constraint firstItem="cZf-V9-idw" firstAttribute="top" secondItem="qq7-bH-Ytk" secondAttribute="top" constant="30" id="oG1-5m-hAj"/>
+                            <constraint firstItem="Erb-My-DQx" firstAttribute="top" secondItem="N6R-jh-j8q" secondAttribute="bottom" constant="40" id="po0-4K-9lk"/>
+                            <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="N6R-jh-j8q" secondAttribute="trailing" constant="20" id="uNi-6a-Sn8"/>
+                            <constraint firstItem="N6R-jh-j8q" firstAttribute="leading" secondItem="Org-D8-o67" secondAttribute="leading" constant="20" id="zby-Rb-1iK"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Org-D8-o67"/>
                     </view>
                     <connections>
                         <outlet property="helpValueSwitch" destination="A3G-3v-YxX" id="KxE-72-YkW"/>
+                        <outlet property="remotePentaGitSwitch" destination="J5C-Ox-8R1" id="sQl-OA-gmI"/>
+                        <outlet property="saveDataGame" destination="JGb-ru-ZPs" id="RZV-yV-lQx"/>
                         <outlet property="themeSegment" destination="tpm-bK-5Qq" id="QP5-du-7wW"/>
                     </connections>
                 </viewController>

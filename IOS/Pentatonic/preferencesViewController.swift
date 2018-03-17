@@ -16,6 +16,8 @@ class preferencesViewController: UIViewController {
         // Do any additional setup after loading the view.
         themeSegment.selectedSegmentIndex = ldefine.currentCol
         helpValueSwitch.isOn = ldefine.helpButtonValue
+        remotePentaGitSwitch.isOn = ldefine.remotePentasGit
+        saveDataGame.isOn = ldefine.forceDoNotSave || ldefine.doNotSave
     }
 
     override func didReceiveMemoryWarning() {
@@ -24,13 +26,26 @@ class preferencesViewController: UIViewController {
     }
     @IBOutlet var themeSegment: UISegmentedControl!
     @IBOutlet var helpValueSwitch: UISwitch!
+    @IBOutlet var remotePentaGitSwitch: UISwitch!
+    @IBOutlet var saveDataGame: UISwitch!
     
     @IBAction func backAction(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
     @IBAction func choosingValueAction(_ sender: UISwitch) {
-        ldefine.helpButtonValue = sender.isOn
+        switch sender.tag {
+        case 0:
+            ldefine.helpButtonValue = sender.isOn
+
+        case 1:
+            ldefine.remotePentasGit = sender.isOn
+        case 2:
+            ldefine.forceDoNotSave = sender.isOn
+        default:
+            print("This is a bug")
+            
+        }
     }
     
     @IBAction func themeSegmentAction(_ sender: UISegmentedControl) {

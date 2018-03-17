@@ -709,11 +709,17 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let myDataPath = paths[0].appending("/globalUserData.json")
         
-        
-        let url = URL(fileURLWithPath:myDataPath)
-        let encodedData = try? JSONEncoder().encode(globalUserGameData)
-        try? encodedData?.write(to: url)
-        
+        if !ldefine.doNotSave && !ldefine.forceDoNotSave {
+            /*
+             * In some cases ( failure to read the json / network issue with git)
+             * we dont have a coherent set of penta.
+             * we know that from doNotSave param
+             * In this case we dont want to save corrupted data. )
+             */
+            let url = URL(fileURLWithPath:myDataPath)
+            let encodedData = try? JSONEncoder().encode(globalUserGameData)
+            try? encodedData?.write(to: url)
+        }
         
     }
     

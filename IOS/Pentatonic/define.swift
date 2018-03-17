@@ -65,7 +65,9 @@ struct define {
     var currentTheme:[LColor:UIColor]
     var currentCol:Int = 0
     var helpButtonValue = false
-    
+    var remotePentasGit = false
+    var doNotSave = false
+    var forceDoNotSave = false
     init() {
         currentTheme = greyTheme
     }
