@@ -131,7 +131,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         sameAreaCells = Array(repeating:Set<Int>(), count:size)
         possibleValue = Array(repeating:Set<Int>(),count:size)
         
-        //print ("width=\(width!) height=\(height!)")
         vSet = Array(repeating:Set<Int>(),count:size)
         
         var regionSet : [String:Set<Int>] = [:]
@@ -213,7 +212,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         for j in sameAreaCells[i] {
                             if i != j {
                                 possibleValue[j].remove(possibleValue[i].first!)
-                                //print ("on remove valeur \(possibleValue[i].first!) de case \(j)")
                                 
                             }
                         }
@@ -237,7 +235,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                             for j in sameAreaCells[local.first!] {
                                 if local.first! != j {
                                     possibleValue[j].remove(pentaVal)
-                                    //print ("on remove valeur \(pentaVal) de case \(j)")
                                     
                                 }
                                 
@@ -504,7 +501,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             
             for difference in penta.differences! {
                 pos = 0
-                //print (difference)
                 let i1:Int = (difference.position1?.i)!
                 let j1:Int = (difference.position1?.j)!
                 let i2:Int = (difference.position2?.i)!
@@ -523,69 +519,54 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 var x:CGFloat = CGFloat(initialX+j1*sizeBut)
                 var y:CGFloat = CGFloat(initialY+i1*sizeBut)
 
+                /*
+                 *      00--01--02
+                 *       |      |
+                 *      10  pos 12
+                 *       |      |
+                 *      20--21--22
+                 *
+                 */
+                
                 switch pos {
                 case 0:
-                    //
-                    //print("(\(i1),\(j1)) upper left")
                     x = x - c/4
                     y = y + c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 1:
-                    //
-                    //print("(\(i1),\(j1)) up")
                     x = x + c/2
                     y = y + c/4
                     drawLine(ctx.cgContext, x, y, x , y - c/2, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 2:
-                    //
-                    //print("(\(i1),\(j1)) upper right")
                     x = x + 3*c/4
                     y = y + c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 10:
-                    //
-                    //print("(\(i1),\(j1)) left")
                     x = x - c/4
                     y = y + c/2
                     drawLine(ctx.cgContext, x, y, x + c/2, y, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 12:
-                    //
-                    //print("(\(i1),\(j1)) right")
                     x = x + 3*c/4
                     y = y + c/2
                     drawLine(ctx.cgContext, x, y, x + c/2, y, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 20:
-                    //
-                    //print("(\(i1),\(j1)) down left")
                     x = x - c/4
                     y = y + 5*c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
                 case 21:
-                    //
-                    //print("(\(i1),\(j1)) down")
                     x = x + c/2
                     y = y + 3*c/4
                     drawLine(ctx.cgContext, x, y, x , y + c/2, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 22:
-                    //
-                    //print("(\(i1),\(j1)) down right")
                     x = x + 3*c/4
                     y = y + 3*c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y + c/2, false, UIColor.black.cgColor)
-                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 default :
                     print ("Bug:")
