@@ -591,13 +591,12 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     print ("Bug:")
                 }
             }
-            if (labelSolved != nil) { labelSolved.isHidden == true }
+            if (labelSolved != nil) { labelSolved.isHidden = true }
             if nbGoodColor == penta.width!*penta.height! {
                 //print ("All color are OK !!!!")
                 currentPentaSolved = true
                 if labelSolved == nil { labelSolved = UIButton()
                     let top = self.view.layoutMarginsGuide.topAnchor
-                    let leading = self.view.layoutMarginsGuide.leadingAnchor
                     let trailing = self.view.layoutMarginsGuide.trailingAnchor
                     self.view.addSubview(labelSolved)
                     let middle = self.view.layoutMarginsGuide.centerXAnchor
@@ -700,7 +699,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         
         // let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let myDataPath = paths[0].appending("/globalUserData.json")
         
@@ -777,8 +775,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         let butWidth = 40
         
-        let titles:[butType:String] = [ .back:"Back", .Undo:"Undo", .Redo:"Redo", .Reset:"Reset" , .regexp:"Regexp"]
-        let tImages20:[butType:UIImage] = [ .back:UIImage(named: "back20.png")!,.Undo:UIImage(named: "undo20.png")!,.Redo:UIImage(named: "redo20.png")!,.Reset:UIImage(named: "reset20.png")!, .regexp:UIImage(named: "replace20.png")!]
         
         let tImages:[butType:UIImage] = [ .back:UIImage(named: "back40.png")!,.Undo:UIImage(named: "undo40.png")!,.Redo:UIImage(named: "redo40.png")!,.Reset:UIImage(named: "reset40.png")!, .regexp:UIImage(named: "replace40.png")!]
 
@@ -786,7 +782,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
         
         for i in tImages {
-            let myImage = i.value
             let tempButton = UIButton()
             self.view.addSubview(tempButton)
             
@@ -807,7 +802,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         labelTitlePenta = UIButton()
         let top = self.view.layoutMarginsGuide.topAnchor
-        let leading = self.view.layoutMarginsGuide.leadingAnchor
         trailing = self.view.layoutMarginsGuide.trailingAnchor
         self.view.addSubview(labelTitlePenta)
         let middle = self.view.layoutMarginsGuide.centerXAnchor
@@ -1009,8 +1003,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     @IBOutlet var myPickerView: UIPickerView!
     func createPicker() {
         myPickerView = UIPickerView(frame: CGRect(x: 100, y: 100, width: 20, height: 40))
-        myPickerView.self.delegate = self as! UIPickerViewDelegate
-        myPickerView.self.dataSource = self as! UIPickerViewDataSource
+        myPickerView.self.delegate = self as UIPickerViewDelegate
+        myPickerView.self.dataSource = self as UIPickerViewDataSource
         self.view.addSubview(myPickerView)
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
         let trailing = self.view.layoutMarginsGuide.trailingAnchor

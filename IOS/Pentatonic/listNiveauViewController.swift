@@ -49,7 +49,6 @@ class listNiveauViewController: UIViewController {
         // displayPentas(pentas)
         
         globalUserGameData = readBackup()
-        // writeBackup(backup: globalUserGameData)
         
         // Initialize the data struct containing all levels
         
@@ -74,7 +73,6 @@ class listNiveauViewController: UIViewController {
 
         let currentMaxLevel = (arrayLevels[currentDifficulty]?.count)!
         displayButtons(currentMaxLevel)
-        //print ("Levels loaded : \(arrayLevels)")
         labelCurrentLevel.text = ""
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
         swipeRight.direction = UISwipeGestureRecognizerDirection.right
@@ -86,14 +84,12 @@ class listNiveauViewController: UIViewController {
     }
     
     @IBAction func incrementYAction(_ sender: UISlider) {
-        //print (sender.value)
         incrementYPenta = Int(sender.value)
         sender.value = Float(incrementYPenta)
         labelYIncrement.text = "Y\(incrementYPenta)"
 
     }
     @IBAction func incrementAction(_ sender: UISlider) {
-        //print (sender.value)
         incrementPenta = Int(sender.value)
         sender.value = Float(incrementPenta)
         labelIncrement.text = "X\(incrementPenta)"
@@ -165,18 +161,11 @@ class listNiveauViewController: UIViewController {
     }
     func readBackup() -> ATotalBackup {
         
-        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let myDataPath = paths[0].appending("/globalUserData.json")
         
         let url = URL(fileURLWithPath:myDataPath)
-
         
-        
-        
-        
-        
-        //let url = URL(fileURLWithPath:Bundle.main.path(forResource: "backup", ofType: "json")! )
         let jsonTotalBackup = try? Data(contentsOf:url)
         let decoder = JSONDecoder()
         if jsonTotalBackup != nil {
@@ -192,8 +181,8 @@ class listNiveauViewController: UIViewController {
     }
     
     
-func saveUploadedFilesSet(fileName:[String : Any]) {
-    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+    func saveUploadedFilesSet(fileName:[String : Any]) {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let myDataPath = paths[0].appending("/toto.json")
         print (myDataPath)
         
@@ -201,27 +190,19 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         
         if file != nil {
             // Set the data we want to write
-            do{
-                if let jsonData = try JSONSerialization.data(withJSONObject: fileName, options: .init(rawValue: 0)) as? Data
-                {
-                    // Check if everything went well
-                    print(NSString(data: jsonData, encoding: 1)!)
-                    file?.write(jsonData)
-                    
-                    // Do something cool with the new JSON data
-                }
-            }
-            catch {
-                
-            }
-            // Write it to the file
             
-            // Close the file
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: fileName,
+                                                          options: .init(rawValue: 0))
+                // Write it to the file
+                file?.write(jsonData)
+                
+            } catch  {    }
             file?.closeFile()
+        } else {
+            print("Ooops! Something went wrong!  file is nil ")
         }
-        else {
-            print("Ooops! Something went wrong!")
-        }
+        
     }
     
     
@@ -279,7 +260,6 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         }
         let next:playViewController = playViewController()
         next.setPenta(penta!)
-        //print("this is the global backup")
         var index = 0
         var found:Bool = false
         for backup in globalUserGameData.totale! {
@@ -403,12 +383,12 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                     let x=sizeBut/6+CGFloat(j)*sizeBut
                     let y=CGFloat(i)*sizeBut
                     let itsNeighbour = get_neighbour(penta:penta,i,j)
-                    //print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
+                    
                     drawRect(ctx.cgContext, CGFloat(x)+dwidth, CGFloat(y)+dheight, CGFloat(sizeBut), CGFloat(sizeBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
                     
                 }
             }
-            var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
+            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
             
             for arrayValeur in penta.values! {
                 
@@ -431,7 +411,6 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                 }
             }
             if complete {
-                //print ("****************\(sizeBut*CGFloat(penta.width!))*******************")
                 var sizeStr = "100"
                 if sizeBut*max(CGFloat(penta.width!),CGFloat(penta.height!)) < 100 { sizeStr = "40" }
                 let image = UIImage(named: "completed"+sizeStr+".png")!
@@ -463,7 +442,6 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             switch swipeGesture.direction {
             case UISwipeGestureRecognizerDirection.right:
-                //print("Swiped right")
                 var segment = difficultySegment.selectedSegmentIndex
                 if segment > 0 {
                     segment = segment-1
@@ -478,7 +456,6 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
             case UISwipeGestureRecognizerDirection.down:
                 print("Swiped down")
             case UISwipeGestureRecognizerDirection.left:
-                //print("Swiped left")
                 var segment = difficultySegment.selectedSegmentIndex
                 if segment < ldefine.allLevel.count-1 {
                     segment = segment+1
