@@ -131,7 +131,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         sameAreaCells = Array(repeating:Set<Int>(), count:size)
         possibleValue = Array(repeating:Set<Int>(),count:size)
         
-        print ("width=\(width!) height=\(height!)")
+        //print ("width=\(width!) height=\(height!)")
         vSet = Array(repeating:Set<Int>(),count:size)
         
         var regionSet : [String:Set<Int>] = [:]
@@ -213,7 +213,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         for j in sameAreaCells[i] {
                             if i != j {
                                 possibleValue[j].remove(possibleValue[i].first!)
-                                print ("on remove valeur \(possibleValue[i].first!) de case \(j)")
+                                //print ("on remove valeur \(possibleValue[i].first!) de case \(j)")
                                 
                             }
                         }
@@ -222,9 +222,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 }
                 for cell in regionSet {
                     var local:Set<Int> = []
-                    if cell.key == "1" {
-                        print ("yeahhh")
-                    }
                     for pentaVal in 1...cell.value.count {
                         local = []
                         
@@ -240,10 +237,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                             for j in sameAreaCells[local.first!] {
                                 if local.first! != j {
                                     possibleValue[j].remove(pentaVal)
-                                    print ("on remove valeur \(pentaVal) de case \(j)")
-                                    if (pentaVal==2) && j==1 {
-                                        print ("this is it")
-                                    }
+                                    //print ("on remove valeur \(pentaVal) de case \(j)")
+                                    
                                 }
                                 
                             }
@@ -398,10 +393,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let maxI = initialX/4+height*sizeBut
         let maxJ = initialY/2+width*sizeBut + sizeBut
         if (Int(screenWidth) - maxI) > (Int(screenHeight) - maxJ) {
-            print ("USING I : \((screenWidth - CGFloat(maxI))/5.0)  and not  \((screenHeight - CGFloat(maxJ))/5.0)")
+            //print ("USING I : \((screenWidth - CGFloat(maxI))/5.0)  and not  \((screenHeight - CGFloat(maxJ))/5.0)")
         } else {
-            print ("USING J \((screenHeight - CGFloat(maxJ))/5.0)  and not  \((screenWidth - CGFloat(maxI))/5.0) ")
-            print ("from ")
+            //print ("USING J \((screenHeight - CGFloat(maxJ))/5.0)  and not  \((screenWidth - CGFloat(maxI))/5.0) ")
+            //print ("from ")
         }
         var index:Int = 0
         var listSist:[String] = Array(repeating:"" , count:width * height)
@@ -509,7 +504,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             
             for difference in penta.differences! {
                 pos = 0
-                print (difference)
+                //print (difference)
                 let i1:Int = (difference.position1?.i)!
                 let j1:Int = (difference.position1?.j)!
                 let i2:Int = (difference.position2?.i)!
@@ -531,66 +526,66 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 switch pos {
                 case 0:
                     //
-                    print("(\(i1),\(j1)) upper left")
+                    //print("(\(i1),\(j1)) upper left")
                     x = x - c/4
                     y = y + c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 1:
                     //
-                    print("(\(i1),\(j1)) up")
+                    //print("(\(i1),\(j1)) up")
                     x = x + c/2
                     y = y + c/4
                     drawLine(ctx.cgContext, x, y, x , y - c/2, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 2:
                     //
-                    print("(\(i1),\(j1)) upper right")
+                    //print("(\(i1),\(j1)) upper right")
                     x = x + 3*c/4
                     y = y + c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 10:
                     //
-                    print("(\(i1),\(j1)) left")
+                    //print("(\(i1),\(j1)) left")
                     x = x - c/4
                     y = y + c/2
                     drawLine(ctx.cgContext, x, y, x + c/2, y, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 12:
                     //
-                    print("(\(i1),\(j1)) right")
+                    //print("(\(i1),\(j1)) right")
                     x = x + 3*c/4
                     y = y + c/2
                     drawLine(ctx.cgContext, x, y, x + c/2, y, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 20:
                     //
-                    print("(\(i1),\(j1)) down left")
+                    //print("(\(i1),\(j1)) down left")
                     x = x - c/4
                     y = y + 5*c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y - c/2, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
                 case 21:
                     //
-                    print("(\(i1),\(j1)) down")
+                    //print("(\(i1),\(j1)) down")
                     x = x + c/2
                     y = y + 3*c/4
                     drawLine(ctx.cgContext, x, y, x , y + c/2, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 case 22:
                     //
-                    print("(\(i1),\(j1)) down right")
+                    //print("(\(i1),\(j1)) down right")
                     x = x + 3*c/4
                     y = y + 3*c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y + c/2, false, UIColor.black.cgColor)
-                    print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
+                    //print ("x=\(x) y=\(y) -> xd=\(x + c/2), yd=\(y - c/2)")
 
                 default :
                     print ("Bug:")
@@ -598,7 +593,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             }
             if (labelSolved != nil) { labelSolved.isHidden == true }
             if nbGoodColor == penta.width!*penta.height! {
-                print ("All color are OK !!!!")
+                //print ("All color are OK !!!!")
                 currentPentaSolved = true
                 if labelSolved == nil { labelSolved = UIButton()
                     let top = self.view.layoutMarginsGuide.topAnchor
@@ -910,13 +905,13 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             //print ("Number = \(number) in buttonNBAction")
             // No cell selected in the penta ... nothing to do
             if selectedValue == -1 {
-                print("Nothing to do - no value selected")
+                //print("Nothing to do - no value selected")
                 return
             }
             
             // This is a predefine value .... no action accepted
             if vSet[selectedValue].count == 1 && vSet[selectedValue].first! < 0 {
-                print("We dont do anything since it's a predefined value")
+                //print("We dont do anything since it's a predefined value")
                 return
             }
             // Lets see if the value is already present
@@ -929,7 +924,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             }
             drawPenta(penta: currentPenta!, valSelected: selectedValue, darker:sameAreaCells[selectedValue]
             )
-            print ("number = \(number)")
+            //print ("number = \(number)")
 
             savePreferences()
         }
@@ -937,7 +932,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     
     
     @IBAction func pickerAction(_ sender: UIPickerView) {
-    print ("Action PICKER")
+    //print ("Action PICKER")
         sender.isHidden = true
     }
     

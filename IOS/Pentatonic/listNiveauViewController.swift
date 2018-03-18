@@ -74,7 +74,7 @@ class listNiveauViewController: UIViewController {
 
         let currentMaxLevel = (arrayLevels[currentDifficulty]?.count)!
         displayButtons(currentMaxLevel)
-        print ("Levels loaded : \(arrayLevels)")
+        //print ("Levels loaded : \(arrayLevels)")
         labelCurrentLevel.text = ""
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
         swipeRight.direction = UISwipeGestureRecognizerDirection.right
@@ -86,14 +86,14 @@ class listNiveauViewController: UIViewController {
     }
     
     @IBAction func incrementYAction(_ sender: UISlider) {
-        print (sender.value)
+        //print (sender.value)
         incrementYPenta = Int(sender.value)
         sender.value = Float(incrementYPenta)
         labelYIncrement.text = "Y\(incrementYPenta)"
 
     }
     @IBAction func incrementAction(_ sender: UISlider) {
-        print (sender.value)
+        //print (sender.value)
         incrementPenta = Int(sender.value)
         sender.value = Float(incrementPenta)
         labelIncrement.text = "X\(incrementPenta)"
@@ -140,31 +140,6 @@ class listNiveauViewController: UIViewController {
 
     }
     
-    func displayDebugPentas(_ pentas:[APenta]) {
-        for p in pentas {
-            print ("\n\nuser:\(p.author!) name:\(p.name!)")
-            print ("width:\(p.width!) length:\(p.height!) difficulty: \(p.difficulty!)")
-            for data in p.data! {
-                print ("dataXY = \(data)")
-                
-            }
-            for valeur in p.values! {
-                print ("valeurI = \(valeur.i!) - valeur of type \(type(of: valeur))")
-                
-            }
-            for sister in p.sisters! {
-                print ("\n----sister \(sister.id!)")
-                for point in sister.positions! {
-                    print (" in \(sister.id!) : point= \(point.i!),\(point.j!)")
-                }
-                
-            }
-            if (p.differences != nil) {
-                for diff in p.differences! {
-                }
-            }
-        }
-    }
     func readJson() -> [APenta]{
         var url:URL
         if ldefine.remotePentasGit {
@@ -265,8 +240,6 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                         break
                     }
                 }
-                print ("penta.data[0].count = \(String(describing: penta?.data?[0].count)) - width = \(String(describing: penta?.width))")
-                print ("penta.data.count = \(String(describing: penta?.data?.count)) - height = \(String(describing: penta?.height))")
                 if penta?.data?[0].count != penta?.width {
                     penta?.width = penta?.data?[0].count
                     print ("******************* Erroneous width in Json for \(String(describing: penta?.name))- fixing it ")
@@ -285,23 +258,17 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
     }
   
     @IBAction func buttonAction(_ sender: UIButton) {
-        print("Click on Button \(sender.tag)")
         let segment = difficultySegment.selectedSegmentIndex
         let difficulty = ldefine.allLevel[segment]
         var currentLevel:Int = sender.tag
         
-        print("Difficulty = \(segment)")
-        print("Current Difficulty \(ldefine.allLevel[segment])")
         let listLevels:[String] = arrayLevels[difficulty]!
         let maxLevel = listLevels.count
         
         if currentLevel >= maxLevel {
             currentLevel = maxLevel - 1
         }
-        print ("\(arrayLevels[difficulty]![currentLevel])")
         labelCurrentLevel.text = arrayLevels[difficulty]![currentLevel]
-        //let iii :Initializor = Initializor.init(name: "Armand", line: 0, column: 0)
-        //iii.createLevel()
 
         var penta:APenta? = nil
         for anyPenta in pentas {
@@ -312,7 +279,7 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         }
         let next:playViewController = playViewController()
         next.setPenta(penta!)
-        print("this is the global backup")
+        //print("this is the global backup")
         var index = 0
         var found:Bool = false
         for backup in globalUserGameData.totale! {
@@ -436,7 +403,7 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                     let x=sizeBut/6+CGFloat(j)*sizeBut
                     let y=CGFloat(i)*sizeBut
                     let itsNeighbour = get_neighbour(penta:penta,i,j)
-                    print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
+                    //print ("i=\(i),j=\(j) - val=\(penta.data![i][j]) - x=\(x),y=\(y)")
                     drawRect(ctx.cgContext, CGFloat(x)+dwidth, CGFloat(y)+dheight, CGFloat(sizeBut), CGFloat(sizeBut), itsNeighbour.up, itsNeighbour.down, itsNeighbour.right, itsNeighbour.left)
                     
                 }
@@ -464,7 +431,7 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
                 }
             }
             if complete {
-                print ("****************\(sizeBut*CGFloat(penta.width!))*******************")
+                //print ("****************\(sizeBut*CGFloat(penta.width!))*******************")
                 var sizeStr = "100"
                 if sizeBut*max(CGFloat(penta.width!),CGFloat(penta.height!)) < 100 { sizeStr = "40" }
                 let image = UIImage(named: "completed"+sizeStr+".png")!
@@ -496,7 +463,7 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             switch swipeGesture.direction {
             case UISwipeGestureRecognizerDirection.right:
-                print("Swiped right")
+                //print("Swiped right")
                 var segment = difficultySegment.selectedSegmentIndex
                 if segment > 0 {
                     segment = segment-1
@@ -511,7 +478,7 @@ func saveUploadedFilesSet(fileName:[String : Any]) {
             case UISwipeGestureRecognizerDirection.down:
                 print("Swiped down")
             case UISwipeGestureRecognizerDirection.left:
-                print("Swiped left")
+                //print("Swiped left")
                 var segment = difficultySegment.selectedSegmentIndex
                 if segment < ldefine.allLevel.count-1 {
                     segment = segment+1
