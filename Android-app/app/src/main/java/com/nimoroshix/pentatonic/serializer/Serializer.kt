@@ -57,12 +57,23 @@ class Serializer {
             return grid
         }
 
+        /**
+         * Takes an InputStream, and reads it to convert it into a grid
+         * @param inputStream the input stream to read
+         * @param filename the name of the file
+         * @return the grid deserialized
+         */
         fun deserialize(inputStream: InputStream, filename: String): Grid {
             val reader = BufferedReader(InputStreamReader(inputStream))
             val lines = reader.lineSequence()
             return deserialize(lines, filename)
         }
 
+        /**
+         * Takes a pentatonic from the DB, and converts it into a grid (model for the visualization)
+         * @param pentatonic the pentatonic from the DB
+         * @return the grid
+         */
         @Throws(IllegalArgumentException::class)
         fun fromDbToGrid(pentatonic: Pentatonic): Grid {
             val grid = Grid(pentatonic.lines, pentatonic.columns)
@@ -80,6 +91,11 @@ class Serializer {
             return grid
         }
 
+        /**
+         * Takes the grid, and converts it into a Pentatonic (object that can go in the database)
+         * @param grid the grid to convert
+         * @return the pentatonic ready to go in the database
+         */
         fun fromGridToDb(grid: Grid): Pentatonic {
             val penta = Pentatonic(grid.nbLines, grid.nbColumns)
             penta.areas = grid.cells.joinToString("\n") { row ->
@@ -212,6 +228,12 @@ class Serializer {
         const val ACTION_REPLACE = "REPLACE"
         const val ACTION_REMOVE_MULTIPLE = "RM_ALL"
         const val ACTION_RESET = "RESET"
+
+        /**
+         * Converts the list of string actions into a mutable list of object Action
+         * @param actionString the list of actions in the form of strings
+         * @return {MutableList &lt;Action&gt;} the converted list of actions
+         */
         fun deserializeActions(actionString: List<String>): MutableList<Action> {
             val res = mutableListOf<Action>()
             actionString.forEach { a ->
@@ -231,6 +253,11 @@ class Serializer {
             return res
         }
 
+        /**
+         * Converts the list of Actions into a list of string Actions
+         * @param actions the list of actions
+         * @return {List &lt;String&gt;} the converted list of actions
+         */
         fun serializeActions(actions: List<Action>): List<String> {
             val res = mutableListOf<String>()
             actions.forEach { a ->

@@ -19,11 +19,22 @@ import java.io.IOException
  */
 const val TAG = "ShareUtil"
 
+/**
+ * Takes a screenshot of a view, and returns a Bitmap
+ * @param view the view to take the screenshot of
+ * @return the bitmap of the view
+ */
 fun takeScreenshot(view: View): Bitmap {
     view.isDrawingCacheEnabled = true
     return view.drawingCache
 }
 
+/**
+ * Saves a bitmap to an image file
+ * @param context
+ * @param bitmap the bitmap to save
+ * @return the file in which the bitmap was saved
+ */
 fun saveBitmap(context: Context, bitmap: Bitmap): File {
     val filename = "screenshot.png"
     val fos: FileOutputStream
@@ -40,6 +51,13 @@ fun saveBitmap(context: Context, bitmap: Bitmap): File {
     return context.getFileStreamPath(filename)
 }
 
+/**
+ * Starts a share intent with a file, a subject and a body
+ * @param context
+ * @param file the file to share
+ * @param body the message body
+ * @param subject the message subject
+ */
 fun shareIt(context: Context, file: File, body: String, subject: String) {
     val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
     //Uri.fromFile(file)
