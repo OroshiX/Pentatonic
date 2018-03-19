@@ -27,6 +27,17 @@ class listNiveauViewController: UIViewController {
     
     @IBOutlet var sliderYIncrement: UISlider!
     @IBOutlet var sliderIncrement: UISlider!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print("This is it")
+        let segment = difficultySegment.selectedSegmentIndex
+        
+        let currentDifficulty = ldefine.allLevel[segment]
+        let currentMaxLevel = (arrayLevels[currentDifficulty]?.count)!
+        
+        displayButtons(currentMaxLevel)
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         

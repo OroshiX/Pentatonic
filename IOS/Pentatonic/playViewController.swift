@@ -133,17 +133,17 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         vSet = Array(repeating:Set<Int>(),count:size)
         
-        var regionSet : [String:Set<Int>] = [:]
+        var arrayRegionSet : [String:Set<Int>] = [:]
         
         for allVal in 0..<size {
             
             let lIJ = IJ(p: currentPenta!, index: allVal)
             let i=lIJ.i
             let j=lIJ.j
-            if (regionSet[lIJ.val]?.count == nil ) {
-                regionSet[lIJ.val] = []
+            if (arrayRegionSet[lIJ.val]?.count == nil ) {
+                arrayRegionSet[lIJ.val] = []
             }
-            regionSet[lIJ.val]?.insert(allVal)
+            arrayRegionSet[lIJ.val]?.insert(allVal)
             
             if i != 0 {
                 sameAreaCells[allVal].insert(lIJ.getIndex(penta, i-1, j))
@@ -179,10 +179,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             }
             
         }
-        for region in regionSet {
+        for regionSet in arrayRegionSet {
             
-            for cell in region.value {
-                regionCount[cell] = region.value.count
+            for cell in regionSet.value {
+                regionCount[cell] = regionSet.value.count
                 for i in 1...regionCount[cell] {
                     possibleValue[cell].insert(i)
                 }
@@ -218,15 +218,17 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         
                     }
                 }
-                for cell in regionSet {
+                for regionSet in arrayRegionSet {
                     var local:Set<Int> = []
-                    for pentaVal in 1...cell.value.count {
+                    for pentaVal in 1...regionSet.value.count {
+                        // Local is the list of cells which can contain pentaVal
+                        // if local.count is 1 then only one cell in this region can contain this value
                         local = []
                         
-                        for value in cell.value {
+                        for cell in regionSet.value {
                             
-                            if possibleValue[value].contains(pentaVal) {
-                                local.insert(value)
+                            if possibleValue[cell].contains(pentaVal) {
+                                local.insert(cell)
                             }
                         }
                         if local.count == 1 && possibleValue[local.first!].count != 1 {
@@ -244,7 +246,34 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         }
                     }
                 }
+                if change == false {
+                    for regionSet in arrayRegionSet {
+                        
+                        var neighbourWholeRegion:Set<Int>? = nil
+                        
+                        for cell in regionSet.value {
+                            let A = sameAreaCells[cell]
+                            
+                            if neighbourWholeRegion == nil {
+                                neighbourWholeRegion = A.subtracting(regionSet.value)
+                            } else {
+                                neighbourWholeRegion = neighbourWholeRegion?.intersection(A.subtracting(regionSet.value))
+                            }
+                        }
+                        for pentaVal in 1...regionSet.value.count {
+                            for cell in neighbourWholeRegion! {
+                                if possibleValue[cell].contains(pentaVal) {
+                                   possibleValue[cell].remove(pentaVal)
+                                    change = true
+                                }
+                            }
+                        }
+                        print ("region:\(regionSet.key): all cellse have \(String(describing: neighbourWholeRegion)) as neighbourssubtracting")
+                    }
+                }
+                
             }
+            
             
         }
     }
