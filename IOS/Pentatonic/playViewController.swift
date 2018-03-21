@@ -63,7 +63,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var screenHeight:CGFloat = 0
     var minW:Int = 0
     var sameAreaCells:[Set<Int>] = [[]]
-    // vSet will contain the origina values (negative)
+    // vSet will contain the original values (negative)
     // and set of value user want to pre-select
     
     var vSet :[Set<Int>] = [[]]
@@ -269,6 +269,37 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                             }
                         }
                         print ("region:\(regionSet.key): all cellse have \(String(describing: neighbourWholeRegion)) as neighbourssubtracting")
+                    }
+                    for regionSet in arrayRegionSet {
+                        // For every region
+                        for otherRegionSet in arrayRegionSet {
+                            //compare with every other region
+                            if regionSet.key != otherRegionSet.key {
+                                if otherRegionSet.value.count >= regionSet.value.count {
+                                    for cell in regionSet.value {
+                                        // now check that n-1 Ocell of otherRegionSet are in same area as cell
+                                        // if this is the case the Ocell N , possible value for OcellN and cell are the same - e.g intersection of the 2 sets
+                                        let A = sameAreaCells[cell]
+                                        var n:Int = otherRegionSet.value.count
+                                        var OKCell:Int = -1
+                                        for Ocell in otherRegionSet.value {
+                                            if A.contains(Ocell) {
+                                                n = n-1
+                                            } else { OKCell = Ocell}
+                                        }
+                                        if n == 1 && ( !possibleValue[OKCell].isSubset(of: possibleValue[cell]) ||  !possibleValue[cell].isSubset(of: possibleValue[OKCell])) {
+                                            // We got one, it's OKCell
+                                            let B = possibleValue[OKCell].intersection(possibleValue[cell])
+                                            
+                                            possibleValue[OKCell] = B
+                                            possibleValue[cell] = B
+                                            change = true
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 

@@ -37,11 +37,20 @@ class preferencesViewController: UIViewController {
         switch sender.tag {
         case 0:
             ldefine.helpButtonValue = sender.isOn
-
+            if sender.isOn {
+                ldefine.forceDoNotSave = true
+                saveDataGame.isOn = true
+            }
+            
         case 1:
             ldefine.remotePentasGit = sender.isOn
         case 2:
+            if !ldefine.helpButtonValue {
             ldefine.forceDoNotSave = sender.isOn
+            } else {
+                sender.isOn = true
+                
+            }
         default:
             print("This is a bug")
             
