@@ -26,35 +26,66 @@ struct define {
         case dark
         case darker
         case darkest
+        case blue
+        case red
+        case black
     }
     let greyTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xeeeeee),
                                   LColor.lighter:UIColor(rgb:0xaaaaaa),
                                   LColor.light:UIColor(rgb:0x999999),
                                   LColor.dark:UIColor(rgb:0x777777),
                                   LColor.darker:UIColor(rgb:0x555555),
-                                  LColor.darkest:UIColor(rgb:0x333333)
+                                  LColor.darkest:UIColor(rgb:0x333333),
+                                  LColor.blue:UIColor(rgb:0x0000ff),
+                                  LColor.red:UIColor(rgb:0xff0000),
+                                  LColor.black:UIColor(rgb:0x000000)
     ]
     let blueTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xeeeeff),
                                       LColor.lighter:UIColor(rgb:0xaaaadd),
                                       LColor.light:UIColor(rgb:0x9999cc),
                                       LColor.dark:UIColor(rgb:0x7777aa),
                                       LColor.darker:UIColor(rgb:0x555588),
-                                      LColor.darkest:UIColor(rgb:0x333366)
+                                      LColor.darkest:UIColor(rgb:0x333366),
+                                      LColor.blue:UIColor(rgb:0x0000ff),
+                                      LColor.red:UIColor(rgb:0xff0000),
+                                      LColor.black:UIColor(rgb:0x000000)
     ]
     let redTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xffeeee),
                                      LColor.lighter:UIColor(rgb:0xddaaaa),
                                      LColor.light:UIColor(rgb:0xcc9999),
                                      LColor.dark:UIColor(rgb:0xaa7777),
                                      LColor.darker:UIColor(rgb:0x885555),
-                                     LColor.darkest:UIColor(rgb:0x663333)
+                                     LColor.darkest:UIColor(rgb:0x663333),
+                                     LColor.blue:UIColor(rgb:0x0000ff),
+                                     LColor.red:UIColor(rgb:0xff0000),
+                                     LColor.black:UIColor(rgb:0x000000)
     ]
     let greenTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xeeffee),
                                        LColor.lighter:UIColor(rgb:0xaaddaa),
                                        LColor.light:UIColor(rgb:0x99cc99),
                                        LColor.dark:UIColor(rgb:0x77aa77),
                                        LColor.darker:UIColor(rgb:0x558855),
-                                       LColor.darkest:UIColor(rgb:0x336633)
+                                       LColor.darkest:UIColor(rgb:0x336633),
+                                       LColor.blue:UIColor(rgb:0x0000ff),
+                                       LColor.red:UIColor(rgb:0xff0000),
+                                       LColor.black:UIColor(rgb:0x000000)
+
     ]
+    let yustinaTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xffffff),
+                                         
+                                         LColor.lighter:UIColor(rgb:0xfff7e6),
+                                         LColor.light:UIColor(rgb:0xffe7b3),
+                                         LColor.dark:UIColor(rgb:0xffd780),
+                                         
+                                         LColor.darker:UIColor(rgb:0x558855),
+                                         LColor.darkest:UIColor(rgb:0x336633),
+                                         LColor.blue:UIColor(rgb:0xcc8800),
+                                         LColor.red:UIColor(rgb:0xff0000),
+                                         LColor.black:UIColor(rgb:0x000000)
+        //4d1923
+    ]
+    
+    
     let level:[Level:String] = [ Level.beginner:"beginner",
                                  Level.easy:"Easy",
                                  Level.medium:"Medium",
@@ -68,6 +99,8 @@ struct define {
     var remotePentasGit = false
     var doNotSave = false
     var forceDoNotSave = false
+    var zoomScrollActivated = false
+    var levelMax = 1
     init() {
         currentTheme = greyTheme
     }

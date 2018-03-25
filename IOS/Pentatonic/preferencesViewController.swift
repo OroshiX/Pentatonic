@@ -18,6 +18,10 @@ class preferencesViewController: UIViewController {
         helpValueSwitch.isOn = ldefine.helpButtonValue
         remotePentaGitSwitch.isOn = ldefine.remotePentasGit
         saveDataGame.isOn = ldefine.forceDoNotSave || ldefine.doNotSave
+        zoomScrollSwitch.isOn = ldefine.zoomScrollActivated
+        recursSlider.value = Float(ldefine.levelMax)
+        labelRecursivity.text = "Level of recursivity " + "\(ldefine.levelMax)"
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,9 +32,17 @@ class preferencesViewController: UIViewController {
     @IBOutlet var helpValueSwitch: UISwitch!
     @IBOutlet var remotePentaGitSwitch: UISwitch!
     @IBOutlet var saveDataGame: UISwitch!
+    @IBOutlet var zoomScrollSwitch: UISwitch!
+    @IBOutlet var recursSlider: UISlider!
     
+    @IBOutlet var labelRecursivity: UILabel!
     @IBAction func backAction(_ sender: Any) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func sliderAction(_ sender: UISlider) {
+            ldefine.levelMax = Int(sender.value)
+            labelRecursivity.text = "Level of recursivity " + "\(ldefine.levelMax)"
     }
     
     @IBAction func choosingValueAction(_ sender: UISwitch) {
@@ -51,6 +63,8 @@ class preferencesViewController: UIViewController {
                 sender.isOn = true
                 
             }
+        case 3:
+            ldefine.zoomScrollActivated = sender.isOn
         default:
             print("This is a bug")
             
@@ -70,6 +84,8 @@ class preferencesViewController: UIViewController {
             ldefine.currentTheme = ldefine.redTheme
         case 3:
             ldefine.currentTheme = ldefine.greenTheme
+        case 4:
+            ldefine.currentTheme = ldefine.yustinaTheme
         default:
             ldefine.currentTheme = ldefine.greyTheme
         }

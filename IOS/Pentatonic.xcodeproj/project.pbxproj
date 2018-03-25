@@ -30,6 +30,8 @@
 		123E361320473069009F0B82 /* back20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E360F20473068009F0B82 /* back20.png */; };
 		123E361420473069009F0B82 /* redo20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E361020473069009F0B82 /* redo20.png */; };
 		123E361520473069009F0B82 /* undo20.png in Resources */ = {isa = PBXBuildFile; fileRef = 123E361120473069009F0B82 /* undo20.png */; };
+		12402037206532E30004DBA7 /* MYScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12402036206532E30004DBA7 /* MYScrollView.swift */; };
+		124020392065356D0004DBA7 /* MYUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124020382065356D0004DBA7 /* MYUIView.swift */; };
 		125082152034F16000AF0BCC /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 125082142034F16000AF0BCC /* Play.png */; };
 		125082172034F24800AF0BCC /* Rules.png in Resources */ = {isa = PBXBuildFile; fileRef = 125082162034F24800AF0BCC /* Rules.png */; };
 		125082192034F28800AF0BCC /* Tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 125082182034F28800AF0BCC /* Tutorial.png */; };
@@ -42,6 +44,11 @@
 		1250822A2035D8FD00AF0BCC /* define.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125082292035D8FD00AF0BCC /* define.swift */; };
 		129402DD2041716300AA3D42 /* preferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129402DC2041716300AA3D42 /* preferencesViewController.swift */; };
 		129402DF2041734F00AA3D42 /* setting.png in Resources */ = {isa = PBXBuildFile; fileRef = 129402DE2041734E00AA3D42 /* setting.png */; };
+		12970E362065383B003DE96A /* MYUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12970E352065383B003DE96A /* MYUIButton.swift */; };
+		12970E3B2067E630003DE96A /* blue50.png in Resources */ = {isa = PBXBuildFile; fileRef = 12970E372067E62F003DE96A /* blue50.png */; };
+		12970E3C2067E630003DE96A /* grey50.png in Resources */ = {isa = PBXBuildFile; fileRef = 12970E382067E62F003DE96A /* grey50.png */; };
+		12970E3D2067E630003DE96A /* red50.png in Resources */ = {isa = PBXBuildFile; fileRef = 12970E392067E62F003DE96A /* red50.png */; };
+		12970E3E2067E630003DE96A /* green50.png in Resources */ = {isa = PBXBuildFile; fileRef = 12970E3A2067E630003DE96A /* green50.png */; };
 		129874082055DE7C000ED6D9 /* back40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874012055DE79000ED6D9 /* back40.png */; };
 		129874092055DE7C000ED6D9 /* undo40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874022055DE7A000ED6D9 /* undo40.png */; };
 		1298740A2055DE7C000ED6D9 /* redo40.png in Resources */ = {isa = PBXBuildFile; fileRef = 129874032055DE7A000ED6D9 /* redo40.png */; };
@@ -85,6 +92,8 @@
 		123E360F20473068009F0B82 /* back20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back20.png; path = logo/back20.png; sourceTree = "<group>"; };
 		123E361020473069009F0B82 /* redo20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redo20.png; path = logo/redo20.png; sourceTree = "<group>"; };
 		123E361120473069009F0B82 /* undo20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = undo20.png; path = logo/undo20.png; sourceTree = "<group>"; };
+		12402036206532E30004DBA7 /* MYScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MYScrollView.swift; sourceTree = "<group>"; };
+		124020382065356D0004DBA7 /* MYUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MYUIView.swift; sourceTree = "<group>"; };
 		125082142034F16000AF0BCC /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Play.png; sourceTree = "<group>"; };
 		125082162034F24800AF0BCC /* Rules.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rules.png; sourceTree = "<group>"; };
 		125082182034F28800AF0BCC /* Tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tutorial.png; sourceTree = "<group>"; };
@@ -97,6 +106,11 @@
 		125082292035D8FD00AF0BCC /* define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = define.swift; sourceTree = "<group>"; };
 		129402DC2041716300AA3D42 /* preferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = preferencesViewController.swift; sourceTree = "<group>"; };
 		129402DE2041734E00AA3D42 /* setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = setting.png; sourceTree = "<group>"; };
+		12970E352065383B003DE96A /* MYUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MYUIButton.swift; sourceTree = "<group>"; };
+		12970E372067E62F003DE96A /* blue50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blue50.png; path = logo/blue50.png; sourceTree = "<group>"; };
+		12970E382067E62F003DE96A /* grey50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grey50.png; path = logo/grey50.png; sourceTree = "<group>"; };
+		12970E392067E62F003DE96A /* red50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = red50.png; path = logo/red50.png; sourceTree = "<group>"; };
+		12970E3A2067E630003DE96A /* green50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green50.png; path = logo/green50.png; sourceTree = "<group>"; };
 		129874012055DE79000ED6D9 /* back40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back40.png; path = logo/back40.png; sourceTree = "<group>"; };
 		129874022055DE7A000ED6D9 /* undo40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = undo40.png; path = logo/undo40.png; sourceTree = "<group>"; };
 		129874032055DE7A000ED6D9 /* redo40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redo40.png; path = logo/redo40.png; sourceTree = "<group>"; };
@@ -157,11 +171,18 @@
 			isa = PBXGroup;
 			children = (
 				12B095EA1FFFD94A002C57D5 /* Main.storyboard */,
+				12970E372067E62F003DE96A /* blue50.png */,
+				12970E3A2067E630003DE96A /* green50.png */,
+				12970E382067E62F003DE96A /* grey50.png */,
+				12970E392067E62F003DE96A /* red50.png */,
 				1206976F20416B1600234B56 /* mainPageController.swift */,
 				129402DC2041716300AA3D42 /* preferencesViewController.swift */,
 				12BB271420371C9A0037FBBC /* tutorialViewController.swift */,
 				12B096072000E89E002C57D5 /* listNiveauViewController.swift */,
 				120D2488203B77820000CAAD /* playViewController.swift */,
+				124020382065356D0004DBA7 /* MYUIView.swift */,
+				12402036206532E30004DBA7 /* MYScrollView.swift */,
+				12970E352065383B003DE96A /* MYUIButton.swift */,
 				123830F320595BB8009C9836 /* completed40.png */,
 				123830F120594AD8009C9836 /* completed100.png */,
 				129874012055DE79000ED6D9 /* back40.png */,
@@ -276,7 +297,9 @@
 				123E361220473069009F0B82 /* reset20.png in Resources */,
 				12B095F41FFFD94A002C57D5 /* LaunchScreen.storyboard in Resources */,
 				1250821F2034F3AA00AF0BCC /* rect_turq.png in Resources */,
+				12970E3E2067E630003DE96A /* green50.png in Resources */,
 				123E361420473069009F0B82 /* redo20.png in Resources */,
+				12970E3C2067E630003DE96A /* grey50.png in Resources */,
 				1298740E2055DE7C000ED6D9 /* reset40.png in Resources */,
 				1298740D2055DE7C000ED6D9 /* replace.png in Resources */,
 				123E35FF2046EEC4009F0B82 /* Media.xcassets in Resources */,
@@ -286,6 +309,7 @@
 				123E3605204710A5009F0B82 /* Background3.png in Resources */,
 				120D2497203BA9D70000CAAD /* transparent.png in Resources */,
 				123E360B20472B54009F0B82 /* reset.png in Resources */,
+				12970E3D2067E630003DE96A /* red50.png in Resources */,
 				12CCD2B82045BE10003AD04C /* all.json in Resources */,
 				123E36032046F1B2009F0B82 /* background2.png in Resources */,
 				12B095EC1FFFD94A002C57D5 /* Main.storyboard in Resources */,
@@ -300,6 +324,7 @@
 				123E360D20472C64009F0B82 /* back.png in Resources */,
 				121DB758204874B300DDAC40 /* regexp20.png in Resources */,
 				125082172034F24800AF0BCC /* Rules.png in Resources */,
+				12970E3B2067E630003DE96A /* blue50.png in Resources */,
 				1298740B2055DE7C000ED6D9 /* replace40.png in Resources */,
 				123E361520473069009F0B82 /* undo20.png in Resources */,
 				129402DF2041734F00AA3D42 /* setting.png in Resources */,
@@ -323,14 +348,17 @@
 				12BB271520371C9A0037FBBC /* tutorialViewController.swift in Sources */,
 				1250822A2035D8FD00AF0BCC /* define.swift in Sources */,
 				120D2489203B77820000CAAD /* playViewController.swift in Sources */,
+				12970E362065383B003DE96A /* MYUIButton.swift in Sources */,
 				12B095EF1FFFD94A002C57D5 /* Pentatonic.xcdatamodeld in Sources */,
 				129402DD2041716300AA3D42 /* preferencesViewController.swift in Sources */,
 				12CCD2B220446C99003AD04C /* ABackup.swift in Sources */,
 				1206977020416B1600234B56 /* mainPageController.swift in Sources */,
 				120D248F203B938F0000CAAD /* APoint.swift in Sources */,
 				120D248D203B935C0000CAAD /* AValeur.swift in Sources */,
+				12402037206532E30004DBA7 /* MYScrollView.swift in Sources */,
 				12B095E71FFFD94A002C57D5 /* AppDelegate.swift in Sources */,
 				1250822420359E6E00AF0BCC /* Initializor.swift in Sources */,
+				124020392065356D0004DBA7 /* MYUIView.swift in Sources */,
 				125082282035C22E00AF0BCC /* rulesViewController.swift in Sources */,
 				12CCD2B420446DA8003AD04C /* ATotalBackup.swift in Sources */,
 				1250822220359DAD00AF0BCC /* Generator.swift in Sources */,

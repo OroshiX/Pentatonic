@@ -39,6 +39,31 @@
 "differences": [
 ]},
 {
+"author":"Armand","name":"UnePremiere",
+"width":6,"height":6,
+"difficulty":1,
+"data":[
+        ["h","h","h","h","i","i"],
+        ["a","h","g","g","g","g"],
+        ["b","c","f","f","f","g"],
+        ["b","c","c","f","e","e"],
+        ["b","c","d","d","e","e"],
+        ["b","b","d","d","d","e"],
+],
+"values":[
+          {"val":3,"i":0, "j":2},
+          {"val":4,"i":5, "j":5},
+          {"val":5,"i":5, "j":0}
+],
+"sisters": [
+            { "id":1, "symbol":".", "positions":[
+                                                 {"i":4,"j":0},
+                                                 {"i":4,"j":3},
+                                                 ] }
+],
+"differences": [
+]},
+{
 "author":"Nimo","name":"Le grand structurel",
 "width":6,"height":13,
 "difficulty":2,
