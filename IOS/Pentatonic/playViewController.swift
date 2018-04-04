@@ -51,8 +51,9 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     let blue = 0
     let black = 1
     let red = 2
-    
-var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.currentTheme[define.LColor.black]!,ldefine.currentTheme[define.LColor.red]!]
+    var counter = 0
+    var maxCounter = 0
+    var FontColor:[UIColor] = [ ldefine.currentTheme[prefsJSON.LColor.blue]!,ldefine.currentTheme[prefsJSON.LColor.black]!,ldefine.currentTheme[prefsJSON.LColor.red]!]
     
     var dxl:CGFloat = 0
     var dxm:CGFloat = 0
@@ -60,6 +61,9 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
     var dyu:CGFloat = 0
     var dym:CGFloat = 0
     var dyd:CGFloat = 0
+    var confirmReset:UIAlertController? = nil
+    var confirmExit:UIAlertController? = nil
+    var sizeLine:CGFloat = 0
     
     var currentPentaSolved:Bool = false
     var globalIndex = -1
@@ -113,7 +117,13 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
     // return 1 if penta is not solved
     // return 2 if it's not possible to solve it
     
+    public func getCounter() -> Int {
+        return counter
+    }
     
+    public func getMaxCounter() -> Int {
+        return maxCounter
+    }
     public func isPentaSolved (_ penta:APenta, possibleV:[Set<Int>]) -> Int {
         var isPentaSolved = 0
         for value in possibleV {
@@ -330,16 +340,15 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
                                     var result = solvePentaRecursive(penta, dicoRegion: dicoRegion, sameA: sameA, otherR: otherR, locVSetP: locVSet, possibleVP: possibleV, level:level+1)
                                     if result == 0
                                     {
-                                        print ("*****THIS TIME IT IS SOLVED YEAHHH")
+                                        print ("Penta was solved at level \(level)")
                                         if !(vSet[value].count == 1 && vSet[value].first! <= 0)  { vSet[value] = [v] }
                                         return 0
                                     } else {
                                         if result == 2 {
-                                            //print ("*****This is abolsutely impossible - backtrack")
+                                            // backtrack - this is not an acceptable solution
                                             possibleV[value].remove(v)
                                             possibleV[value] = save
                                         } else {
-                                            //print ("*****TOO BAD, one level was not enough")
                                             possibleV[value] = save
                                         }
                                     }
@@ -379,7 +388,11 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
         initialY = sizeBut*2
         sizeFont = CGFloat(sizeBut) * 0.8
         //*************************
-        
+        if sizeBut < 30 {
+            sizeLine = 2
+        } else if sizeBut < 70 {
+            sizeLine = 3
+        } else { sizeLine = 3.5 }
         sizeFont = CGFloat(sizeBut) * 0.8
         
         petiteFont = CGFloat(sizeBut) * 0.8 / 3
@@ -670,7 +683,10 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
                 return
             } else {
                 if change == false {
+                    maxCounter = size
+
                     for value in 0..<possibleValue.count {
+                        counter = value
                         print ("******* try N \(value)/\(size)")
                         let save = possibleValue[value]
                         if possibleValue[value].count > 1 {
@@ -717,7 +733,50 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
             scrollImageView.delaysContentTouches = false
         }
     }
-    
+    func initializePopupS () {
+        confirmExit = UIAlertController(title: "Do you really want to go back to Penta Selection ?", message: "Current status will be saved, but you will lose the action's history for this Penta", preferredStyle: UIAlertControllerStyle.alert)
+        confirmReset = UIAlertController(title: "Remove all values on this Penta ?", message: "You will lose any progress on this Penta", preferredStyle: UIAlertControllerStyle.alert)
+        
+        confirmExit?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        confirmExit?.addAction(UIAlertAction(title: "confirm", style: .default, handler: { action in
+            switch action.style{
+            case .default:
+                print("default")
+                self.dismiss(animated: true, completion: nil)
+
+            case .cancel:
+                print("cancel")
+                
+            case .destructive:
+                print("destructive")
+                
+            }
+        }))
+        confirmReset?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        confirmReset?.addAction(UIAlertAction(title: "Reset", style: .default, handler: { action in
+            switch action.style{
+            case .default:
+                print("default")
+                self.selectedValue = -1
+                for i  in 0..<self.vSet.count {
+                    if self.vSet[i].count == 1 && (self.vSet[i].first)! < 0 { continue } else {
+                        self.vSet[i] = []
+                    }
+                }
+                self.currentPentaSolved = false
+                self.saveGameData()
+                self.drawPenta(penta: self.currentPenta!, valSelected: -1, darker:[])
+                self.pastAction = []
+                self.futurAction = []
+            case .cancel:
+                print("cancel")
+                
+            case .destructive:
+                print("destructive")
+                
+                
+            }}))
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -727,6 +786,8 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
         myBackgroundImage = UIImageView(image: image)
         
         self.view.addSubview(myBackgroundImage)
+        
+        initializePopupS()
         
         let trailing = self.view.layoutMarginsGuide.trailingAnchor
         let leading = self.view.layoutMarginsGuide.leadingAnchor
@@ -854,7 +915,7 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
         }
         globalIndex = index
     }
-    func savePreferences () {
+    func saveGameData () {
         if globalIndex >= 0 { globalUserGameData.totale![globalIndex].vSet = vSet
             globalUserGameData.totale![globalIndex].completed = currentPentaSolved
 
@@ -921,9 +982,9 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: minW, height: minW))
         var nbGoodColor = 0
         let img = renderer.image { ctx in
-            let listColor = [ldefine.currentTheme[define.LColor.dark]?.cgColor,
-                             ldefine.currentTheme[define.LColor.light]?.cgColor,
-                             ldefine.currentTheme[define.LColor.lighter]?.cgColor]
+            let listColor = [ldefine.currentTheme[prefsJSON.LColor.dark]?.cgColor,
+                             ldefine.currentTheme[prefsJSON.LColor.light]?.cgColor,
+                             ldefine.currentTheme[prefsJSON.LColor.lighter]?.cgColor]
             var color:Int
             let lIJ:IJ = IJ(p: penta, index: 0)
             for i in 0..<height {
@@ -1144,7 +1205,7 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
             context.setLineWidth(1)
             context.setLineDash(phase: 0, lengths: [1, 2])
         } else {
-            context.setLineWidth(3.5)
+            context.setLineWidth(sizeLine)
             context.setLineDash(phase: 0, lengths: [])
         }
         context.setStrokeColor(color)
@@ -1321,20 +1382,16 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
             sender.isHidden = true
             return
         case butType.back.rawValue:
-            dismiss(animated: true, completion: nil)
+            if currentPentaSolved  || (futurAction.isEmpty && pastAction.isEmpty ){
+                self.dismiss(animated: true, completion: nil)
+            } else {
+                self.present(confirmExit!, animated: true, completion: nil)
+            }
             return
         case butType.Reset.rawValue:
-            selectedValue = -1
-            for i  in 0..<vSet.count {
-                if vSet[i].count == 1 && (vSet[i].first)! < 0 { continue } else {
-                    vSet[i] = []
-                }
-            }
+
+            self.present(confirmReset!, animated: true, completion: nil)
             
-            savePreferences()
-            drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
-            pastAction = []
-            futurAction = []
             return
         case butType.regexp.rawValue:
                 if myPickerView == nil {
@@ -1354,7 +1411,7 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
                     myPickerView.isHidden = !myPickerView.isHidden
                     selectedValue = -1
                     drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
-                    savePreferences()
+                    saveGameData()
 
                     return
                 }
@@ -1410,7 +1467,7 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
             )
             //print ("number = \(number)")
 
-            savePreferences()
+            saveGameData()
         }
     }
     
@@ -1431,7 +1488,7 @@ var FontColor:[UIColor] = [ ldefine.currentTheme[define.LColor.blue]!,ldefine.cu
                 if vSet[tag].count > 0 && vSet[tag].first! > 0 {
                     vSet[tag] = []
                 }
-                savePreferences()
+                saveGameData()
                 drawPenta(penta: currentPenta!, valSelected: -1, darker: [])
             }
 

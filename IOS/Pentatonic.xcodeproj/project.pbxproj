@@ -42,6 +42,7 @@
 		1250822420359E6E00AF0BCC /* Initializor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1250822320359E6E00AF0BCC /* Initializor.swift */; };
 		125082282035C22E00AF0BCC /* rulesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125082272035C22E00AF0BCC /* rulesViewController.swift */; };
 		1250822A2035D8FD00AF0BCC /* define.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125082292035D8FD00AF0BCC /* define.swift */; };
+		1280A4082075186B00CA02D1 /* prefsJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1280A4072075186B00CA02D1 /* prefsJSON.swift */; };
 		129402DD2041716300AA3D42 /* preferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129402DC2041716300AA3D42 /* preferencesViewController.swift */; };
 		129402DF2041734F00AA3D42 /* setting.png in Resources */ = {isa = PBXBuildFile; fileRef = 129402DE2041734E00AA3D42 /* setting.png */; };
 		12970E362065383B003DE96A /* MYUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12970E352065383B003DE96A /* MYUIButton.swift */; };
@@ -104,6 +105,7 @@
 		1250822320359E6E00AF0BCC /* Initializor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Initializor.swift; sourceTree = "<group>"; };
 		125082272035C22E00AF0BCC /* rulesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rulesViewController.swift; sourceTree = "<group>"; };
 		125082292035D8FD00AF0BCC /* define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = define.swift; sourceTree = "<group>"; };
+		1280A4072075186B00CA02D1 /* prefsJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefsJSON.swift; sourceTree = "<group>"; };
 		129402DC2041716300AA3D42 /* preferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = preferencesViewController.swift; sourceTree = "<group>"; };
 		129402DE2041734E00AA3D42 /* setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = setting.png; sourceTree = "<group>"; };
 		12970E352065383B003DE96A /* MYUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MYUIButton.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				1250822120359DAD00AF0BCC /* Generator.swift */,
 				1250822320359E6E00AF0BCC /* Initializor.swift */,
 				125082292035D8FD00AF0BCC /* define.swift */,
+				1280A4072075186B00CA02D1 /* prefsJSON.swift */,
 				120D2494203B942D0000CAAD /* APenta.swift */,
 				120D2492203B93F80000CAAD /* ASimilarites.swift */,
 				120D2490203B93C30000CAAD /* ADifference.swift */,
@@ -355,6 +358,7 @@
 				1206977020416B1600234B56 /* mainPageController.swift in Sources */,
 				120D248F203B938F0000CAAD /* APoint.swift in Sources */,
 				120D248D203B935C0000CAAD /* AValeur.swift in Sources */,
+				1280A4082075186B00CA02D1 /* prefsJSON.swift in Sources */,
 				12402037206532E30004DBA7 /* MYScrollView.swift in Sources */,
 				12B095E71FFFD94A002C57D5 /* AppDelegate.swift in Sources */,
 				1250822420359E6E00AF0BCC /* Initializor.swift in Sources */,

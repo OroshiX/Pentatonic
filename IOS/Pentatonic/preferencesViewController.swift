@@ -21,7 +21,7 @@ class preferencesViewController: UIViewController {
         zoomScrollSwitch.isOn = ldefine.zoomScrollActivated
         recursSlider.value = Float(ldefine.levelMax)
         labelRecursivity.text = "Level of recursivity " + "\(ldefine.levelMax)"
-
+        view.backgroundColor = ldefine.currentTheme[prefsJSON.LColor.lightest]
     }
 
     override func didReceiveMemoryWarning() {
@@ -89,15 +89,63 @@ class preferencesViewController: UIViewController {
         default:
             ldefine.currentTheme = ldefine.greyTheme
         }
+        view.backgroundColor = ldefine.currentTheme[prefsJSON.LColor.lightest]
+
     }
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        savePreferences()
+    }
+    func savePreferences ()
+    {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let myDataPath = paths[0].appending("/preferences.json")
+        
+        
+        /*
+         * This function save most of the parameters locally
+         * Themes choosen, etc ...
+         */
+        let url = URL(fileURLWithPath:myDataPath)
+        let l:prefsJSON = prefsJSON()
+        l.currentCol = ldefine.currentCol
+        l.doNotSave = ldefine.doNotSave
+        l.currentCol = ldefine.currentCol
+        l.helpButtonValue = ldefine.helpButtonValue
+        l.remotePentasGit = ldefine.remotePentasGit
+        l.doNotSave = ldefine.doNotSave
+        l.forceDoNotSave = ldefine.forceDoNotSave
+        l.zoomScrollActivated = ldefine.zoomScrollActivated
+        l.levelMax = ldefine.levelMax
+        l.currentTheme = [:]
+        for col in ldefine.currentTheme {
+            l.currentTheme![col.key] = rgb(color: col.value)
+        }
+        let encodedData = try? JSONEncoder().encode(l)
+        try? encodedData?.write(to: url)
+
+    }
+
+    //    Functions used to calculate RGB classical value ( in 0xRRGGBB format)
+    func rgb(color:UIColor) -> Int {
+        let _components = color.cgColor.components
+        let red     = _components![0]
+        let green = _components![1]
+        let blue   = _components![2]
+        //let alpha = _components![3]
+        let r = (Int(red*255.0) << 16)
+        let g = (Int(green*255.0) << 8)
+        let b = Int(blue*255.0)
+        let rgb = String(r+g+b, radix:16)
+        print("RGB = \(rgb)")
+        return r+g+b
+    }
     /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+     // Pass the selvared object to the new view controller.
     }
     */
 

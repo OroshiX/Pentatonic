@@ -9,79 +9,84 @@
 import Foundation
 import UIKit
 
-struct define {
+class define:NSObject {
     
     
-    enum Level {
+    enum Level:Int , Codable {
         case beginner
         case easy
         case medium
         case hard
         case veryHard
     }
-    enum LColor {
-        case lightest
-        case lighter
-        case light
-        case dark
-        case darker
-        case darkest
-        case blue
-        case red
-        case black
-    }
-    let greyTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xeeeeee),
-                                  LColor.lighter:UIColor(rgb:0xaaaaaa),
-                                  LColor.light:UIColor(rgb:0x999999),
-                                  LColor.dark:UIColor(rgb:0x777777),
-                                  LColor.darker:UIColor(rgb:0x555555),
-                                  LColor.darkest:UIColor(rgb:0x333333),
-                                  LColor.blue:UIColor(rgb:0x0000ff),
-                                  LColor.red:UIColor(rgb:0xff0000),
-                                  LColor.black:UIColor(rgb:0x000000)
+    
+    let greyTheme:[prefsJSON.LColor:UIColor] = [prefsJSON.LColor.lightest:UIColor(rgb:0xeeeeee),
+                                  prefsJSON.LColor.lighter:UIColor(rgb:0xaaaaaa),
+                                  prefsJSON.LColor.light:UIColor(rgb:0x999999),
+                                  prefsJSON.LColor.dark:UIColor(rgb:0x777777),
+                                  prefsJSON.LColor.darker:UIColor(rgb:0x555555),
+                                  prefsJSON.LColor.darkest:UIColor(rgb:0x333333),
+                                  prefsJSON.LColor.blue:UIColor(rgb:0x0000ff),
+                                  prefsJSON.LColor.red:UIColor(rgb:0xff0000),
+                                  prefsJSON.LColor.black:UIColor(rgb:0x000000),
+                                  prefsJSON.LColor.completed:UIColor(rgb:0x333333),
+                                  prefsJSON.LColor.ongoing:UIColor(rgb:0x999999),
+                                  prefsJSON.LColor.empty:UIColor(rgb:0xaaaaaa)
     ]
-    let blueTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xeeeeff),
-                                      LColor.lighter:UIColor(rgb:0xaaaadd),
-                                      LColor.light:UIColor(rgb:0x9999cc),
-                                      LColor.dark:UIColor(rgb:0x7777aa),
-                                      LColor.darker:UIColor(rgb:0x555588),
-                                      LColor.darkest:UIColor(rgb:0x333366),
-                                      LColor.blue:UIColor(rgb:0x0000ff),
-                                      LColor.red:UIColor(rgb:0xff0000),
-                                      LColor.black:UIColor(rgb:0x000000)
+    let blueTheme:[prefsJSON.LColor:UIColor] = [prefsJSON.LColor.lightest:UIColor(rgb:0xeeeeff),
+                                      prefsJSON.LColor.lighter:UIColor(rgb:0xaaaadd),
+                                      prefsJSON.LColor.light:UIColor(rgb:0x9999cc),
+                                      prefsJSON.LColor.dark:UIColor(rgb:0x7777aa),
+                                      prefsJSON.LColor.darker:UIColor(rgb:0x555588),
+                                      prefsJSON.LColor.darkest:UIColor(rgb:0x333366),
+                                      prefsJSON.LColor.blue:UIColor(rgb:0x0000ff),
+                                      prefsJSON.LColor.red:UIColor(rgb:0xff0000),
+                                      prefsJSON.LColor.black:UIColor(rgb:0x000000),
+                                      prefsJSON.LColor.completed:UIColor(rgb:0x333366),
+                                      prefsJSON.LColor.ongoing:UIColor(rgb:0x9999cc),
+                                      prefsJSON.LColor.empty:UIColor(rgb:0xaaaadd)
     ]
-    let redTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xffeeee),
-                                     LColor.lighter:UIColor(rgb:0xddaaaa),
-                                     LColor.light:UIColor(rgb:0xcc9999),
-                                     LColor.dark:UIColor(rgb:0xaa7777),
-                                     LColor.darker:UIColor(rgb:0x885555),
-                                     LColor.darkest:UIColor(rgb:0x663333),
-                                     LColor.blue:UIColor(rgb:0x0000ff),
-                                     LColor.red:UIColor(rgb:0xff0000),
-                                     LColor.black:UIColor(rgb:0x000000)
+    let redTheme:[prefsJSON.LColor:UIColor] = [prefsJSON.LColor.lightest:UIColor(rgb:0xffeeee),
+                                     prefsJSON.LColor.lighter:UIColor(rgb:0xddaaaa),
+                                     prefsJSON.LColor.light:UIColor(rgb:0xcc9999),
+                                     prefsJSON.LColor.dark:UIColor(rgb:0xaa7777),
+                                     prefsJSON.LColor.darker:UIColor(rgb:0x885555),
+                                     prefsJSON.LColor.darkest:UIColor(rgb:0x663333),
+                                     prefsJSON.LColor.blue:UIColor(rgb:0x0000ff),
+                                     prefsJSON.LColor.red:UIColor(rgb:0xff0000),
+                                     prefsJSON.LColor.black:UIColor(rgb:0x000000),
+                                     prefsJSON.LColor.completed:UIColor(rgb:0x663333),
+                                     prefsJSON.LColor.ongoing:UIColor(rgb:0xcc9999),
+                                     prefsJSON.LColor.empty:UIColor(rgb:0xddaaaa)
     ]
-    let greenTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xeeffee),
-                                       LColor.lighter:UIColor(rgb:0xaaddaa),
-                                       LColor.light:UIColor(rgb:0x99cc99),
-                                       LColor.dark:UIColor(rgb:0x77aa77),
-                                       LColor.darker:UIColor(rgb:0x558855),
-                                       LColor.darkest:UIColor(rgb:0x336633),
-                                       LColor.blue:UIColor(rgb:0x0000ff),
-                                       LColor.red:UIColor(rgb:0xff0000),
-                                       LColor.black:UIColor(rgb:0x000000)
+    let greenTheme:[prefsJSON.LColor:UIColor] = [prefsJSON.LColor.lightest:UIColor(rgb:0xeeffee),
+                                       prefsJSON.LColor.lighter:UIColor(rgb:0xaaddaa),
+                                       prefsJSON.LColor.light:UIColor(rgb:0x99cc99),
+                                       prefsJSON.LColor.dark:UIColor(rgb:0x77aa77),
+                                       prefsJSON.LColor.darker:UIColor(rgb:0x558855),
+                                       prefsJSON.LColor.darkest:UIColor(rgb:0x336633),
+                                       prefsJSON.LColor.blue:UIColor(rgb:0x0000ff),
+                                       prefsJSON.LColor.red:UIColor(rgb:0xff0000),
+                                       prefsJSON.LColor.black:UIColor(rgb:0x000000),
+                                       prefsJSON.LColor.completed:UIColor(rgb:0x336633),
+                                       prefsJSON.LColor.ongoing:UIColor(rgb:0x99cc99),
+                                       prefsJSON.LColor.empty:UIColor(rgb:0xaaddaa)
 
     ]
-    let yustinaTheme:[LColor:UIColor] = [LColor.lightest:UIColor(rgb:0xffffff),
+    let yustinaTheme:[prefsJSON.LColor:UIColor] = [prefsJSON.LColor.lightest:UIColor(rgb:0xfffaea),
                                          
-                                         LColor.lighter:UIColor(rgb:0xfff7e6),
-                                         LColor.light:UIColor(rgb:0xffe7b3),
-                                         LColor.dark:UIColor(rgb:0xffd780),
+                                         prefsJSON.LColor.lighter:UIColor(rgb:0xfff7e6),
+                                         prefsJSON.LColor.light:UIColor(rgb:0xffe7b3),
+                                         prefsJSON.LColor.dark:UIColor(rgb:0xffd780),
                                          
-                                         LColor.darker:UIColor(rgb:0x558855),
-                                         LColor.darkest:UIColor(rgb:0x336633),
-                                         LColor.blue:UIColor(rgb:0xcc8800),
-                                         LColor.red:UIColor(rgb:0xff0000),
-                                         LColor.black:UIColor(rgb:0x000000)
+                                         prefsJSON.LColor.darker:UIColor(rgb:0xeebf65),
+                                         prefsJSON.LColor.darkest:UIColor(rgb:0xdfa652),
+                                         prefsJSON.LColor.blue:UIColor(rgb:0xcc8800),
+                                         prefsJSON.LColor.red:UIColor(rgb:0xff0000),
+                                         prefsJSON.LColor.black:UIColor(rgb:0x000000),
+                                         prefsJSON.LColor.completed:UIColor(rgb:0xdfa652),
+                                         prefsJSON.LColor.ongoing:UIColor(rgb:0xffe7b3),
+                                         prefsJSON.LColor.empty:UIColor(rgb:0xfff7e6)
         //4d1923
     ]
     
@@ -93,7 +98,7 @@ struct define {
                                  Level.veryHard:"Very_Hard"]
     
     let allLevel:[Level] = [Level.beginner,Level.easy,Level.medium,Level.hard,Level.veryHard]
-    var currentTheme:[LColor:UIColor]
+    var currentTheme:[prefsJSON.LColor:UIColor]
     var currentCol:Int = 0
     var helpButtonValue = false
     var remotePentasGit = false
@@ -101,7 +106,26 @@ struct define {
     var forceDoNotSave = false
     var zoomScrollActivated = false
     var levelMax = 1
-    init() {
+    enum CodingKeys:String, CodingKey {
+        case greyTheme
+        case blueTheme
+        case redTheme
+        case greenTheme
+        case yustinaTheme
+        case level
+        case allLevel
+        case currentTheme
+        case currentCol
+        case helpButtonValue
+        case remotePentasGit
+        case doNotSave
+        case forceDoNotSave
+        case zoomScrollActivated
+        case levelMax
+    }
+    override init() {
         currentTheme = greyTheme
+        super.init()
+
     }
 }

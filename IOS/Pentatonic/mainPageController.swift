@@ -32,7 +32,7 @@ class mainPageController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        loadPreferences()
         // Do any additional setup after loading the view.
         
     }
@@ -43,7 +43,55 @@ class mainPageController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+    func loadPreferences ()
+    {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let myDataPath = paths[0].appending("/preferences.json")
+        
+        
+        /*
+         *
+         * This function will load preferences from last run ( theme choice, etc ... )
+         *
+         */
+        
+        
+        
+        
+        
+       
+        
+        
+        
+        let url = URL(fileURLWithPath:myDataPath)
+        let jsonPrefs = try? Data(contentsOf:url)
+        let decoder = JSONDecoder()
+        var l:prefsJSON
+        if jsonPrefs != nil {
+            l = try! decoder.decode(prefsJSON.self,from: jsonPrefs!)
+        } else {
+             l = prefsJSON()
+        }
+        
+        ldefine.currentCol = l.currentCol
+        ldefine.doNotSave = l.doNotSave
+        ldefine.currentCol = l.currentCol
+        ldefine.helpButtonValue = l.helpButtonValue
+        ldefine.remotePentasGit = l.remotePentasGit
+        ldefine.doNotSave = l.doNotSave
+        ldefine.forceDoNotSave = l.forceDoNotSave
+        ldefine.zoomScrollActivated = l.zoomScrollActivated
+        ldefine.levelMax = l.levelMax
+        
+        ldefine.currentTheme = [:]
+        for col in l.currentTheme! {
+            ldefine.currentTheme[col.key] = UIColor(rgb:UInt(col.value))
+        }
+        
+        
+
+        
+    }
 
     /*
     // MARK: - Navigation

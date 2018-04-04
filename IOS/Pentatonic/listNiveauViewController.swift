@@ -17,6 +17,7 @@ class listNiveauViewController: UIViewController {
     var pentas:[APenta] = []
     var butWidthO:CGFloat = 0
     var butHeightO:CGFloat = 0
+    var playController:playViewController? = nil
     
     @IBOutlet var labelIncrement: UILabel!
     @IBOutlet var labelYIncrement: UILabel!
@@ -24,6 +25,8 @@ class listNiveauViewController: UIViewController {
     @IBOutlet var labelCurrentLevel: UILabel!
     @IBOutlet var difficultySegment: UISegmentedControl!
     @IBOutlet var backgroundImage: UIImageView!
+    
+    @IBOutlet var progressBar:UIProgressView!
     
     @IBOutlet var sliderYIncrement: UISlider!
     @IBOutlet var sliderIncrement: UISlider!
@@ -261,7 +264,7 @@ class listNiveauViewController: UIViewController {
             currentLevel = maxLevel - 1
         }
         labelCurrentLevel.text = arrayLevels[difficulty]![currentLevel]
-
+        
         var penta:APenta? = nil
         for anyPenta in pentas {
             if anyPenta.name == arrayLevels[difficulty]![currentLevel] {
@@ -269,8 +272,12 @@ class listNiveauViewController: UIViewController {
                 break
             }
         }
-        let next:playViewController = playViewController()
-        next.setPenta(penta!)
+        playController = playViewController()
+        
+        progressBar.isHidden = false
+        self.playController?.setPenta(penta!)
+        
+        
         var index = 0
         var found:Bool = false
         for backup in globalUserGameData.totale! {
@@ -279,13 +286,43 @@ class listNiveauViewController: UIViewController {
                 break
             }
             index = index + 1
-
+            
         }
-        if found { next.setVSet(vset:globalUserGameData.totale![index].vSet!, index:index) }
-
-        present(next, animated: true, completion: nil)
+        if found { playController?.setVSet(vset:globalUserGameData.totale![index].vSet!, index:index) }
+        progressBar.isHidden = false
+        
+        present(playController!, animated: true, completion: nil)
     }
-    
+    @objc func backgroundFunction () {
+        DispatchQueue.global().async {
+            
+            
+            var counter = self.playController?.getCounter()
+            let max = self.playController?.getMaxCounter()
+            while counter != max {
+                counter = self.playController?.getCounter()
+                DispatchQueue.main.async(execute: {
+                    
+                    let counter = self.playController?.getCounter()
+                    let max = self.playController?.getMaxCounter()
+                    
+                    //progressLabel.text = "\(counter)"
+                    
+                    self.progressBar.setProgress(Float(counter!) / Float(max!), animated: true)
+                    
+                    
+                })
+            }
+        }
+    }
+    @objc func countUp() {
+        let counter = playController?.getCounter()
+        let max = playController?.getMaxCounter()
+        
+        //progressLabel.text = "\(counter)"
+        
+        progressBar.setProgress(Float(counter!) / Float(max!), animated: true)
+    }
     
     @IBAction func changeDifficultySegment(_ sender: UISegmentedControl) {
         let segment = sender.selectedSegmentIndex
@@ -383,10 +420,35 @@ class listNiveauViewController: UIViewController {
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: sizeSquare, height: sizeSquare))
         
         let img = renderer.image { ctx in
+            var empty = true
+            var complete:Bool = false
+            for backup in globalUserGameData.totale! {
+                if backup.name == penta.name {
+                    if backup.completed == nil {
+                        complete = false
+                    } else {
+                        complete = backup.completed!
+                    }
+                    for values in backup.vSet! {
+                        if values != nil && ((values.count >= 2 ) || (values.count == 1) && (values.first! > 0 )) {
+                            empty = false
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+            var color:UIColor? = nil
+            if complete {
+                color = ldefine.currentTheme[prefsJSON.LColor.completed]!
+            } else if empty {
+                color = ldefine.currentTheme[prefsJSON.LColor.empty]!
+            } else {
+                color = ldefine.currentTheme[prefsJSON.LColor.ongoing]!
+
+            }
             
-            let color = UIColor(rgb: 0xcccccc)
-            
-            ctx.cgContext.setFillColor(color.cgColor)
+            ctx.cgContext.setFillColor(color!.cgColor)
             ctx.cgContext.fill(CGRect(x: 0, y: 0, width: sizeSquare, height: sizeSquare))
             
             for i in 0..<height {
@@ -399,7 +461,9 @@ class listNiveauViewController: UIViewController {
                     
                 }
             }
-            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
+            let black = ldefine.currentTheme[prefsJSON.LColor.black]!
+            
+            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:black]
             
             for arrayValeur in penta.values! {
                 
@@ -410,17 +474,6 @@ class listNiveauViewController: UIViewController {
             }
             
             //TBD
-            var complete:Bool = false
-            for backup in globalUserGameData.totale! {
-                if backup.name == penta.name {
-                    if backup.completed == nil {
-                        complete = false
-                    } else {
-                    complete = backup.completed!
-                    }
-                    break
-                }
-            }
             if complete {
                 var sizeStr = "100"
                 if sizeBut*max(CGFloat(penta.width!),CGFloat(penta.height!)) < 100 { sizeStr = "40" }
