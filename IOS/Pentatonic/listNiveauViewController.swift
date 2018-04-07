@@ -18,7 +18,8 @@ class listNiveauViewController: UIViewController {
     var butWidthO:CGFloat = 0
     var butHeightO:CGFloat = 0
     var playController:playViewController? = nil
-    
+    let nc = NotificationCenter.default
+
     @IBOutlet var labelIncrement: UILabel!
     @IBOutlet var labelYIncrement: UILabel!
     @IBOutlet var imageView: UIImageView!
@@ -26,8 +27,10 @@ class listNiveauViewController: UIViewController {
     @IBOutlet var difficultySegment: UISegmentedControl!
     @IBOutlet var backgroundImage: UIImageView!
     
+    @IBOutlet var labelPercent: UILabel!
     @IBOutlet var progressBar:UIProgressView!
     
+    @IBOutlet var activityIndic: UIActivityIndicatorView!
     @IBOutlet var sliderYIncrement: UISlider!
     @IBOutlet var sliderIncrement: UISlider!
     
@@ -39,7 +42,7 @@ class listNiveauViewController: UIViewController {
         let currentMaxLevel = (arrayLevels[currentDifficulty]?.count)!
         
         displayButtons(currentMaxLevel)
-        
+        progressBar.isHidden = true
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,10 +58,13 @@ class listNiveauViewController: UIViewController {
         sliderYIncrement.isHidden = true
         labelIncrement.isHidden = true
         labelYIncrement.isHidden = true
-        
+        activityIndic.isHidden = true
+        labelPercent.isHidden = true
         // Do any additional setup after loading the view.
         /* Read the JSON File with all level available */
         
+        nc.addObserver(self, selector: #selector(setPentaIsDone(_ :)), name: Notification.Name("SetPENTADone"), object: nil)
+        nc.addObserver(self, selector: #selector(notifProgressBar(_ :)), name: Notification.Name("notifPROGRESSBar"), object: nil)
         pentas = readJson()
         // displayPentas(pentas)
         
@@ -273,11 +279,19 @@ class listNiveauViewController: UIViewController {
             }
         }
         playController = playViewController()
-        
+        playController?.setListCtrl(self)
         progressBar.isHidden = false
+        activityIndic.isHidden = false
+        labelPercent.text = "0%"
+        labelPercent.isHidden = false
+        activityIndic.startAnimating()
+      DispatchQueue.global().async { [unowned self] in
+        self.functionShouldRunInBackground(penta)
+        }
+    }
+    
+    func functionShouldRunInBackground(_ penta:APenta?) {
         self.playController?.setPenta(penta!)
-        
-        
         var index = 0
         var found:Bool = false
         for backup in globalUserGameData.totale! {
@@ -289,9 +303,40 @@ class listNiveauViewController: UIViewController {
             
         }
         if found { playController?.setVSet(vset:globalUserGameData.totale![index].vSet!, index:index) }
-        progressBar.isHidden = false
+
         
-        present(playController!, animated: true, completion: nil)
+        
+        nc.post(name: Notification.Name("SetPENTADone"), object: nil, userInfo: ["penta":penta])
+
+    }
+    @objc func setPentaIsDone (_ notification: NSNotification) {
+        print("Now this is it - *****OBSERVER CALLED")
+                DispatchQueue.main.async { [unowned self] in
+                    self.progressBar.isHidden = true
+                    self.activityIndic.stopAnimating()
+                    self.activityIndic.isHidden = true
+                    self.labelPercent.text = "0%"
+
+                    self.labelPercent.isHidden = true
+                    self.present(self.playController!, animated: true, completion: nil)
+
+                }
+            }
+    
+    @objc func notifProgressBar(_ notification: NSNotification) {
+        
+        if let dict = notification.userInfo as NSDictionary? {
+            if let counter = dict["counter"] as? Int,  let max = dict["max"] as? Int {
+                // work on progress Bar
+                DispatchQueue.main.async { [unowned self] in
+                    self.labelPercent.text = String(format: "%02.1f",Float(counter)/Float(max) * 100)+"%"
+                    self.progressBar.setProgress(Float(counter) / Float(max), animated: true)
+                    
+                }
+            }
+            //progressLabel.text = "\(counter)"
+            
+        }
     }
     @objc func backgroundFunction () {
         DispatchQueue.global().async {
@@ -430,7 +475,7 @@ class listNiveauViewController: UIViewController {
                         complete = backup.completed!
                     }
                     for values in backup.vSet! {
-                        if values != nil && ((values.count >= 2 ) || (values.count == 1) && (values.first! > 0 )) {
+                        if ((values.count >= 2 ) || (values.count == 1) && (values.first! > 0 )) {
                             empty = false
                             break
                         }

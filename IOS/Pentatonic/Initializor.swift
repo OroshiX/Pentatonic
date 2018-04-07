@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Initializor {
+struct Initialiszor {
     let name: String
     let line: Int
     let column: Int

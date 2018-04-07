@@ -28,8 +28,6 @@ class MYUIButton: UIButton {
         print ("MYUIB: \(self.debugDescription)")
         print ("MYUIB: \(super.debugDescription)")
         print ("MYUIB: \(superview.debugDescription)")
-            let w = 320/3
-            let h = 520/3
             
         }
         if super.frame.contains(point) { print ("contains ******* !!!!")}

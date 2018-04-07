@@ -191,6 +191,15 @@
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Wrj-0z-SJt">
                                 <rect key="frame" x="16" y="575" width="343" height="2"/>
                             </progressView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="SmT-E4-8Si">
+                                <rect key="frame" x="177" y="537" width="20" height="20"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 %" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AQg-JD-r9r">
+                                <rect key="frame" x="214" y="537.5" width="28" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -210,6 +219,8 @@
                             <constraint firstItem="Qle-fQ-JiD" firstAttribute="trailing" secondItem="pnp-hs-Msx" secondAttribute="trailing" id="Y0l-jl-V8K"/>
                             <constraint firstAttribute="bottom" secondItem="pnp-hs-Msx" secondAttribute="bottom" id="aDp-nv-tZI"/>
                             <constraint firstItem="uvv-DD-Nln" firstAttribute="top" secondItem="FVv-TG-zzO" secondAttribute="bottom" constant="5" id="aZM-3K-G8A"/>
+                            <constraint firstItem="SmT-E4-8Si" firstAttribute="centerX" secondItem="nHu-pQ-gJc" secondAttribute="centerX" id="au1-1u-ptE"/>
+                            <constraint firstItem="pnp-hs-Msx" firstAttribute="top" secondItem="SmT-E4-8Si" secondAttribute="bottom" constant="70" id="bsL-7r-Qrr"/>
                             <constraint firstItem="Ban-Wr-skJ" firstAttribute="leading" secondItem="Qle-fQ-JiD" secondAttribute="leading" id="gss-pb-08e"/>
                             <constraint firstItem="aES-Tv-mrC" firstAttribute="top" secondItem="Qle-fQ-JiD" secondAttribute="top" id="kj9-Q5-GBr"/>
                             <constraint firstItem="uvv-DD-Nln" firstAttribute="leading" secondItem="K5E-pQ-xaQ" secondAttribute="trailing" constant="10" id="lOx-2t-tPW"/>
@@ -217,18 +228,22 @@
                             <constraint firstItem="cDy-Kc-CPb" firstAttribute="top" secondItem="aES-Tv-mrC" secondAttribute="bottom" constant="10" id="nvX-sv-ksT"/>
                             <constraint firstItem="Wrj-0z-SJt" firstAttribute="leading" secondItem="nHu-pQ-gJc" secondAttribute="leadingMargin" id="ohB-J9-xKV"/>
                             <constraint firstItem="Wrj-0z-SJt" firstAttribute="bottom" secondItem="pnp-hs-Msx" secondAttribute="top" constant="-50" id="pVr-FO-y6c"/>
+                            <constraint firstItem="AQg-JD-r9r" firstAttribute="centerY" secondItem="SmT-E4-8Si" secondAttribute="centerY" id="qaI-VN-KIk"/>
                             <constraint firstItem="Qle-fQ-JiD" firstAttribute="trailing" secondItem="aES-Tv-mrC" secondAttribute="trailing" id="rcd-Qm-VCs"/>
                             <constraint firstItem="WkH-Ey-Wpf" firstAttribute="leading" secondItem="Qle-fQ-JiD" secondAttribute="leading" id="sQh-f8-iAV"/>
                             <constraint firstItem="Ban-Wr-skJ" firstAttribute="top" secondItem="Qle-fQ-JiD" secondAttribute="top" id="tJg-nH-Hyc"/>
+                            <constraint firstItem="AQg-JD-r9r" firstAttribute="leading" secondItem="SmT-E4-8Si" secondAttribute="trailing" constant="17" id="uff-WI-lGO"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Qle-fQ-JiD"/>
                     </view>
                     <connections>
+                        <outlet property="activityIndic" destination="SmT-E4-8Si" id="cU0-63-lCt"/>
                         <outlet property="backgroundImage" destination="Ban-Wr-skJ" id="KrO-pW-n6O"/>
                         <outlet property="difficultySegment" destination="cPA-aF-Z0f" id="gBa-Qz-OZg"/>
                         <outlet property="imageView" destination="cDy-Kc-CPb" id="H3x-eJ-cXc"/>
                         <outlet property="labelCurrentLevel" destination="aES-Tv-mrC" id="3jx-4A-U4e"/>
                         <outlet property="labelIncrement" destination="K5E-pQ-xaQ" id="KxI-F1-GnR"/>
+                        <outlet property="labelPercent" destination="AQg-JD-r9r" id="CJw-WT-s9V"/>
                         <outlet property="labelYIncrement" destination="WkH-Ey-Wpf" id="BcU-bJ-o6i"/>
                         <outlet property="progressBar" destination="Wrj-0z-SJt" id="hTS-1p-Uuy"/>
                         <outlet property="sliderIncrement" destination="uvv-DD-Nln" id="htE-yz-3hq"/>
@@ -283,8 +298,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MUP-Ev-zLW">
-                                <rect key="frame" x="295" y="607" width="80" height="40"/>
-                                <state key="normal" title="Back" image="back40.png"/>
+                                <rect key="frame" x="335" y="607" width="40" height="40"/>
+                                <state key="normal" image="back40.png"/>
                                 <connections>
                                     <action selector="backAction:" destination="G5O-PZ-Blk" eventType="touchUpInside" id="QdR-BQ-Ueg"/>
                                 </connections>

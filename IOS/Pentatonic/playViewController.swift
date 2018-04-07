@@ -55,6 +55,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var maxCounter = 0
     var FontColor:[UIColor] = [ ldefine.currentTheme[prefsJSON.LColor.blue]!,ldefine.currentTheme[prefsJSON.LColor.black]!,ldefine.currentTheme[prefsJSON.LColor.red]!]
     
+    var listController:listNiveauViewController?
+    
     var dxl:CGFloat = 0
     var dxm:CGFloat = 0
     var dxr:CGFloat = 0
@@ -105,12 +107,6 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     @IBOutlet var labelSolved:UIButton!
 
     //MARK: - The functions
-    /// setPenta :
-    /// This function set default value for the controller to be able to display the Penta
-    /// This function must be called before any invocation of this controller.
-    ///
-    /// - Parameter penta: This is the next penta to be display and played in this controller
-    ///
     
     
     // return 0 if penta is solved
@@ -142,227 +138,18 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         return isPentaSolved
     }
-    // solvePentaRecursive : try to solve a penta by applying all rules it knows.
-    // Can caal itself recursively to check some hypothesis.
-    // will return false if the penta did reach an impossible case ( one cell of Possible value is empty )
-    // will return true if still possible to be solve ( or eventually solved )
-    
-    public func solvePentaRecursive (_ penta:APenta, dicoRegion:[String:Set<Int>], sameA:[Set<Int>],  otherR:[Set<Int>], locVSetP:[Set<Int>], possibleVP:[Set<Int>], level:Int) -> Int
-    {
-        var returnCode:Int = 0
-        let width = penta.width
-        let height = penta.height
-        let size:Int = width! * height!
-        var locVSet = locVSetP
-        var possibleV = possibleVP
-        if level > ldefine.levelMax {
-            return 1
-            
-        }
 
-            var change=true
-            while change {
-                change=false
-                // Treatment of Sisters
-                for sister in penta.sisters! {
-                    var A:Set<Int>? = nil
-                    var AIndex:Set<Int> = []
-                    
-                    for pos in sister.positions! {
-                        let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
-                        let index = lIJ.getIndex(penta, pos.i!, pos.j!)
-                        if A == nil { A = possibleV[index]}
-                        A = A?.intersection(possibleV[index])
-                        AIndex.insert(index)
-                    }
-                    for index in AIndex {
-                        if !possibleV[index].isSubset(of: A!) || !A!.isSubset(of: possibleV[index]) {
-                            change = true
-                            possibleV[index] = A!
-                        }
-                    }
-                }
-                for difference in penta.differences! {
-                    let lIJ:IJ = IJ.init(p: penta, index: 0)
-                    let index1 = lIJ.getIndex(penta, difference.position1!.i!,difference.position1!.j!)
-                    let index2 = lIJ.getIndex(penta, difference.position2!.i!,difference.position2!.j!)
-                    var A1:Set<Int> = []
-                    var A2:Set<Int> = []
-                    for i in possibleV[index1] {
-                        A2.insert(i-1)
-                        A2.insert(i+1)
-                    }
-                    possibleV[index2] = A2.intersection(possibleV[index2])
-                    for i in possibleV[index2] {
-                        A1.insert(i-1)
-                        A1.insert(i+1)
-                    }
-                    possibleV[index1] = A1.intersection(possibleV[index1])
-                }
-                for i in 0..<size {
-                    if possibleV[i].count == 1 && locVSet[i].count == 0 {
-                        locVSet[i]=[possibleV[i].first!]
-                        change = true
-                        for j in sameAreaCells[i] {
-                            if i != j {
-                                possibleV[j].remove(possibleV[i].first!)
-                                
-                            }
-                        }
-                        
-                    }
-                }
-                for regionSet in dicoRegion {
-                    var local:Set<Int> = []
-                    for pentaVal in 1...regionSet.value.count {
-                        // Local is the list of cells which can contain pentaVal
-                        // if local.count is 1 then only one cell in this region can contain this value
-                        local = []
-                        
-                        for cell in regionSet.value {
-                            
-                            if possibleV[cell].contains(pentaVal) {
-                                local.insert(cell)
-                            }
-                        }
-                        if local.count == 1 && possibleV[local.first!].count != 1 {
-                            if !(locVSet[local.first!].count == 1 && locVSet[local.first!].first! <= 0 ) {
-                                possibleV[local.first!] = [ pentaVal]
-                                locVSet[local.first!] = [pentaVal]
-                                for j in sameAreaCells[local.first!] {
-                                    if local.first! != j {
-                                        possibleV[j].remove(pentaVal)
-                                        
-                                    }
-                                    
-                                }
-                                
-                                change = true
-                            }
-                        }
-                        if local.count >= 1 {
-                            var inter:Set<Int> = otherR[local.first!]
-                            for cell in local {
-                                inter = inter.intersection(otherR[cell])
-                            }
-                            for cell in inter {
-                                if possibleV[cell].contains(pentaVal) {
-                                    possibleV[cell].remove(pentaVal)
-                                    change = true
-                                }
-                            }
-                        }
-                    }
-                }
-                if change == false {
-                    for regionSet in dicoRegion {
-                        
-                        var neighbourWholeRegion:Set<Int>? = nil
-                        
-                        for cell in regionSet.value {
-                            let A = sameAreaCells[cell]
-                            
-                            if neighbourWholeRegion == nil {
-                                neighbourWholeRegion = A.subtracting(regionSet.value)
-                            } else {
-                                neighbourWholeRegion = neighbourWholeRegion?.intersection(A.subtracting(regionSet.value))
-                            }
-                        }
-                        for pentaVal in 1...regionSet.value.count {
-                            for cell in neighbourWholeRegion! {
-                                if possibleV[cell].contains(pentaVal) {
-                                    possibleV[cell].remove(pentaVal)
-                                    change = true
-                                }
-                            }
-                        }
-                        //print ("region:\(regionSet.key): all cellse have \(String(describing: neighbourWholeRegion)) as neighbourssubtracting")
-                    }
-                    for regionSet in dicoRegion {
-                        // For every region
-                        for otherRegionSet in dicoRegion {
-                            //compare with every other region
-                            if regionSet.key != otherRegionSet.key {
-                                if otherRegionSet.value.count >= regionSet.value.count {
-                                    for cell in regionSet.value {
-                                        // now check that n-1 Ocell of otherRegionSet are in same area as cell
-                                        // if this is the case the Ocell N , possible value for OcellN and cell are the same - e.g intersection of the 2 sets
-                                        let A = sameAreaCells[cell]
-                                        var n:Int = otherRegionSet.value.count
-                                        var OKCell:Int = -1
-                                        for Ocell in otherRegionSet.value {
-                                            if A.contains(Ocell) {
-                                                n = n-1
-                                            } else { OKCell = Ocell}
-                                        }
-                                        if n == 1 && ( !possibleV[OKCell].isSubset(of: possibleV[cell]) ||  !possibleV[cell].isSubset(of: possibleV[OKCell])) {
-                                            // We got one, it's OKCell
-                                            let B = possibleV[OKCell].intersection(possibleV[cell])
-                                            
-                                            possibleV[OKCell] = B
-                                            possibleV[cell] = B
-                                            change = true
-                                        }
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if !change {
-                    for cell in 0..<size {
-                        for cell2  in sameAreaCells[cell] {
-                            if possibleV[cell].isSuperset(of: possibleV[cell2]) && possibleV[cell2].isSuperset(of: possibleV[cell]) && possibleV[cell].count == 2 {
-                                for cell3 in sameAreaCells[cell].intersection(sameAreaCells[cell2]) {
-                                    if cell3 != cell2 && possibleV[cell3].contains(possibleV[cell].first!){
-                                        possibleV[cell3].formSymmetricDifference(possibleV[cell])
-                                        change = true
-                                        
-                                    }
-                                }
-                                
-                            }
-                        }
-                    }
-                }
-                if change == false && isPentaSolved(penta, possibleV: possibleV) == 0
-                {
-                    print ("*******PENTA IS in SOLVED in recursion")
-                    return 0
-                } else {
-                    if change == false {
-                        for value in 0..<possibleV.count {
-                            let save = possibleV[value]
-                            if possibleV[value].count > 1 {
-                                for v in save {
-                                    possibleV[value] = [v]
-                                    var result = solvePentaRecursive(penta, dicoRegion: dicoRegion, sameA: sameA, otherR: otherR, locVSetP: locVSet, possibleVP: possibleV, level:level+1)
-                                    if result == 0
-                                    {
-                                        print ("Penta was solved at level \(level)")
-                                        if !(vSet[value].count == 1 && vSet[value].first! <= 0)  { vSet[value] = [v] }
-                                        return 0
-                                    } else {
-                                        if result == 2 {
-                                            // backtrack - this is not an acceptable solution
-                                            possibleV[value].remove(v)
-                                            possibleV[value] = save
-                                        } else {
-                                            possibleV[value] = save
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            
-        
-        
-        return isPentaSolved(penta, possibleV: possibleVP)
+    
+    
+    /// setPenta :
+    /// This function set default value for the controller to be able to display the Penta
+    /// This function must be called before any invocation of this controller.
+    ///
+    /// - Parameter penta: This is the next penta to be display and played in this controller
+    ///
+    
+    public func setListCtrl(_ Controller:listNiveauViewController){
+        self.listController = Controller
     }
     
     public func setPenta (_ penta:APenta) {
@@ -509,214 +296,14 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         
         if ldefine.helpButtonValue {
-            var change=true
-            while change {
-                change=false
-                
-                // Treatment of Sisters
-                for sister in penta.sisters! {
-                    var A:Set<Int>? = nil
-                    var AIndex:Set<Int> = []
-                    
-                    for pos in sister.positions! {
-                        let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
-                        let index = lIJ.getIndex(penta, pos.i!, pos.j!)
-                        if A == nil { A = possibleValue[index]}
-                        A = A?.intersection(possibleValue[index])
-                        AIndex.insert(index)
-                    }
-                    for index in AIndex {
-                        if !possibleValue[index].isSubset(of: A!) || !A!.isSubset(of: possibleValue[index]) {
-                            change = true
-                            possibleValue[index] = A!
-                        }
-                    }
-                }
-                for difference in penta.differences! {
-                    let lIJ:IJ = IJ.init(p: penta, index: 0)
-                    let index1 = lIJ.getIndex(penta, difference.position1!.i!,difference.position1!.j!)
-                    let index2 = lIJ.getIndex(penta, difference.position2!.i!,difference.position2!.j!)
-                    var A1:Set<Int> = []
-                    var A2:Set<Int> = []
-                    for i in possibleValue[index1] {
-                        A2.insert(i-1)
-                        A2.insert(i+1)
-                    }
-                    possibleValue[index2] = A2.intersection(possibleValue[index2])
-                    for i in possibleValue[index2] {
-                        A1.insert(i-1)
-                        A1.insert(i+1)
-                    }
-                    possibleValue[index1] = A1.intersection(possibleValue[index1])
-                }
-                for i in 0..<size {
-                    if possibleValue[i].count == 1 && vSet[i].count == 0 {
-                        vSet[i]=[possibleValue[i].first!]
-                        change = true
-                        for j in sameAreaCells[i] {
-                            if i != j {
-                                possibleValue[j].remove(possibleValue[i].first!)
-                                
-                            }
-                        }
-                        
-                    }
-                }
-                for regionSet in arrayRegionSet {
-                    var local:Set<Int> = []
-                    for pentaVal in 1...regionSet.value.count {
-                        // Local is the list of cells which can contain pentaVal
-                        // if local.count is 1 then only one cell in this region can contain this value
-                        local = []
-                        
-                        for cell in regionSet.value {
-                            
-                            if possibleValue[cell].contains(pentaVal) {
-                                local.insert(cell)
-                            }
-                        }
-                        if local.count == 1 && possibleValue[local.first!].count != 1 {
-                            if !(vSet[local.first!].count == 1 && vSet[local.first!].first! <= 0 ) {
-                            possibleValue[local.first!] = [ pentaVal]
-                            vSet[local.first!] = [pentaVal]
-                            }
-                            for j in sameAreaCells[local.first!] {
-                                if local.first! != j {
-                                    possibleValue[j].remove(pentaVal)
-                                    
-                                }
-                                
-                            }
-                            
-                            change = true
-                        }
-                        if local.count >= 1 {
-                            var inter:Set<Int> = otherRegionSameAreaCells[local.first!]
-                            for cell in local {
-                                inter = inter.intersection(otherRegionSameAreaCells[cell])
-                            }
-                            for cell in inter {
-                                if possibleValue[cell].contains(pentaVal) {
-                                    possibleValue[cell].remove(pentaVal)
-                                    change = true
-                                }
-                            }
-                        }
-                    }
-                }
-                if change == false {
-                    for regionSet in arrayRegionSet {
-                        
-                        var neighbourWholeRegion:Set<Int>? = nil
-                        
-                        for cell in regionSet.value {
-                            let A = sameAreaCells[cell]
-                            
-                            if neighbourWholeRegion == nil {
-                                neighbourWholeRegion = A.subtracting(regionSet.value)
-                            } else {
-                                neighbourWholeRegion = neighbourWholeRegion?.intersection(A.subtracting(regionSet.value))
-                            }
-                        }
-                        for pentaVal in 1...regionSet.value.count {
-                            for cell in neighbourWholeRegion! {
-                                if possibleValue[cell].contains(pentaVal) {
-                                   possibleValue[cell].remove(pentaVal)
-                                    change = true
-                                }
-                            }
-                        }
-                        //print ("region:\(regionSet.key): all cellse have \(String(describing: neighbourWholeRegion)) as neighbourssubtracting")
-                    }
-                    for regionSet in arrayRegionSet {
-                        // For every region
-                        for otherRegionSet in arrayRegionSet {
-                            //compare with every other region
-                            if regionSet.key != otherRegionSet.key {
-                                if otherRegionSet.value.count >= regionSet.value.count {
-                                    for cell in regionSet.value {
-                                        // now check that n-1 Ocell of otherRegionSet are in same area as cell
-                                        // if this is the case the Ocell N , possible value for OcellN and cell are the same - e.g intersection of the 2 sets
-                                        let A = sameAreaCells[cell]
-                                        var n:Int = otherRegionSet.value.count
-                                        var OKCell:Int = -1
-                                        for Ocell in otherRegionSet.value {
-                                            if A.contains(Ocell) {
-                                                n = n-1
-                                            } else { OKCell = Ocell}
-                                        }
-                                        if n == 1 && ( !possibleValue[OKCell].isSubset(of: possibleValue[cell]) ||  !possibleValue[cell].isSubset(of: possibleValue[OKCell])) {
-                                            // We got one, it's OKCell
-                                            let B = possibleValue[OKCell].intersection(possibleValue[cell])
-                                            
-                                            possibleValue[OKCell] = B
-                                            possibleValue[cell] = B
-                                            change = true
-                                        }
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if !change {
-                    for cell in 0..<size {
-                        for cell2  in sameAreaCells[cell] {
-                            if possibleValue[cell].isSuperset(of: possibleValue[cell2]) && possibleValue[cell2].isSuperset(of: possibleValue[cell]) && possibleValue[cell].count == 2 {
-                                for cell3 in sameAreaCells[cell].intersection(sameAreaCells[cell2]) {
-                                    if cell3 != cell2 && possibleValue[cell3].contains(possibleValue[cell].first!){
-                                        possibleValue[cell3].formSymmetricDifference(possibleValue[cell])
-                                        change = true
-                                        
-                                    }
-                                }
-                                
-                            }
-                        }
-                    }
-                }
-            
-            if change == false && isPentaSolved(penta, possibleV: possibleValue) == 0
-            {
-                print ("*******PENTA IS SOLVED")
-                return
-            } else {
-                if change == false {
-                    maxCounter = size
-
-                    for value in 0..<possibleValue.count {
-                        counter = value
-                        print ("******* try N \(value)/\(size)")
-                        let save = possibleValue[value]
-                        if possibleValue[value].count > 1 {
-                            
-                            possibleValue[value] = [save.first!]
-                            var result = solvePentaRecursive(penta, dicoRegion: arrayRegionSet, sameA: sameAreaCells, otherR: otherRegionSameAreaCells, locVSetP: vSet, possibleVP: possibleValue, level: 1)
-                            if result == 0
-                            {
-                                print ("*****THIS TIME IT IS SOLVED YEAHHH")
-                                if !(vSet[value].count == 1 && vSet[value].first! <= 0 ) {
-                                vSet[value] = [save.first!]
-                                }
-                                return
-                            } else {
-                                if result == 2 {
-                                    //print ("*****This is abolsutely impossible - backtrack")
-                                    possibleValue[value] = save
-                                } else {
-                                    //print ("*****TOO BAD, one level was not enough")
-                                    possibleValue[value] = save
-                                }
-                            }
-                        }
-                    }
-                }
-                }
-            }
+            solvePenta(penta, &possibleValue, size, &otherRegionSameAreaCells)
         }
     }
+    
+    
      @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        
+        print ("Swipe")
     }
     
     fileprivate func addMainZoomedImageView(_ miniImage:UIView) {
@@ -948,6 +535,371 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         
     }
+    
+    
+    // MARK:- Automatic Resolution Tools
+    
+    /*
+     * Functions Used for the resolution of the pentas ( automatic )
+     */
+    
+    fileprivate func solveSisters(_ penta: APenta, _ possibleV: inout [Set<Int>], _ change: inout Bool) {
+        // Treatment of Sisters
+        for sister in penta.sisters! {
+            var A:Set<Int>? = nil
+            var AIndex:Set<Int> = []
+            
+            for pos in sister.positions! {
+                let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
+                let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                if A == nil { A = possibleV[index]}
+                A = A?.intersection(possibleV[index])
+                AIndex.insert(index)
+            }
+            for index in AIndex {
+                if !possibleV[index].isSubset(of: A!) || !A!.isSubset(of: possibleV[index]) {
+                    change = true
+                    possibleV[index] = A!
+                }
+            }
+        }
+    }
+    
+    fileprivate func solveDifferences(_ penta: APenta, _ possibleV: inout [Set<Int>]) {
+        for difference in penta.differences! {
+            let lIJ:IJ = IJ.init(p: penta, index: 0)
+            let index1 = lIJ.getIndex(penta, difference.position1!.i!,difference.position1!.j!)
+            let index2 = lIJ.getIndex(penta, difference.position2!.i!,difference.position2!.j!)
+            var A1:Set<Int> = []
+            var A2:Set<Int> = []
+            for i in possibleV[index1] {
+                A2.insert(i-1)
+                A2.insert(i+1)
+            }
+            possibleV[index2] = A2.intersection(possibleV[index2])
+            for i in possibleV[index2] {
+                A1.insert(i-1)
+                A1.insert(i+1)
+            }
+            possibleV[index1] = A1.intersection(possibleV[index1])
+        }
+    }
+    
+    fileprivate func solveUniqueValues(_ size: Int, _ possibleV: inout [Set<Int>], _ locVSet: inout [Set<Int>], _ change: inout Bool) {
+        for i in 0..<size {
+            if possibleV[i].count == 1 && locVSet[i].count == 0 {
+                locVSet[i]=[possibleV[i].first!]
+                change = true
+                for j in sameAreaCells[i] {
+                    if i != j {
+                        possibleV[j].remove(possibleV[i].first!)
+                        
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    fileprivate func solveUniqueInRegionL(_ dicoRegion: [String : Set<Int>], _ possibleV: inout [Set<Int>], _ locVSet: inout [Set<Int>], _ change: inout Bool, _ otherR: [Set<Int>]) {
+        for regionSet in dicoRegion {
+            var local:Set<Int> = []
+            for pentaVal in 1...regionSet.value.count {
+                // Local is the list of cells which can contain pentaVal
+                // if local.count is 1 then only one cell in this region can contain this value
+                local = []
+                
+                for cell in regionSet.value {
+                    
+                    if possibleV[cell].contains(pentaVal) {
+                        local.insert(cell)
+                    }
+                }
+                if local.count == 1 && possibleV[local.first!].count != 1 {
+                    if !(locVSet[local.first!].count == 1 && locVSet[local.first!].first! <= 0 ) {
+                        possibleV[local.first!] = [ pentaVal]
+                        locVSet[local.first!] = [pentaVal]
+                        for j in sameAreaCells[local.first!] {
+                            if local.first! != j {
+                                possibleV[j].remove(pentaVal)
+                                
+                            }
+                            
+                        }
+                        
+                        change = true
+                    }
+                }
+                if local.count >= 1 {
+                    var inter:Set<Int> = otherR[local.first!]
+                    for cell in local {
+                        inter = inter.intersection(otherR[cell])
+                    }
+                    for cell in inter {
+                        if possibleV[cell].contains(pentaVal) {
+                            possibleV[cell].remove(pentaVal)
+                            change = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    fileprivate func solveOtherNeighbourSisters(_ change: inout Bool, _ dicoRegion: [String : Set<Int>], _ possibleV: inout [Set<Int>]) {
+        if change == false {
+            for regionSet in dicoRegion {
+                
+                var neighbourWholeRegion:Set<Int>? = nil
+                
+                for cell in regionSet.value {
+                    let A = sameAreaCells[cell]
+                    
+                    if neighbourWholeRegion == nil {
+                        neighbourWholeRegion = A.subtracting(regionSet.value)
+                    } else {
+                        neighbourWholeRegion = neighbourWholeRegion?.intersection(A.subtracting(regionSet.value))
+                    }
+                }
+                for pentaVal in 1...regionSet.value.count {
+                    for cell in neighbourWholeRegion! {
+                        if possibleV[cell].contains(pentaVal) {
+                            possibleV[cell].remove(pentaVal)
+                            change = true
+                        }
+                    }
+                }
+                //print ("region:\(regionSet.key): all cellse have \(String(describing: neighbourWholeRegion)) as neighbourssubtracting")
+            }
+            for regionSet in dicoRegion {
+                // For every region
+                for otherRegionSet in dicoRegion {
+                    //compare with every other region
+                    if regionSet.key != otherRegionSet.key {
+                        if otherRegionSet.value.count >= regionSet.value.count {
+                            for cell in regionSet.value {
+                                // now check that n-1 Ocell of otherRegionSet are in same area as cell
+                                // if this is the case the Ocell N , possible value for OcellN and cell are the same - e.g intersection of the 2 sets
+                                let A = sameAreaCells[cell]
+                                var n:Int = otherRegionSet.value.count
+                                var OKCell:Int = -1
+                                for Ocell in otherRegionSet.value {
+                                    if A.contains(Ocell) {
+                                        n = n-1
+                                    } else { OKCell = Ocell}
+                                }
+                                if n == 1 && ( !possibleV[OKCell].isSubset(of: possibleV[cell]) ||  !possibleV[cell].isSubset(of: possibleV[OKCell])) {
+                                    // We got one, it's OKCell
+                                    let B = possibleV[OKCell].intersection(possibleV[cell])
+                                    
+                                    possibleV[OKCell] = B
+                                    possibleV[cell] = B
+                                    change = true
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    fileprivate func solveIntersectionPossibleValues(_ change: inout Bool, _ size: Int, _ possibleV: inout [Set<Int>]) {
+        if !change {
+            for cell in 0..<size {
+                for cell2  in sameAreaCells[cell] {
+                    if possibleV[cell].isSuperset(of: possibleV[cell2]) && possibleV[cell2].isSuperset(of: possibleV[cell]) && possibleV[cell].count == 2 {
+                        for cell3 in sameAreaCells[cell].intersection(sameAreaCells[cell2]) {
+                            if cell3 != cell2 && possibleV[cell3].contains(possibleV[cell].first!){
+                                let p = possibleV[cell3]
+                                possibleV[cell3].formSymmetricDifference(possibleV[cell])
+                                if !(p.isSuperset(of: possibleV[cell3]) && possibleV[cell3].isSuperset(of: p)) {
+                                    change = true
+
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    fileprivate func solveUniqueInRegion(_ possibleValue: inout [Set<Int>], _ change: inout Bool, _ otherRegionSameAreaCells: inout [Set<Int>]) {
+        for regionSet in arrayRegionSet {
+            var local:Set<Int> = []
+            for pentaVal in 1...regionSet.value.count {
+                // Local is the list of cells which can contain pentaVal
+                // if local.count is 1 then only one cell in this region can contain this value
+                local = []
+                
+                for cell in regionSet.value {
+                    
+                    if possibleValue[cell].contains(pentaVal) {
+                        local.insert(cell)
+                    }
+                }
+                if local.count == 1 && possibleValue[local.first!].count != 1 {
+                    if !(vSet[local.first!].count == 1 && vSet[local.first!].first! <= 0 ) {
+                        possibleValue[local.first!] = [ pentaVal]
+                        vSet[local.first!] = [pentaVal]
+                    }
+                    for j in sameAreaCells[local.first!] {
+                        if local.first! != j {
+                            possibleValue[j].remove(pentaVal)
+                            
+                        }
+                        
+                    }
+                    
+                    change = true
+                }
+                if local.count >= 1 {
+                    var inter:Set<Int> = otherRegionSameAreaCells[local.first!]
+                    for cell in local {
+                        inter = inter.intersection(otherRegionSameAreaCells[cell])
+                    }
+                    for cell in inter {
+                        if possibleValue[cell].contains(pentaVal) {
+                            possibleValue[cell].remove(pentaVal)
+                            change = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+
+    
+    fileprivate func solvePenta(_ penta: APenta, _ possibleValue: inout [Set<Int>], _ size: Int, _ otherRegionSameAreaCells: inout [Set<Int>]) {
+        var change=true
+        while change {
+            change=false
+            
+            solveSisters(penta, &possibleValue, &change)
+            solveDifferences(penta, &possibleValue)
+            
+            solveUniqueValues(size, &possibleValue, &vSet, &change)
+            solveUniqueInRegionL(arrayRegionSet,&possibleValue, &vSet, &change, otherRegionSameAreaCells)
+            solveOtherNeighbourSisters(&change,arrayRegionSet, &possibleValue)
+            //solveIntersectionPossibleValues(&change, size, &possibleValue)
+            
+            if change == false && isPentaSolved(penta, possibleV: possibleValue) == 0
+            {
+                print ("*******PENTA IS SOLVED")
+                return
+            } else {
+                if change == false {
+                    maxCounter = size
+                    
+                    for value in 0..<possibleValue.count {
+                        counter = value
+                        print ("******* try N \(value)/\(size)")
+                        listController?.nc.post(name: Notification.Name("notifPROGRESSBar"), object: nil, userInfo:["counter":counter, "max":size])
+
+                        let save = possibleValue[value]
+                        if possibleValue[value].count > 1 {
+                            
+                            possibleValue[value] = [save.first!]
+                            let result = solvePentaRecursive(penta, dicoRegion: arrayRegionSet, sameA: sameAreaCells, otherR: otherRegionSameAreaCells, locVSetP: vSet, possibleVP: possibleValue, level: 1)
+                            if result == 0
+                            {
+                                print ("*****THIS TIME IT IS SOLVED YEAHHH")
+                                if !(vSet[value].count == 1 && vSet[value].first! <= 0 ) {
+                                    vSet[value] = [save.first!]
+                                }
+                                return
+                            } else {
+                                if result == 2 {
+                                    //print ("*****This is abolsutely impossible - backtrack")
+                                    possibleValue[value] = save
+                                } else {
+                                    //print ("*****TOO BAD, one level was not enough")
+                                    possibleValue[value] = save
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    // solvePentaRecursive : try to solve a penta by applying all rules it knows.
+    // Can call itself recursively to check some hypothesis.
+    // will return false if the penta did reach an impossible case ( one cell of Possible value is empty )
+    // will return true if still possible to be solve ( or eventually solved )
+    
+    
+    public func solvePentaRecursive (_ penta:APenta, dicoRegion:[String:Set<Int>], sameA:[Set<Int>],  otherR:[Set<Int>], locVSetP:[Set<Int>], possibleVP:[Set<Int>], level:Int) -> Int
+    {
+        let width = penta.width
+        let height = penta.height
+        let size:Int = width! * height!
+        var locVSet = locVSetP
+        var possibleV = possibleVP
+        if level > ldefine.levelMax {
+            return 1
+            
+        }
+        
+        var change=true
+        while change {
+            change=false
+            solveSisters(penta, &possibleV, &change)
+            solveDifferences(penta, &possibleV)
+            solveUniqueValues(size, &possibleV, &locVSet, &change)
+            solveUniqueInRegionL(dicoRegion, &possibleV, &locVSet, &change, otherR)
+            solveOtherNeighbourSisters(&change, dicoRegion, &possibleV)
+            //solveIntersectionPossibleValues(&change, size, &possibleV)
+            if change == false && isPentaSolved(penta, possibleV: possibleV) == 0
+            {
+                print ("*******PENTA IS in SOLVED in recursion")
+                return 0
+            } else {
+                if change == false {
+                    for value in 0..<possibleV.count {
+                        let save = possibleV[value]
+                        if possibleV[value].count > 1 {
+                            for v in save {
+                                possibleV[value] = [v]
+                                let result = solvePentaRecursive(penta, dicoRegion: dicoRegion, sameA: sameA, otherR: otherR, locVSetP: locVSet, possibleVP: possibleV, level:level+1)
+                                if result == 0
+                                {
+                                    print ("Penta was solved at level \(level)")
+                                    if !(vSet[value].count == 1 && vSet[value].first! <= 0)  { vSet[value] = [v] }
+                                    return 0
+                                } else {
+                                    if result == 2 {
+                                        // backtrack - this is not an acceptable solution
+                                        possibleV[value].remove(v)
+                                        possibleV[value] = save
+                                    } else {
+                                        possibleV[value] = save
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+        
+        return isPentaSolved(penta, possibleV: possibleVP)
+    }
+    
+    
     //MARK: - Drawing functions
     /*
      * Drawing Functions
@@ -1298,7 +1250,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     }
     
     func addNButton (x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat, color: UIColor, tag:Int) {
-        var myImage:UIImage = UIImage(named: "transparent.png")!
+        let myImage:UIImage = UIImage(named: "transparent.png")!
         //myImage = UIImage(named: "rect_rose.png")!
         //TBD TBC JUST TO TEST
         let button = UIButton(type: UIButtonType.custom)
@@ -1404,7 +1356,11 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                             let replace = myPickerView.selectedRow(inComponent: 1)
                             if replace != 0 && vSet[i].contains(value) {
                                 vSet[i].remove(value)
+                                pastAction.append(action(cell:i, value: value))
                                 vSet[i].insert(replace)
+                                pastAction.append(action(cell:i, value: replace))
+                                futurAction = []
+                                
                             }
                         }
                     }
@@ -1496,7 +1452,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     }
     @IBAction func buttonAction(_ sender: UIButton) {
         var areaCells:Set<Int> = []
-        print("tag = \(sender.tag)")
+        //print("tag = \(sender.tag)")
         let buttonID:Int = sender.tag
         switch buttonID {
         case butType.back.rawValue:
