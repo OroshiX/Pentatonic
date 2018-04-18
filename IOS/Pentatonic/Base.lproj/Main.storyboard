@@ -200,6 +200,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ydG-Nm-ewK">
+                                <rect key="frame" x="263" y="522" width="50" height="50"/>
+                                <state key="normal" image="stop.png"/>
+                                <connections>
+                                    <action selector="stopSolvingCurrentPenta:" destination="tRj-px-kUi" eventType="touchUpInside" id="7lU-st-kVU"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -210,6 +217,7 @@
                             <constraint firstItem="Qle-fQ-JiD" firstAttribute="trailing" secondItem="FVv-TG-zzO" secondAttribute="trailing" id="9s6-oy-lLn"/>
                             <constraint firstItem="uvv-DD-Nln" firstAttribute="leading" secondItem="K5E-pQ-xaQ" secondAttribute="trailing" constant="10" id="9xs-V6-IPG"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Wrj-0z-SJt" secondAttribute="trailing" id="CsR-Rc-HMR"/>
+                            <constraint firstItem="ydG-Nm-ewK" firstAttribute="centerY" secondItem="AQg-JD-r9r" secondAttribute="centerY" id="Pnb-9p-Hlq"/>
                             <constraint firstItem="cDy-Kc-CPb" firstAttribute="leading" secondItem="Qle-fQ-JiD" secondAttribute="leading" constant="10" id="QbN-kI-6TK"/>
                             <constraint firstItem="FVv-TG-zzO" firstAttribute="leading" secondItem="WkH-Ey-Wpf" secondAttribute="trailing" constant="10" id="SHp-Tu-hAm"/>
                             <constraint firstItem="aES-Tv-mrC" firstAttribute="leading" secondItem="Qle-fQ-JiD" secondAttribute="leading" id="Sdu-w3-gPE"/>
@@ -221,6 +229,7 @@
                             <constraint firstItem="uvv-DD-Nln" firstAttribute="top" secondItem="FVv-TG-zzO" secondAttribute="bottom" constant="5" id="aZM-3K-G8A"/>
                             <constraint firstItem="SmT-E4-8Si" firstAttribute="centerX" secondItem="nHu-pQ-gJc" secondAttribute="centerX" id="au1-1u-ptE"/>
                             <constraint firstItem="pnp-hs-Msx" firstAttribute="top" secondItem="SmT-E4-8Si" secondAttribute="bottom" constant="70" id="bsL-7r-Qrr"/>
+                            <constraint firstItem="ydG-Nm-ewK" firstAttribute="leading" secondItem="AQg-JD-r9r" secondAttribute="trailing" constant="21" id="gRn-tV-xVJ"/>
                             <constraint firstItem="Ban-Wr-skJ" firstAttribute="leading" secondItem="Qle-fQ-JiD" secondAttribute="leading" id="gss-pb-08e"/>
                             <constraint firstItem="aES-Tv-mrC" firstAttribute="top" secondItem="Qle-fQ-JiD" secondAttribute="top" id="kj9-Q5-GBr"/>
                             <constraint firstItem="uvv-DD-Nln" firstAttribute="leading" secondItem="K5E-pQ-xaQ" secondAttribute="trailing" constant="10" id="lOx-2t-tPW"/>
@@ -248,6 +257,7 @@
                         <outlet property="progressBar" destination="Wrj-0z-SJt" id="hTS-1p-Uuy"/>
                         <outlet property="sliderIncrement" destination="uvv-DD-Nln" id="htE-yz-3hq"/>
                         <outlet property="sliderYIncrement" destination="FVv-TG-zzO" id="gCL-0B-IfM"/>
+                        <outlet property="stopSolveButton" destination="ydG-Nm-ewK" id="Y4U-yl-sNP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sTG-Oo-glM" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -557,5 +567,6 @@
         <image name="background.png" width="183" height="275"/>
         <image name="rect_jaune.png" width="520" height="527"/>
         <image name="setting.png" width="482" height="485"/>
+        <image name="stop.png" width="50" height="50"/>
     </resources>
 </document>

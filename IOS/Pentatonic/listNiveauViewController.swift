@@ -33,6 +33,7 @@ class listNiveauViewController: UIViewController {
     @IBOutlet var activityIndic: UIActivityIndicatorView!
     @IBOutlet var sliderYIncrement: UISlider!
     @IBOutlet var sliderIncrement: UISlider!
+    @IBOutlet var stopSolveButton: UIButton!
     
     override func viewWillAppear(_ animated: Bool) {
         print("This is it")
@@ -59,6 +60,7 @@ class listNiveauViewController: UIViewController {
         labelIncrement.isHidden = true
         labelYIncrement.isHidden = true
         activityIndic.isHidden = true
+        stopSolveButton.isHidden = true
         labelPercent.isHidden = true
         // Do any additional setup after loading the view.
         /* Read the JSON File with all level available */
@@ -282,6 +284,8 @@ class listNiveauViewController: UIViewController {
         playController?.setListCtrl(self)
         progressBar.isHidden = false
         activityIndic.isHidden = false
+        stopSolveButton.isHidden = false
+        stopSolveButton.isEnabled = true
         labelPercent.text = "0%"
         labelPercent.isHidden = false
         activityIndic.startAnimating()
@@ -315,6 +319,8 @@ class listNiveauViewController: UIViewController {
                     self.progressBar.isHidden = true
                     self.activityIndic.stopAnimating()
                     self.activityIndic.isHidden = true
+                    self.stopSolveButton.isHidden = true
+
                     self.labelPercent.text = "0%"
 
                     self.labelPercent.isHidden = true
@@ -360,6 +366,12 @@ class listNiveauViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func stopSolvingCurrentPenta(_ sender: UIButton) {
+        self.playController?.stopSolve()
+        self.stopSolveButton.isEnabled = false
+    }
+    
     @objc func countUp() {
         let counter = playController?.getCounter()
         let max = playController?.getMaxCounter()

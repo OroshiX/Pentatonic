@@ -54,7 +54,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var counter = 0
     var maxCounter = 0
     var FontColor:[UIColor] = [ ldefine.currentTheme[prefsJSON.LColor.blue]!,ldefine.currentTheme[prefsJSON.LColor.black]!,ldefine.currentTheme[prefsJSON.LColor.red]!]
-    
+    var stopSolveRequested = false
     var listController:listNiveauViewController?
     
     var dxl:CGFloat = 0
@@ -148,6 +148,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     /// - Parameter penta: This is the next penta to be display and played in this controller
     ///
     
+    public func stopSolve() {
+        stopSolveRequested = true
+        
+    }
     public func setListCtrl(_ Controller:listNiveauViewController){
         self.listController = Controller
     }
@@ -296,7 +300,11 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         
         if ldefine.helpButtonValue {
-            solvePenta(penta, &possibleValue, size, &otherRegionSameAreaCells)
+            let backupSameArea:[Set<Int>] = sameAreaCells
+            let backupSisters:[ASimilarites] = penta.sisters!
+            solvePenta(penta, &possibleValue, size, &otherRegionSameAreaCells, &sameRegionCells)
+            sameAreaCells = backupSameArea
+            //penta.sisters = backupSisters
         }
     }
     
@@ -543,28 +551,126 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
      * Functions Used for the resolution of the pentas ( automatic )
      */
     
-    fileprivate func solveSisters(_ penta: APenta, _ possibleV: inout [Set<Int>], _ change: inout Bool) {
-        // Treatment of Sisters
-        for sister in penta.sisters! {
-            var A:Set<Int>? = nil
-            var AIndex:Set<Int> = []
-            
-            for pos in sister.positions! {
-                let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
-                let index = lIJ.getIndex(penta, pos.i!, pos.j!)
-                if A == nil { A = possibleV[index]}
-                A = A?.intersection(possibleV[index])
-                AIndex.insert(index)
-            }
-            for index in AIndex {
-                if !possibleV[index].isSubset(of: A!) || !A!.isSubset(of: possibleV[index]) {
-                    change = true
-                    possibleV[index] = A!
+    fileprivate func solveSisters(_ penta: APenta, _ possibleV: inout [Set<Int>], _ change: inout Bool, _ sameRegionCells: inout [Set<Int>], _ activate:Bool) {
+        // add some fake sisters
+        if activate {
+            for region in arrayRegionSet {
+                for cell1 in region.value {
+                    for cell2 in sameAreaCells[cell1] {
+                        if !sameRegionCells[cell1].contains(cell2) {
+                            var local : Set<Int> = []
+                            
+                            for cell4 in sameRegionCells[cell2] {
+                                if !sameAreaCells[cell1].contains(cell4) {
+                                    local.insert(cell4)
+                                }
+                            }
+                            var o:Set<Int> = []
+                            if local.count != 0 {
+                                for i in 1...sameRegionCells[local.first!].count+1 { o.insert(i)}
+                            }
+                            if local.count == 1 && o.isSuperset(of: possibleV[cell1]) {
+                                let lIJ1:IJ = IJ.init(p: penta, index: cell1)
+                                let lIJ2:IJ = IJ.init(p: penta, index: local.first!)
+                                var done:Bool = false
+                                var p1:Bool = false
+                                var p2:Bool = false
+                                var maxID = 0
+                                
+                                for sister in penta.sisters! {
+                                    maxID = max(sister.id!,maxID)
+                                    
+                                    if !done {
+                                        for pos in sister.positions! {
+                                            p2 = p2 || ((pos.i == lIJ1.i) && (pos.j == lIJ1.j))
+                                            p1 = p1 || ((pos.i == lIJ2.i) && (pos.j == lIJ2.j))
+                                        }
+                                        if p1 && p2 {
+                                            // both cell are already in a sister
+                                            done = true
+                                        } else {
+                                            
+                                            if (p2 || p1) {
+                                                // let add a new position to this sister
+                                                let S = APoint()
+                                                if p1 {
+                                                    S.i = lIJ1.i
+                                                    S.j = lIJ1.j
+                                                } else {
+                                                    S.i = lIJ2.i
+                                                    S.j = lIJ2.j
+                                                }
+                                                print ("*******ADD S\(Optional(S.i)) \(Optional(S.j)) in sister id-\(Optional(sister.id))")
+                                                sister.positions?.append(S)
+                                                change = true
+                                                done = true
+                                            }
+                                        }
+                                    }
+                                }
+                                if !done {
+                                    // was not part of any sister, let's create a new one
+                                    let sister:ASimilarites = ASimilarites()
+                                    sister.positions = []
+                                    let S1 = APoint()
+                                    S1.i = lIJ1.i
+                                    S1.j = lIJ1.j
+                                    
+                                    let S2 = APoint()
+                                    S2.i = lIJ2.i
+                                    S2.j = lIJ2.j
+                                    
+                                    sister.id = maxID+1
+                                    sister.symbol = "."
+                                    sister.positions?.append(S1)
+                                    sister.positions?.append(S2)
+                                    penta.sisters?.append(sister)
+                                    print("*******ADD S1 and S2 in new SISTER")
+                                    change = true
+                                    print ("Pass S1:(\(S1.i!),\(S1.j!)) S2:(\(S2.i!),\(S2.j!) \(penta.sisters!)")
+                                }
+                                
+                            }
+                        }
+                    }
                 }
             }
         }
+            // change samearea to take into account sisters - no need to alter change value since its always false here and we should evaluate it at each turn
+            for sister in penta.sisters! {
+                var unionSameArea:Set<Int> = []
+                for pos in sister.positions! {
+                    let lIJ:IJ = IJ.init(p: penta, index: 0)
+                    let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                    unionSameArea = unionSameArea.union(sameAreaCells[index])
+                }
+                for pos in sister.positions! {
+                    let lIJ:IJ = IJ.init(p: penta, index: 0)
+                    let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                    sameAreaCells[index] = unionSameArea
+                }
+            }
+            // Treatment of Sisters
+            for sister in penta.sisters! {
+                var A:Set<Int>? = nil
+                var AIndex:Set<Int> = []
+                
+                for pos in sister.positions! {
+                    let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
+                    let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                    if A == nil { A = possibleV[index]}
+                    A = A?.intersection(possibleV[index])
+                    AIndex.insert(index)
+                }
+                for index in AIndex {
+                    if !possibleV[index].isSubset(of: A!) || !A!.isSubset(of: possibleV[index]) {
+                        change = true
+                        possibleV[index] = A!
+                    }
+                }
+            }
+        
     }
-    
     fileprivate func solveDifferences(_ penta: APenta, _ possibleV: inout [Set<Int>]) {
         for difference in penta.differences! {
             let lIJ:IJ = IJ.init(p: penta, index: 0)
@@ -601,7 +707,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
     }
     
-    fileprivate func solveUniqueInRegionL(_ dicoRegion: [String : Set<Int>], _ possibleV: inout [Set<Int>], _ locVSet: inout [Set<Int>], _ change: inout Bool, _ otherR: [Set<Int>]) {
+    fileprivate func solveUniqueInRegionL(_ dicoRegion: [String : Set<Int>], _ possibleV: inout [Set<Int>], _ locVSet: inout [Set<Int>], _ change: inout Bool, _ otherRegionLocal: [Set<Int>]) {
         for regionSet in dicoRegion {
             var local:Set<Int> = []
             for pentaVal in 1...regionSet.value.count {
@@ -631,9 +737,9 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     }
                 }
                 if local.count >= 1 {
-                    var inter:Set<Int> = otherR[local.first!]
+                    var inter:Set<Int> = otherRegionLocal[local.first!]
                     for cell in local {
-                        inter = inter.intersection(otherR[cell])
+                        inter = inter.intersection(otherRegionLocal[cell])
                     }
                     for cell in inter {
                         if possibleV[cell].contains(pentaVal) {
@@ -706,19 +812,22 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     }
     
     fileprivate func solveIntersectionPossibleValues(_ change: inout Bool, _ size: Int, _ possibleV: inout [Set<Int>]) {
+        /*
+         * if we have 2 cells which are neighbour, and share only 2 values , than none of the common neighbour can share the same value
+         * we update change, only if something was changed !!!
+         */
         if !change {
             for cell in 0..<size {
                 for cell2  in sameAreaCells[cell] {
                     if possibleV[cell].isSuperset(of: possibleV[cell2]) && possibleV[cell2].isSuperset(of: possibleV[cell]) && possibleV[cell].count == 2 {
                         for cell3 in sameAreaCells[cell].intersection(sameAreaCells[cell2]) {
-                            if cell3 != cell2 && possibleV[cell3].contains(possibleV[cell].first!){
-                                let p = possibleV[cell3]
-                                possibleV[cell3].formSymmetricDifference(possibleV[cell])
-                                if !(p.isSuperset(of: possibleV[cell3]) && possibleV[cell3].isSuperset(of: p)) {
-                                    change = true
-
+                            if cell3 != cell2 && cell3 != cell {
+                                for val in possibleV[cell] {
+                                    if possibleV[cell3].contains(val) {
+                                        possibleV[cell3].remove(val)
+                                        change = true
+                                    }
                                 }
-                                
                             }
                         }
                         
@@ -778,18 +887,22 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     
 
     
-    fileprivate func solvePenta(_ penta: APenta, _ possibleValue: inout [Set<Int>], _ size: Int, _ otherRegionSameAreaCells: inout [Set<Int>]) {
+    fileprivate func solvePenta(_ penta: APenta, _ possibleValue: inout [Set<Int>], _ size: Int, _ otherRegionSameAreaCells: inout [Set<Int>], _ sameRegionCells:inout [Set<Int>]) {
+        /* use extension of sameArea to sisters */
+        
+        
+        
         var change=true
         while change {
             change=false
             
-            solveSisters(penta, &possibleValue, &change)
+            solveSisters(penta, &possibleValue, &change,&sameRegionCells,true)
             solveDifferences(penta, &possibleValue)
             
             solveUniqueValues(size, &possibleValue, &vSet, &change)
             solveUniqueInRegionL(arrayRegionSet,&possibleValue, &vSet, &change, otherRegionSameAreaCells)
             solveOtherNeighbourSisters(&change,arrayRegionSet, &possibleValue)
-            //solveIntersectionPossibleValues(&change, size, &possibleValue)
+            solveIntersectionPossibleValues(&change, size, &possibleValue)
             
             if change == false && isPentaSolved(penta, possibleV: possibleValue) == 0
             {
@@ -803,12 +916,18 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         counter = value
                         print ("******* try N \(value)/\(size)")
                         listController?.nc.post(name: Notification.Name("notifPROGRESSBar"), object: nil, userInfo:["counter":counter, "max":size])
-
+                        if stopSolveRequested {
+                            stopSolveRequested = false
+                            return
+                        }
                         let save = possibleValue[value]
                         if possibleValue[value].count > 1 {
-                            
+                            let backupSisters = penta.sisters
                             possibleValue[value] = [save.first!]
-                            let result = solvePentaRecursive(penta, dicoRegion: arrayRegionSet, sameA: sameAreaCells, otherR: otherRegionSameAreaCells, locVSetP: vSet, possibleVP: possibleValue, level: 1)
+                            let backupSameAreaCells = sameAreaCells
+                            let result = solvePentaRecursive(penta, dicoRegion: arrayRegionSet, otherRegionLocal: otherRegionSameAreaCells, sameRegionCells: &sameRegionCells,locVSetP: vSet, possibleVP: possibleValue, level: 1)
+                            sameAreaCells = backupSameAreaCells
+                            penta.sisters = backupSisters
                             if result == 0
                             {
                                 print ("*****THIS TIME IT IS SOLVED YEAHHH")
@@ -839,7 +958,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     // will return true if still possible to be solve ( or eventually solved )
     
     
-    public func solvePentaRecursive (_ penta:APenta, dicoRegion:[String:Set<Int>], sameA:[Set<Int>],  otherR:[Set<Int>], locVSetP:[Set<Int>], possibleVP:[Set<Int>], level:Int) -> Int
+    public func solvePentaRecursive (_ penta:APenta, dicoRegion:[String:Set<Int>], otherRegionLocal:[Set<Int>], sameRegionCells:inout [Set<Int>], locVSetP:[Set<Int>], possibleVP:[Set<Int>], level:Int) -> Int
     {
         let width = penta.width
         let height = penta.height
@@ -854,12 +973,12 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         var change=true
         while change {
             change=false
-            solveSisters(penta, &possibleV, &change)
+            solveSisters(penta, &possibleV, &change,&sameRegionCells,false)
             solveDifferences(penta, &possibleV)
             solveUniqueValues(size, &possibleV, &locVSet, &change)
-            solveUniqueInRegionL(dicoRegion, &possibleV, &locVSet, &change, otherR)
+            solveUniqueInRegionL(dicoRegion, &possibleV, &locVSet, &change, otherRegionLocal)
             solveOtherNeighbourSisters(&change, dicoRegion, &possibleV)
-            //solveIntersectionPossibleValues(&change, size, &possibleV)
+            solveIntersectionPossibleValues(&change, size, &possibleV)
             if change == false && isPentaSolved(penta, possibleV: possibleV) == 0
             {
                 print ("*******PENTA IS in SOLVED in recursion")
@@ -871,7 +990,11 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         if possibleV[value].count > 1 {
                             for v in save {
                                 possibleV[value] = [v]
-                                let result = solvePentaRecursive(penta, dicoRegion: dicoRegion, sameA: sameA, otherR: otherR, locVSetP: locVSet, possibleVP: possibleV, level:level+1)
+                                let backupSameAreaCells = sameAreaCells
+                                let backupSisters = penta.sisters
+                                let result = solvePentaRecursive(penta, dicoRegion: dicoRegion, otherRegionLocal: otherRegionLocal, sameRegionCells: &sameRegionCells, locVSetP: locVSet, possibleVP: possibleV, level:level+1)
+                                sameAreaCells = backupSameAreaCells
+                                penta.sisters = backupSisters
                                 if result == 0
                                 {
                                     print ("Penta was solved at level \(level)")
@@ -920,11 +1043,12 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         var index:Int = 0
         var listSist:[String] = Array(repeating:"" , count:width * height)
-        let listSymbol:[String] = [ "-", "~", "±", "§", "^", "#"]
+        let listSymbol:[String] = [ "-", "~", "±", "§", "^", "#","&","*","+","į","k","l","n","p","o","p","q","r","s","u","f","g","h"," "]
         for sister in penta.sisters! {
             var symbol = sister.symbol!
             symbol = listSymbol[index]
-            index = (index+1)%listSymbol.count
+            // if we are out of symbol .... use the last one
+            if index < listSymbol.count { index = (index+1)%listSymbol.count } else { index = listSymbol.count - 1 }
             // since symbol is not yet correctly initialized in json, lets use our OWN
             // TBD
             for position in sister.positions! {
