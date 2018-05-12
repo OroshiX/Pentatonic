@@ -57,6 +57,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var stopSolveRequested = false
     var listController:listNiveauViewController?
     
+    var old = false
+    
     var dxl:CGFloat = 0
     var dxm:CGFloat = 0
     var dxr:CGFloat = 0
@@ -92,7 +94,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var arrayRegionSet : [String:Set<Int>] = [:]
     
     var selectedValue:Int = -1
-    var whatTag = ["a","b","c","d","e","x","y","z","v","w"]
+    var whatTag = ["0","1","2","3","4","5","a","b","c","d","e","x","y","z","v","w"]
+    var currentTags = ["0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"a":6,"b":7,"c":8,"d":9,"e":10,"x":11,"y":12,"z":13,"v":14,"w":15]
+    var actualTags:Set<String> = []
+    
     @IBOutlet var zoomedImageView: MYUIView!
 
     
@@ -460,15 +465,18 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         // Dispose of any resources that can be recreated.
     }
 
-    func getStringNButton(_ val:Int) -> String{
+    func getStringNButton(_ val:Int) -> String {
         var ret:String
-        
+        var array:[String] = []
+        if old {
+            array = whatTag
+        } else {
+            array = whatTag
+        }
         switch val {
-        case 1...5:
-            ret="\(val)"
             
-        case 6..<whatTag.count+6:
-            ret=whatTag[val-6]
+        case 1..<array.count:
+            ret=array[val]
             
         default:
             ret="?"
@@ -1465,40 +1473,49 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             }
             return
         case butType.Reset.rawValue:
-
+            removePicker()
             self.present(confirmReset!, animated: true, completion: nil)
             
             return
         case butType.regexp.rawValue:
-                if myPickerView == nil {
-                    createPicker()
-                    
-                } else {
-                    if !myPickerView.isHidden {
-                        for i in 0..<vSet.count {
-                            let value = myPickerView.selectedRow(inComponent: 0)+6
-                            let replace = myPickerView.selectedRow(inComponent: 1)
-                            if replace != 0 && vSet[i].contains(value) {
-                                vSet[i].remove(value)
-                                pastAction.append(action(cell:i, value: value))
-                                vSet[i].insert(replace)
-                                pastAction.append(action(cell:i, value: replace))
-                                futurAction = []
-                                
-                            }
+
+            if myPickerView == nil {
+                createPicker()
+                
+            } else {
+                var array:Array<String> = []
+                for tag in actualTags {
+                    array.append(tag)
+                }
+                array.sort()
+                
+                for i in 0..<vSet.count {
+                    if array.count != 0 {
+                        let value = currentTags[array[myPickerView.selectedRow(inComponent: 0)]]
+                        
+                        
+                        let replace = myPickerView.selectedRow(inComponent: 1)
+                        if replace != 0 && vSet[i].contains(value!) {
+                            vSet[i].remove(value!)
+                            pastAction.append(action(cell:i, value: value!))
+                            vSet[i].insert(replace)
+                            pastAction.append(action(cell:i, value: replace))
+                            futurAction = []
+                            
                         }
                     }
-                    myPickerView.isHidden = !myPickerView.isHidden
-                    selectedValue = -1
-                    drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
-                    saveGameData()
-
-                    return
                 }
+                removePicker()
+                selectedValue = -1
+                drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
+                saveGameData()
+                
+                return
+            }
 
         default:
             var thisAction:action? = nil
-            
+            removePicker()
             if (number == butType.Undo.rawValue) {
                 if pastAction.count != 0 {
                     thisAction = pastAction.popLast()
@@ -1605,19 +1622,42 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     
     // MARK: - Picker functions
     
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 2
     }
     
+    func numberActiveVariable () -> Int {
+        var allValue:Set<String> = []
+        
+        for mySet in vSet {
+            for value in mySet {
+                if value > 5 {
+                  print (whatTag[value])
+                allValue.insert ( whatTag[value])
+                }
+            }
+        }
+        print ("exit numberActiveVariables = \(allValue.count)")
+        actualTags = allValue
+        return allValue.count
+    }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if component == 0 {
-            return whatTag.count
+            if old {
+            return whatTag.count - 6
+            } else {
+                return numberActiveVariable()
+            }
         } else { return 6 }
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        var array:Array<String> = []
+        for tag in actualTags {
+            array.append(tag)
+        }
+        array.sort()
         if component == 0 {
-            return whatTag[row]
+            return array[row]
         } else {
             if (row == 0) {
                 return "-"
@@ -1628,25 +1668,35 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
     }
     @IBOutlet var myPickerView: UIPickerView!
-    func createPicker() {
-        myPickerView = UIPickerView(frame: CGRect(x: 100, y: 100, width: 20, height: 40))
-        myPickerView.self.delegate = self as UIPickerViewDelegate
-        myPickerView.self.dataSource = self as UIPickerViewDataSource
-        self.view.addSubview(myPickerView)
-        let bottom = self.view.layoutMarginsGuide.bottomAnchor
-        let trailing = self.view.layoutMarginsGuide.trailingAnchor
-        let h = screenHeight/12
-        
-        myPickerView.bottomAnchor.constraint(equalTo: bottom, constant:-20).isActive = true
-        myPickerView.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
-        myPickerView.backgroundColor = UIColor.brown
-        myPickerView.translatesAutoresizingMaskIntoConstraints = false
-        myPickerView.target(forAction: #selector(pickerAction), withSender: myPickerView )
-        myPickerView.widthAnchor.constraint(equalToConstant: screenWidth/4).isActive = true
-        myPickerView.heightAnchor.constraint(equalToConstant: h).isActive = true
+
+    func removePicker () {
+        if myPickerView != nil {
+            myPickerView.isHidden = true
+            self.view.willRemoveSubview(myPickerView)
+            myPickerView = nil
+        }
     }
 
-    
+    func createPicker() {
+        if myPickerView == nil && numberActiveVariable() != 0 {
+            myPickerView = UIPickerView(frame: CGRect(x: 100, y: 100, width: 20, height: 40))
+            myPickerView.self.delegate = self as UIPickerViewDelegate
+            myPickerView.self.dataSource = self as UIPickerViewDataSource
+            self.view.addSubview(myPickerView)
+            let bottom = self.view.layoutMarginsGuide.bottomAnchor
+            let trailing = self.view.layoutMarginsGuide.trailingAnchor
+            let h = screenHeight/12
+            
+            myPickerView.bottomAnchor.constraint(equalTo: bottom, constant:-20).isActive = true
+            myPickerView.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
+            myPickerView.backgroundColor = UIColor.brown
+            myPickerView.translatesAutoresizingMaskIntoConstraints = false
+            myPickerView.target(forAction: #selector(pickerAction), withSender: myPickerView )
+            myPickerView.widthAnchor.constraint(equalToConstant: screenWidth/4).isActive = true
+            myPickerView.heightAnchor.constraint(equalToConstant: h).isActive = true
+        }
+        
+    }
     
 }
 
