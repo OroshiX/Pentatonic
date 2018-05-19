@@ -11,6 +11,8 @@ diffi=`basename $dir`
 printf "{\n"
 cat $filename | sed -e "1s/^\(.*\)$/\"author\":\"\1\",\"name\":\"$name\",/" -e "2s/\([0-9][0-9]*\) \([0-9][0-9]*\)/\"width\":\2,\"height\":\1,/" |head -2
 
+length=`cat $filename | sed -e "2s/\([0-9][0-9]*\) \([0-9][0-9]*\)/\1/" | head -2 | tail -1`
+
 typeset -i difficulty
 difficulty=`echo $name | sed "s/^\(.\).*$/\1/"`
 difficulty=$diffi
@@ -22,7 +24,7 @@ fi
 echo "\"difficulty\":$difficulty,"
 
 echo "\"data\":["
-cat $filename | tail +3 | grep "^[0-9A-z][0-9A-z]*$" | sed -e "/^[0-9A-Za-z][0-9A-Za-z]*$/s/\([A-Za-z0-9]\)/\"\1\",/g" -e "s/,$//" -e 's/^/\[/' -e "s/$/],/"
+cat $filename | tail +3 | head -$length | sed -e "s/\(.\)/\"\1\",/g" -e "s/,$//" -e 's/^/\[/' -e "s/$/],/"
 echo "],"
 
 #Valeurs....
