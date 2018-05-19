@@ -107,7 +107,7 @@ class prefsJSON: NSObject, Codable {
     var forceDoNotSave = false
     var zoomScrollActivated = false
     var levelMax = 1
-    
+    var oldBehaviour:Bool? = true
     
     enum CodingKeys:String, CodingKey {
         case greyTheme
@@ -123,7 +123,7 @@ class prefsJSON: NSObject, Codable {
         case forceDoNotSave
         case zoomScrollActivated
         case levelMax
-        
+        case oldBehaviour
     }
     override init() {
         currentTheme = greyTheme

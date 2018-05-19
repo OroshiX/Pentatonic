@@ -38,7 +38,7 @@ struct action {
     var cell:Int
     var value:Int
 }
-class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDataSource, UIScrollViewDelegate{
+class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewAccessibilityDelegate, UIScrollViewDelegate{
     //MARK: - The variables used by the class
     var arrayPlayButtons:[MYUIButton] = []
     var initialized:Bool = false
@@ -57,7 +57,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var stopSolveRequested = false
     var listController:listNiveauViewController?
     
-    var old = false
+    var old = true
     
     var dxl:CGFloat = 0
     var dxm:CGFloat = 0
@@ -82,7 +82,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     
     // Number of element in the region the cell belongs to
     var regionCount :[Int] = []
-
+    
     // vSet will contain the original values (negative)
     // and set of value user want to pre-select
     
@@ -99,7 +99,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     var actualTags:Set<String> = []
     
     @IBOutlet var zoomedImageView: MYUIView!
-
+    
     
     var pastAction:[action] = []
     var futurAction:[action] = []
@@ -110,7 +110,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     @IBOutlet var myNumbersImage: UIImageView!
     @IBOutlet var labelTitlePenta:UIButton!
     @IBOutlet var labelSolved:UIButton!
-
+    
     //MARK: - The functions
     
     
@@ -143,7 +143,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         return isPentaSolved
     }
-
+    
     
     
     /// setPenta :
@@ -171,7 +171,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let width = penta.width
         let height = penta.height
         
-
+        
         let size:Int = width! * height!
         
         // For the buttons
@@ -203,15 +203,15 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         // array for each cell, contains a Set cells in the same regions, but not the cell itself.
         var sameRegionCells:[Set<Int>] = [[]]
-
+        
         
         // array for each cell, contains a Set of cells  touching this one, outside the region
         var otherRegionSameAreaCells:[Set<Int>] = [[]]
         
         //    if no bug : sameAreaCells[i] = otherRegionSameAreaCells[i] union sameRegionCells [i]
-
+        
         var possibleValue : [Set<Int>] = [[]]
-
+        
         
         regionCount = Array(repeating:0,count:size)
         sameAreaCells = Array(repeating:Set<Int>(), count:size)
@@ -222,7 +222,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         vSet = Array(repeating:Set<Int>(),count:size)
         
-       
+        
         
         for allVal in 0..<size {
             
@@ -314,7 +314,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     }
     
     
-     @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+    @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
         
         print ("Swipe")
     }
@@ -343,7 +343,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             case .default:
                 print("default")
                 self.dismiss(animated: true, completion: nil)
-
+                
             case .cancel:
                 print("cancel")
                 
@@ -393,7 +393,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let leading = self.view.layoutMarginsGuide.leadingAnchor
         let top = self.view.layoutMarginsGuide.topAnchor
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
-
+        
         if ldefine.zoomScrollActivated {
             
             scrollImageView = MYScrollView()
@@ -411,7 +411,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             scrollImageView.clipsToBounds = false
             scrollImageView.addSubview(zoomedImageView)
             self.view.addSubview(scrollImageView)
-            }
+        }
+        old = ldefine.oldBehaviour
         
         myBackgroundImage.translatesAutoresizingMaskIntoConstraints = false
         
@@ -427,7 +428,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         myNumbersImage = UIImageView(frame:CGRect(x:0,y:minW,width:minW,height:(Int(screenHeight) - minW)))
         // Buttons for number should not scroll/zoom
         self.view.addSubview(myNumbersImage)
-
+        
         //***********
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: Int(minW), height: (Int(screenHeight) - minW)))
         let img = renderer.image { ctx in
@@ -451,12 +452,20 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         drawPenta(penta: currentPenta!, valSelected: -1, darker: [])
         addBackButton()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(actionTouchBackground(_:)))
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    @IBAction func actionTouchBackground(_ sender: Any) {
+        //print("In ACTION **************")
+        removePicker()
+        selectedValue = -1
+        drawPenta(penta: currentPenta!, valSelected: -1, darker:[])
         
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-       return zoomedImageView
-//        return pentaImageView
+        return zoomedImageView
+        //        return pentaImageView
     }
     
     
@@ -464,15 +473,11 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     func getStringNButton(_ val:Int) -> String {
         var ret:String
         var array:[String] = []
-        if old {
-            array = whatTag
-        } else {
-            array = whatTag
-        }
+        array = whatTag
         switch val {
             
         case 1..<array.count:
@@ -483,7 +488,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
         return ret
     }
-
+    
     
     
     
@@ -510,18 +515,18 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         return myNeighbour
     }
     
-   
+    
     
     public func setVSet(vset:[Set<Int>], index:Int) {
         if !ldefine.helpButtonValue {
-        vSet = vset
+            vSet = vset
         }
         globalIndex = index
     }
     func saveGameData () {
         if globalIndex >= 0 { globalUserGameData.totale![globalIndex].vSet = vSet
             globalUserGameData.totale![globalIndex].completed = currentPentaSolved
-
+            
         }
         else {
             let currBackup:ABackup = ABackup()
@@ -608,7 +613,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                                                     S.i = lIJ2.i
                                                     S.j = lIJ2.j
                                                 }
-                                                print ("*******ADD S\(Optional(S.i)) \(Optional(S.j)) in sister id-\(Optional(sister.id))")
+                                                //print ("*******ADD S\(Optional(S.i)) \(Optional(S.j)) in sister id-\(Optional(sister.id))")
                                                 sister.positions?.append(S)
                                                 change = true
                                                 done = true
@@ -633,9 +638,9 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                                     sister.positions?.append(S1)
                                     sister.positions?.append(S2)
                                     penta.sisters?.append(sister)
-                                    print("*******ADD S1 and S2 in new SISTER")
+                                    //print("*******ADD S1 and S2 in new SISTER")
                                     change = true
-                                    print ("Pass S1:(\(S1.i!),\(S1.j!)) S2:(\(S2.i!),\(S2.j!) \(penta.sisters!)")
+                                    //print ("Pass S1:(\(S1.i!),\(S1.j!)) S2:(\(S2.i!),\(S2.j!) \(penta.sisters!)")
                                 }
                                 
                             }
@@ -644,39 +649,39 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 }
             }
         }
-            // change samearea to take into account sisters - no need to alter change value since its always false here and we should evaluate it at each turn
-            for sister in penta.sisters! {
-                var unionSameArea:Set<Int> = []
-                for pos in sister.positions! {
-                    let lIJ:IJ = IJ.init(p: penta, index: 0)
-                    let index = lIJ.getIndex(penta, pos.i!, pos.j!)
-                    unionSameArea = unionSameArea.union(sameAreaCells[index])
-                }
-                for pos in sister.positions! {
-                    let lIJ:IJ = IJ.init(p: penta, index: 0)
-                    let index = lIJ.getIndex(penta, pos.i!, pos.j!)
-                    sameAreaCells[index] = unionSameArea
+        // change samearea to take into account sisters - no need to alter change value since its always false here and we should evaluate it at each turn
+        for sister in penta.sisters! {
+            var unionSameArea:Set<Int> = []
+            for pos in sister.positions! {
+                let lIJ:IJ = IJ.init(p: penta, index: 0)
+                let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                unionSameArea = unionSameArea.union(sameAreaCells[index])
+            }
+            for pos in sister.positions! {
+                let lIJ:IJ = IJ.init(p: penta, index: 0)
+                let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                sameAreaCells[index] = unionSameArea
+            }
+        }
+        // Treatment of Sisters
+        for sister in penta.sisters! {
+            var A:Set<Int>? = nil
+            var AIndex:Set<Int> = []
+            
+            for pos in sister.positions! {
+                let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
+                let index = lIJ.getIndex(penta, pos.i!, pos.j!)
+                if A == nil { A = possibleV[index]}
+                A = A?.intersection(possibleV[index])
+                AIndex.insert(index)
+            }
+            for index in AIndex {
+                if !possibleV[index].isSubset(of: A!) || !A!.isSubset(of: possibleV[index]) {
+                    change = true
+                    possibleV[index] = A!
                 }
             }
-            // Treatment of Sisters
-            for sister in penta.sisters! {
-                var A:Set<Int>? = nil
-                var AIndex:Set<Int> = []
-                
-                for pos in sister.positions! {
-                    let lIJ:IJ = IJ.init(p: currentPenta!, index: 0)
-                    let index = lIJ.getIndex(penta, pos.i!, pos.j!)
-                    if A == nil { A = possibleV[index]}
-                    A = A?.intersection(possibleV[index])
-                    AIndex.insert(index)
-                }
-                for index in AIndex {
-                    if !possibleV[index].isSubset(of: A!) || !A!.isSubset(of: possibleV[index]) {
-                        change = true
-                        possibleV[index] = A!
-                    }
-                }
-            }
+        }
         
     }
     fileprivate func solveDifferences(_ penta: APenta, _ possibleV: inout [Set<Int>]) {
@@ -893,7 +898,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
     }
     
-
+    
     
     fileprivate func solvePenta(_ penta: APenta, _ possibleValue: inout [Set<Int>], _ size: Int, _ otherRegionSameAreaCells: inout [Set<Int>], _ sameRegionCells:inout [Set<Int>]) {
         /* use extension of sameArea to sisters */
@@ -1188,7 +1193,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     x = x - c/4
                     y = y - c/4
                     drawLine(ctx.cgContext, x, y, x + c/2, y + c/2, false, UIColor.black.cgColor)
-
+                    
                 case 1:
                     x = x + c/2
                     y = y + c/4
@@ -1268,7 +1273,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         zoomedImageView.sendSubview(toBack: pentaImageView)
         //self.view.bringSubview(toFront: zoomedImageView)
     }
-
+    
     
     
     func drawRect(_ ctx:CGContext, _ x:CGFloat,_ y:CGFloat,_ width:CGFloat,_ height:CGFloat,_ up:Bool,_ down:Bool,_ right:Bool,_ left:Bool) {
@@ -1346,7 +1351,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
     }
     
-
+    
     
     /*
      // MARK: - Navigation
@@ -1375,7 +1380,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
         longPress.minimumPressDuration = 2.0;
         button.addGestureRecognizer(longPress)
-
+        
         
         
         return button
@@ -1399,12 +1404,17 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
     }
     
     enum butType:Int {
-        case back = 999
-        case Undo = 998
-        case Redo = 997
-        case Reset = 996
+        case Erase = 999
+        case back = 991
+        case Undo = 997
+        case Redo = 998
+        case Reset = 990
         case label = 995
-        case regexp = 994
+        case regexp = 1000
+    }
+    func sortDico (_ k1: (key:butType,value:UIImage),_ k2: (key:butType,value:UIImage)) -> Bool {
+        
+        return k1.key.rawValue >= k2.key.rawValue
     }
     
     func addBackButton() {
@@ -1412,12 +1422,13 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let butWidth = 40
         
         
-        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back40.png")!,.Undo:UIImage(named: "undo40.png")!,.Redo:UIImage(named: "redo40.png")!,.Reset:UIImage(named: "reset40.png")!, .regexp:UIImage(named: "replace40.png")!]
+        let tImages:[butType:UIImage] = [ .back:UIImage(named: "back40.png")!,.Undo:UIImage(named: "undo40.png")!,.Redo:UIImage(named: "redo40.png")!,.Reset:UIImage(named: "reset40.png")!, .regexp:UIImage(named: "replace40.png")!, .Erase:UIImage(named:"X40.png")!]
+        
 
         var trailing = self.view.layoutMarginsGuide.trailingAnchor
         let bottom = self.view.layoutMarginsGuide.bottomAnchor
         
-        for i in tImages {
+        for i in tImages.sorted(by: sortDico(_:_:)) {
             let tempButton = UIButton()
             // no zoom / scroll for the back buttons
             self.view.addSubview(tempButton)
@@ -1462,6 +1473,18 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         var number:Int = sender.tag
         
         switch number {
+        case butType.Erase.rawValue:
+            if selectedValue != -1 {
+                for value in vSet[selectedValue] {
+                    pastAction.append(action(cell:selectedValue, value: value))
+                    futurAction = []
+                }
+                vSet[selectedValue] = []
+                selectedValue = -1
+                saveGameData()
+                drawPenta(penta: currentPenta!, valSelected: -1, darker: [])
+            }
+            return
         case butType.label.rawValue:
             sender.isHidden = true
             return
@@ -1478,7 +1501,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             
             return
         case butType.regexp.rawValue:
-
+            
             if myPickerView == nil {
                 createPicker()
                 
@@ -1512,7 +1535,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 
                 return
             }
-
+            
         default:
             var thisAction:action? = nil
             removePicker()
@@ -1563,14 +1586,14 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             drawPenta(penta: currentPenta!, valSelected: selectedValue, darker:sameAreaCells[selectedValue]
             )
             //print ("number = \(number)")
-
+            
             saveGameData()
         }
     }
     
     
     @IBAction func pickerAction(_ sender: UIPickerView) {
-    //print ("Action PICKER")
+        //print ("Action PICKER")
         sender.isHidden = true
     }
     
@@ -1588,7 +1611,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 saveGameData()
                 drawPenta(penta: currentPenta!, valSelected: -1, darker: [])
             }
-
+            
         }
     }
     @IBAction func buttonAction(_ sender: UIButton) {
@@ -1632,22 +1655,18 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         for mySet in vSet {
             for value in mySet {
                 if value > 5 {
-                  print (whatTag[value])
-                allValue.insert ( whatTag[value])
+                    //print (whatTag[value])
+                    allValue.insert ( whatTag[value])
                 }
             }
         }
-        print ("exit numberActiveVariables = \(allValue.count)")
+        //print ("exit numberActiveVariables = \(allValue.count)")
         actualTags = allValue
         return allValue.count
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if component == 0 {
-            if old {
-            return whatTag.count - 6
-            } else {
-                return numberActiveVariable()
-            }
+            return numberActiveVariable()
         } else { return 6 }
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -1662,40 +1681,136 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             if (row == 0) {
                 return "-"
             } else {
-            return String(row)
+                return String(row)
             }
         }
         
     }
+    
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return max(20,sizeFont)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView{
+        var array:Array<String> = []
+        for tag in actualTags {
+            array.append(tag)
+        }
+        array.sort()
+        
+        var str:String
+        
+        if component == 0 {
+            str = array[row]
+        } else {
+            if (row == 0) {
+                str = "-"
+            } else {
+                str = String(row)
+            }
+        }
+        
+        var label = view as! UILabel!
+        if label == nil {
+            label = UILabel()
+        }
+        
+        label?.font = UIFont.systemFont(ofSize: max(20,sizeFont))
+        label?.text =  str
+        label?.textAlignment = .center
+        return label!
+        
+    }
+    
+    
+    
+    @IBOutlet var execBut: UIButton!
     @IBOutlet var myPickerView: UIPickerView!
-
+    
     func removePicker () {
         if myPickerView != nil {
+            if (execBut != nil) { execBut.isHidden = true }
             myPickerView.isHidden = true
             self.view.willRemoveSubview(myPickerView)
+            if (execBut != nil) {self.view.willRemoveSubview(execBut)}
+            execBut = nil
             myPickerView = nil
         }
     }
-
+    
     func createPicker() {
-        if myPickerView == nil && numberActiveVariable() != 0 {
-            myPickerView = UIPickerView(frame: CGRect(x: 100, y: 100, width: 20, height: 40))
-            myPickerView.self.delegate = self as UIPickerViewDelegate
-            myPickerView.self.dataSource = self as UIPickerViewDataSource
-            self.view.addSubview(myPickerView)
-            let bottom = self.view.layoutMarginsGuide.bottomAnchor
-            let trailing = self.view.layoutMarginsGuide.trailingAnchor
-            let h = screenHeight/12
-            
-            myPickerView.bottomAnchor.constraint(equalTo: bottom, constant:-20).isActive = true
-            myPickerView.trailingAnchor.constraint(equalTo: trailing, constant: 0).isActive = true
-            myPickerView.backgroundColor = UIColor.brown
-            myPickerView.translatesAutoresizingMaskIntoConstraints = false
-            myPickerView.target(forAction: #selector(pickerAction), withSender: myPickerView )
-            myPickerView.widthAnchor.constraint(equalToConstant: screenWidth/4).isActive = true
-            myPickerView.heightAnchor.constraint(equalToConstant: h).isActive = true
+        var bottom:NSLayoutYAxisAnchor
+        var trailing:NSLayoutXAxisAnchor
+        var h:CGFloat
+        var w:CGFloat
+        var x:CGFloat,y:CGFloat
+        var width:CGFloat,height:CGFloat
+        var AnchorTrailing:CGFloat
+        var AnchorBottom:CGFloat
+        var constraints:Bool = true
+        if myPickerView != nil || numberActiveVariable() == 0 {
+            return
         }
         
+        if old {
+            x=100 // Default X position for picker
+            y=100 // Default Y position for picker
+            width = 20  // Default width for picker
+            height = 40 // Default height for picker
+            h = screenHeight/12 // Height Anchor
+            w = screenWidth/4 // Width Anchor
+            AnchorTrailing = 0
+            AnchorBottom = -width
+        } else {
+            constraints = false
+            x=20 // Default X position for picker
+            y=20 // Default Y position for picker
+            width = max(40,sizeFont*4)  // Default width for picker
+            height = max(25,sizeFont)  // Default height for picker
+            h = height*1.5   // Heigth Anchor
+            w = width   // Width Anchor
+            AnchorTrailing = -(screenWidth - 2 * w)/2
+            AnchorBottom = -screenHeight/8
+        }
+        myPickerView = UIPickerView(frame: CGRect(x: x, y: y, width: width, height: height))
+        
+        bottom = self.view.layoutMarginsGuide.bottomAnchor
+        trailing = self.view.layoutMarginsGuide.trailingAnchor
+        
+        myPickerView.self.delegate = self as UIPickerViewDelegate
+        myPickerView.self.dataSource = self as UIPickerViewDataSource
+        
+        self.view.addSubview(myPickerView)
+        
+        
+        if constraints {
+            myPickerView.bottomAnchor.constraint(equalTo: bottom, constant:AnchorBottom).isActive = constraints
+            myPickerView.trailingAnchor.constraint(equalTo: trailing, constant: AnchorTrailing).isActive = constraints
+            myPickerView.widthAnchor.constraint(equalToConstant: w).isActive = constraints
+            myPickerView.heightAnchor.constraint(equalToConstant: h).isActive = constraints
+        }
+        myPickerView.backgroundColor = UIColor.brown
+        myPickerView.translatesAutoresizingMaskIntoConstraints = false
+        myPickerView.target(forAction: #selector(pickerAction), withSender: myPickerView )
+        //print(myPickerView.frame)
+        if !old {
+            let image = UIImage(named: "Breplace50.png")!
+
+            execBut = UIButton(frame: CGRect(x: 20, y: screenHeight-50, width: w, height: h))
+            execBut.setImage(image, for:UIControlState.normal)
+            //execBut = UIButton()
+            execBut?.setTitle("", for: UIControlState.normal)
+            execBut?.tag = butType.regexp.rawValue
+            execBut?.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
+
+            self.view.addSubview(execBut!)
+            //execBut.bottomAnchor.constraint(equalTo: bottom, constant:AnchorBottom).isActive = true
+            print (myPickerView.frame)
+            execBut.centerYAnchor.constraint(equalTo: myPickerView.centerYAnchor, constant: 0).isActive = constraints
+            execBut!.trailingAnchor.constraint(equalTo: myPickerView.layoutMarginsGuide.leadingAnchor, constant: 0).isActive = constraints
+            //print(execBut!.frame)
+        }
     }
     
 }

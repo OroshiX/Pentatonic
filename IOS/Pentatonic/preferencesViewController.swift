@@ -21,6 +21,7 @@ class preferencesViewController: UIViewController {
         zoomScrollSwitch.isOn = ldefine.zoomScrollActivated
         recursSlider.value = Float(ldefine.levelMax)
         labelRecursivity.text = "Level of recursivity " + "\(ldefine.levelMax)"
+        oldSwitch.isOn = ldefine.oldBehaviour
         view.backgroundColor = ldefine.currentTheme[prefsJSON.LColor.lightest]
     }
 
@@ -34,7 +35,8 @@ class preferencesViewController: UIViewController {
     @IBOutlet var saveDataGame: UISwitch!
     @IBOutlet var zoomScrollSwitch: UISwitch!
     @IBOutlet var recursSlider: UISlider!
-    
+    @IBOutlet var oldSwitch: UISwitch!
+
     @IBOutlet var labelRecursivity: UILabel!
     @IBAction func backAction(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -65,6 +67,9 @@ class preferencesViewController: UIViewController {
             }
         case 3:
             ldefine.zoomScrollActivated = sender.isOn
+        case 4:
+            ldefine.oldBehaviour = sender.isOn
+            
         default:
             print("This is a bug")
             
@@ -117,6 +122,7 @@ class preferencesViewController: UIViewController {
         l.zoomScrollActivated = ldefine.zoomScrollActivated
         l.levelMax = ldefine.levelMax
         l.currentTheme = [:]
+        l.oldBehaviour = ldefine.oldBehaviour
         for col in ldefine.currentTheme {
             l.currentTheme![col.key] = rgb(color: col.value)
         }

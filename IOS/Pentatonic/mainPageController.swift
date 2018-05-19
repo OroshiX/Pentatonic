@@ -82,7 +82,7 @@ class mainPageController: UIViewController {
         ldefine.forceDoNotSave = l.forceDoNotSave
         ldefine.zoomScrollActivated = l.zoomScrollActivated
         ldefine.levelMax = l.levelMax
-        
+        ldefine.oldBehaviour = l.oldBehaviour!
         ldefine.currentTheme = [:]
         for col in l.currentTheme! {
             ldefine.currentTheme[col.key] = UIColor(rgb:UInt(col.value))

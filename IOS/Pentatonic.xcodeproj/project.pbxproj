@@ -68,6 +68,8 @@
 		12CCD2B220446C99003AD04C /* ABackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CCD2B120446C99003AD04C /* ABackup.swift */; };
 		12CCD2B420446DA8003AD04C /* ATotalBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CCD2B320446DA8003AD04C /* ATotalBackup.swift */; };
 		12CCD2B82045BE10003AD04C /* all.json in Resources */ = {isa = PBXBuildFile; fileRef = 12CCD2B72045BE10003AD04C /* all.json */; };
+		12DAF37C20A9C2A5009AEDD1 /* X40.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DAF37B20A9C2A4009AEDD1 /* X40.png */; };
+		12DAF37E20AB0EF3009AEDD1 /* Breplace50.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DAF37D20AB0EF3009AEDD1 /* Breplace50.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -134,6 +136,8 @@
 		12CCD2B120446C99003AD04C /* ABackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABackup.swift; sourceTree = "<group>"; };
 		12CCD2B320446DA8003AD04C /* ATotalBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATotalBackup.swift; sourceTree = "<group>"; };
 		12CCD2B72045BE10003AD04C /* all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = all.json; sourceTree = "<group>"; };
+		12DAF37B20A9C2A4009AEDD1 /* X40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = X40.png; sourceTree = "<group>"; };
+		12DAF37D20AB0EF3009AEDD1 /* Breplace50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Breplace50.png; path = Images/Breplace50.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +154,7 @@
 		121119B020757B8000887154 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				12DAF37B20A9C2A4009AEDD1 /* X40.png */,
 				123830F320595BB8009C9836 /* completed40.png */,
 				123830F120594AD8009C9836 /* completed100.png */,
 				129874012055DE79000ED6D9 /* back40.png */,
@@ -221,6 +226,7 @@
 				12BB271420371C9A0037FBBC /* tutorialViewController.swift */,
 				12B096072000E89E002C57D5 /* listNiveauViewController.swift */,
 				120D2488203B77820000CAAD /* playViewController.swift */,
+				12DAF37D20AB0EF3009AEDD1 /* Breplace50.png */,
 				124020382065356D0004DBA7 /* MYUIView.swift */,
 				12402036206532E30004DBA7 /* MYScrollView.swift */,
 				12970E352065383B003DE96A /* MYUIButton.swift */,
@@ -329,6 +335,7 @@
 				12B095EC1FFFD94A002C57D5 /* Main.storyboard in Resources */,
 				123E361320473069009F0B82 /* back20.png in Resources */,
 				125082152034F16000AF0BCC /* Play.png in Resources */,
+				12DAF37C20A9C2A5009AEDD1 /* X40.png in Resources */,
 				123E360920472A8A009F0B82 /* redo.png in Resources */,
 				121119B22078451900887154 /* stop.png in Resources */,
 				123830F220594AD8009C9836 /* completed100.png in Resources */,
@@ -345,6 +352,7 @@
 				129402DF2041734F00AA3D42 /* setting.png in Resources */,
 				123830F420595BB8009C9836 /* completed40.png in Resources */,
 				125082192034F28800AF0BCC /* Tutorial.png in Resources */,
+				12DAF37E20AB0EF3009AEDD1 /* Breplace50.png in Resources */,
 				1298740A2055DE7C000ED6D9 /* redo40.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

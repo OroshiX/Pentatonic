@@ -444,6 +444,27 @@
                                     </slider>
                                 </subviews>
                             </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ba-me-qGI" userLabel="Classical Parameter">
+                                <rect key="frame" x="20" y="440" width="335" height="31"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Classical Behaviour" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7mg-iL-Jfl" userLabel="Classical Behviour">
+                                        <rect key="frame" x="0.0" y="0.0" width="286" height="31"/>
+                                        <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <switch opaque="NO" tag="4" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="eie-NC-91u" userLabel="Classical Switch">
+                                        <rect key="frame" x="286" y="0.0" width="51" height="31"/>
+                                        <connections>
+                                            <action selector="choosingValueAction:" destination="G5O-PZ-Blk" eventType="valueChanged" id="FDN-gB-Out"/>
+                                        </connections>
+                                    </switch>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="eie-NC-91u" firstAttribute="leading" secondItem="7mg-iL-Jfl" secondAttribute="trailing" id="Qvp-HD-Hob"/>
+                                </constraints>
+                                <viewLayoutGuide key="safeArea" id="Hef-yR-9Km"/>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -456,9 +477,11 @@
                             <constraint firstItem="f8Y-Ce-qcg" firstAttribute="centerX" secondItem="qq7-bH-Ytk" secondAttribute="centerX" id="G2B-zE-oLE"/>
                             <constraint firstItem="tpm-bK-5Qq" firstAttribute="top" secondItem="cZf-V9-idw" secondAttribute="bottom" constant="20" id="Id7-EX-356"/>
                             <constraint firstItem="Ail-U1-9Ip" firstAttribute="top" secondItem="wbd-7r-s10" secondAttribute="bottom" constant="20" id="Nbg-mq-JWL"/>
+                            <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="8Ba-me-qGI" secondAttribute="trailing" constant="20" id="OJi-sK-2dU"/>
                             <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="wbd-7r-s10" secondAttribute="trailing" constant="20" id="Ppc-GP-gIQ"/>
                             <constraint firstItem="wbd-7r-s10" firstAttribute="leading" secondItem="Org-D8-o67" secondAttribute="leading" constant="20" id="QKo-CR-8S0"/>
                             <constraint firstItem="qqH-QT-Q4p" firstAttribute="top" secondItem="Erb-My-DQx" secondAttribute="bottom" constant="20" id="Rjg-KW-EI5"/>
+                            <constraint firstItem="8Ba-me-qGI" firstAttribute="leading" secondItem="Org-D8-o67" secondAttribute="leading" constant="20" id="Si5-Ci-PGi"/>
                             <constraint firstItem="Erb-My-DQx" firstAttribute="top" secondItem="N6R-jh-j8q" secondAttribute="bottom" constant="20" id="TiX-ub-NeO"/>
                             <constraint firstItem="f8Y-Ce-qcg" firstAttribute="top" secondItem="tpm-bK-5Qq" secondAttribute="bottom" constant="20" id="U00-mW-i61"/>
                             <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="qqH-QT-Q4p" secondAttribute="trailing" constant="20" id="V9F-t0-gPu"/>
@@ -468,6 +491,7 @@
                             <constraint firstItem="Org-D8-o67" firstAttribute="trailing" secondItem="MUP-Ev-zLW" secondAttribute="trailing" id="ZrU-kZ-bOc"/>
                             <constraint firstItem="N6R-jh-j8q" firstAttribute="top" secondItem="Ail-U1-9Ip" secondAttribute="bottom" constant="20" id="ec2-EZ-x45"/>
                             <constraint firstItem="Org-D8-o67" firstAttribute="bottom" secondItem="MUP-Ev-zLW" secondAttribute="bottom" constant="20" id="fwS-Ks-2Zd"/>
+                            <constraint firstItem="8Ba-me-qGI" firstAttribute="top" secondItem="qqH-QT-Q4p" secondAttribute="bottom" constant="20" id="mcM-61-5bT"/>
                             <constraint firstItem="cZf-V9-idw" firstAttribute="top" secondItem="Org-D8-o67" secondAttribute="top" constant="20" id="qX2-3D-oIR"/>
                             <constraint firstItem="Erb-My-DQx" firstAttribute="leading" secondItem="Org-D8-o67" secondAttribute="leading" constant="20" id="vV1-A6-BqC"/>
                             <constraint firstItem="tpm-bK-5Qq" firstAttribute="trailing" secondItem="Org-D8-o67" secondAttribute="trailing" constant="-20" id="wlT-Gt-eCx"/>
@@ -477,6 +501,7 @@
                     <connections>
                         <outlet property="helpValueSwitch" destination="A3G-3v-YxX" id="KxE-72-YkW"/>
                         <outlet property="labelRecursivity" destination="f2E-i5-SYA" id="QFg-l5-EwE"/>
+                        <outlet property="oldSwitch" destination="eie-NC-91u" id="IfH-Mz-Q09"/>
                         <outlet property="recursSlider" destination="e5Y-4q-VE8" id="VF3-cv-TUu"/>
                         <outlet property="remotePentaGitSwitch" destination="J5C-Ox-8R1" id="sQl-OA-gmI"/>
                         <outlet property="saveDataGame" destination="JGb-ru-ZPs" id="RZV-yV-lQx"/>

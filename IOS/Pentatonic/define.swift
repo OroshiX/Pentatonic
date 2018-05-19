@@ -106,6 +106,8 @@ class define:NSObject {
     var forceDoNotSave = false
     var zoomScrollActivated = false
     var levelMax = 1
+    var oldBehaviour = true
+    
     enum CodingKeys:String, CodingKey {
         case greyTheme
         case blueTheme
@@ -122,6 +124,7 @@ class define:NSObject {
         case forceDoNotSave
         case zoomScrollActivated
         case levelMax
+        case oldBehaviour
     }
     override init() {
         currentTheme = greyTheme
