@@ -160,12 +160,16 @@ class listNiveauViewController: UIViewController {
     
     func readJson() -> [APenta]{
         var url:URL
+        //var url2:URL
         if ldefine.remotePentasGit {
             url = URL(string:"https://raw.githubusercontent.com/OroshiX/Pentatonic/master/IOS/Pentatonic/Datas/all.json")!
             
         } else {
             url = URL(fileURLWithPath: Bundle.main.path(forResource: "all", ofType: "json")!)
         }
+        //url2 = URL(string:url.absoluteString+"iii")!
+        
+
         let jsonTableData = try? Data(contentsOf:url)
         var pentas:[APenta] = []
         if jsonTableData != nil {
@@ -178,6 +182,10 @@ class listNiveauViewController: UIViewController {
             ldefine.doNotSave = true
             
         }
+        
+        //let encodedData = try? JSONEncoder().encode(pentas)
+        //try? encodedData?.write(to: url2)
+
         return pentas
         
     }
