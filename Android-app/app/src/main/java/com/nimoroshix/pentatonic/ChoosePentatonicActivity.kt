@@ -42,7 +42,7 @@ class ChoosePentatonicActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { list: List<Grid> ->
                     (recycler_choose.adapter as ChoosePentatonicAdapter).items = list
-                    recycler_choose.adapter.notifyDataSetChanged()
+                    (recycler_choose.adapter as ChoosePentatonicAdapter).notifyDataSetChanged()
                 }
     }
 }
