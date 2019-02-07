@@ -28,11 +28,11 @@ class ChoosePentatonicActivity : AppCompatActivity() {
         val layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.nb_columns))
         recycler_choose.layoutManager = layoutManager
 
-        recycler_choose.adapter = ChoosePentatonicAdapter(emptyList(), {
+        recycler_choose.adapter = ChoosePentatonicAdapter(emptyList()) {
             val intent = Intent(this@ChoosePentatonicActivity, GameActivity::class.java)
             intent.putExtra(BUNDLE_ID_PENTA, it.dbId)
             startActivity(intent)
-        })
+        }
 
         Observable.fromCallable {
             return@fromCallable AppDatabase.getInstance(this).pentatonicDao().findPentatonicByDifficulty(difficulty)

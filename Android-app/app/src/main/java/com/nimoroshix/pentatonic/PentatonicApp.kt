@@ -68,8 +68,8 @@ class PentatonicApp : Application() {
      * Here, get all pentatonics available, and put them in the database
      */
     private fun doOnFirstInstall(dao: PentatonicDao) {
-        val versions: Array<out String> = resources.assets.list(PATH_PENTA)
-        versions.forEach { version ->
+        val versions: Array<String>? = resources.assets.list(PATH_PENTA)
+        versions?.forEach { version ->
             addAllPentatonicsFromVersionFolder(dao, version)
         }
     }
@@ -82,8 +82,8 @@ class PentatonicApp : Application() {
     }
 
     private fun addAllPentatonicsFromFolder(dao: PentatonicDao, path: String, difficulty: Int) {
-        val pentatonicFiles = resources.assets.list(path)
-        pentatonicFiles.forEach { pentatonicFile ->
+        val pentatonicFiles: Array<String>? = resources.assets.list(path)
+        pentatonicFiles?.forEach { pentatonicFile ->
             val grid: Grid = Serializer.deserialize(resources.assets.open(path + File.separator + pentatonicFile), pentatonicFile)
             grid.difficulty = difficulty
             grid.filename = pentatonicFile

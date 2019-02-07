@@ -7,7 +7,6 @@ import com.nimoroshix.pentatonic.action.*
 import com.nimoroshix.pentatonic.util.*
 import java.lang.Math.abs
 import java.util.*
-import kotlin.coroutines.experimental.buildSequence
 
 /**
  * Project Pentatonic
@@ -27,11 +26,11 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         val CREATOR = parcelableCreator(::Grid)
     }
     private var positionSelected: Position? = null
-    var cells: Array<Array<Cell>> = Array(nbLines, { i ->
-        Array(nbColumns, { j ->
+    var cells: Array<Array<Cell>> = Array(nbLines) { i ->
+        Array(nbColumns) { j ->
             Cell(i, j)
-        })
-    })
+        }
+    }
         set(value) {
             field = value
             setChanged()
@@ -303,8 +302,8 @@ class Grid(var nbLines: Int, var nbColumns: Int) : Observable(), Parcelable {
         return cellSequence().filter { c -> c.area.id == area.id }.toSet()
     }
 
-    fun cellSequence() = buildSequence {
-        cells.forEach { it.forEach { yield(it) } }
+    fun cellSequence() = sequence {
+        cells.forEach { it.forEach { cell -> yield(cell) } }
     }
     /**
      * Replace all occurrences of one char into another one in the grid
