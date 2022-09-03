@@ -97,11 +97,11 @@ class listNiveauViewController: UIViewController {
         displayButtons(currentMaxLevel)
         labelCurrentLevel.text = ""
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
         self.view.addGestureRecognizer(swipeRight)
         
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
         self.view.addGestureRecognizer(swipeLeft)
     }
     
@@ -318,7 +318,7 @@ class listNiveauViewController: UIViewController {
 
         
         
-        nc.post(name: Notification.Name("SetPENTADone"), object: nil, userInfo: ["penta":penta])
+        nc.post(name: Notification.Name("SetPENTADone"), object: nil, userInfo: ["penta":penta as Any])
 
     }
     @objc func setPentaIsDone (_ notification: NSNotification) {
@@ -528,7 +528,7 @@ class listNiveauViewController: UIViewController {
             }
             let black = ldefine.currentTheme[prefsJSON.LColor.black]!
             
-            let atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:black]
+            let atts = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedString.Key.foregroundColor:black]
             
             for arrayValeur in penta.values! {
                 
@@ -547,7 +547,7 @@ class listNiveauViewController: UIViewController {
             }
 
         }
-        button.setImage(img, for: UIControlState.normal)
+        button.setImage(img, for: UIControl.State.normal)
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
         longPress.minimumPressDuration = 1.5;
@@ -570,7 +570,7 @@ class listNiveauViewController: UIViewController {
     @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             switch swipeGesture.direction {
-            case UISwipeGestureRecognizerDirection.right:
+            case UISwipeGestureRecognizer.Direction.right:
                 var segment = difficultySegment.selectedSegmentIndex
                 if segment > 0 {
                     segment = segment-1
@@ -582,9 +582,9 @@ class listNiveauViewController: UIViewController {
                     
                 }
 
-            case UISwipeGestureRecognizerDirection.down:
+            case UISwipeGestureRecognizer.Direction.down:
                 print("Swiped down")
-            case UISwipeGestureRecognizerDirection.left:
+            case UISwipeGestureRecognizer.Direction.left:
                 var segment = difficultySegment.selectedSegmentIndex
                 if segment < ldefine.allLevel.count-1 {
                     segment = segment+1
@@ -596,7 +596,7 @@ class listNiveauViewController: UIViewController {
                     
                 }
 
-            case UISwipeGestureRecognizerDirection.up:
+            case UISwipeGestureRecognizer.Direction.up:
                 print("Swiped up")
             default:
                 break

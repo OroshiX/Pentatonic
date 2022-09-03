@@ -44,7 +44,7 @@ struct Initialiszor {
         }
     }
     func secTest() ->String{
-        var paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
             var documentsDirectory : String;
             documentsDirectory = paths[0] as String
         let fileManager: FileManager = FileManager()
