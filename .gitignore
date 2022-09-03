@@ -78,6 +78,7 @@ Android-app/.idea/
 
 #Xcode user data - breakpoints / selected lines etc ...
 xcuserdata
+xcshareddata
 
 #Backuped files - perso
 all.json-orig
