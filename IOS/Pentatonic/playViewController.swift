@@ -306,7 +306,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         
         if ldefine.helpButtonValue {
             let backupSameArea:[Set<Int>] = sameAreaCells
-            let backupSisters:[ASimilarites] = penta.sisters!
+            // let backupSisters:[ASimilarites] = penta.sisters!
             solvePenta(penta, &possibleValue, size, &otherRegionSameAreaCells, &sameRegionCells)
             sameAreaCells = backupSameArea
             //penta.sisters = backupSisters
@@ -334,8 +334,8 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         }
     }
     func initializePopupS () {
-        confirmExit = UIAlertController(title: "Do you really want to go back to Penta Selection ?", message: "Current status will be saved, but you will lose the action's history for this Penta", preferredStyle: UIAlertControllerStyle.alert)
-        confirmReset = UIAlertController(title: "Remove all values on this Penta ?", message: "You will lose any progress on this Penta", preferredStyle: UIAlertControllerStyle.alert)
+        confirmExit = UIAlertController(title: "Do you really want to go back to Penta Selection ?", message: "Current status will be saved, but you will lose the action's history for this Penta", preferredStyle: UIAlertController.Style.alert)
+        confirmReset = UIAlertController(title: "Remove all values on this Penta ?", message: "You will lose any progress on this Penta", preferredStyle: UIAlertController.Style.alert)
         
         confirmExit?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         confirmExit?.addAction(UIAlertAction(title: "confirm", style: .default, handler: { action in
@@ -1093,7 +1093,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 }
             }
             //print("will use \(sizeFont) for font size - initialX \(initialX) initialY\(initialY) width \(sizeBut)")
-            var atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedStringKey.foregroundColor:UIColor.black]
+            var atts = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: sizeFont),NSAttributedString.Key.foregroundColor:UIColor.black]
             var index:Int = -1
             let petiteListeXY:[[CGFloat]] = [ [dxl,dyu],[dxr,dyu],[dxl,dyd],[dxr,dym],[dxm,dym],[dxm,dyu],[dxm,dyd],[dxl,dym],[dxr,dyd]]
             for arrayValeur in vSet {
@@ -1107,7 +1107,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     
                     if (valeur < 0) {
                         // black
-                        atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: FontColor[black]]
+                        atts = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedString.Key.foregroundColor: FontColor[black]]
                         valeur = -valeur
                         nbGoodColor = nbGoodColor + 1
                     } else {
@@ -1127,13 +1127,13 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                         if col == FontColor[blue] && vSet[index].first! < 6{
                             nbGoodColor = nbGoodColor + 1
                         }
-                        atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedStringKey.foregroundColor: col]
+                        atts = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: sizeFont),                  NSAttributedString.Key.foregroundColor: col]
                         
                     }
                     (getStringNButton(valeur) as NSString).draw(at: CGPoint(x: x, y: y), withAttributes: atts)
                     
                 } else {
-                    atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: petiteFont)]
+                    atts = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: petiteFont)]
                     
                     var coord:Int = -1
                     for valeur in arrayValeur {
@@ -1151,7 +1151,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                 if listSist[index] != "" {
                     let x = (initialX/4+(lIJ.j+1)*sizeBut) - Int(petiteListeXY.last![0]*0.9)
                     let y = (initialY/2+(lIJ.i+1)*sizeBut) + Int(petiteListeXY.last![1]*0.9)
-                    atts = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: petiteFont*1.4)]
+                    atts = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: petiteFont*1.4)]
                     
                     listSist[index].draw(at: CGPoint(x: x, y: y), withAttributes: atts)
                 }
@@ -1250,7 +1250,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
                     labelSolved.titleLabel?.textAlignment = .center
                     labelSolved.setTitle((currentPenta?.name)! + " IS SOLVED", for: [])
                     labelSolved.backgroundColor = UIColor(rgb: 0x00ff00)
-                    labelSolved.setTitleColor(UIColor.black, for: UIControlState.normal)
+                    labelSolved.setTitleColor(UIColor.black, for: UIControl.State.normal)
                     
                     labelSolved.translatesAutoresizingMaskIntoConstraints = false
                     labelSolved.tag = (butType.label).rawValue
@@ -1317,9 +1317,9 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         //ctx.fill(CGRect(x: xmin, y:ymin, width: xmax-xmin, height: ymax-ymin))
         let widthNBut = (Int(xmax - xmin) / nbNButtonsX) - interNButton
         let heightNBut = (Int(ymax - ymin) / nbNButtonsY) - (nbNButtonsY-1)*interNButton
-        let atts = [NSAttributedStringKey.font:
+        let atts = [NSAttributedString.Key.font:
             UIFont.systemFont(ofSize: min(CGFloat(widthNBut),CGFloat(heightNBut))*0.8),
-                    NSAttributedStringKey.foregroundColor:UIColor.black]
+                    NSAttributedString.Key.foregroundColor:UIColor.black]
         
         let cote = min (widthNBut,heightNBut)
         for i in 0..<nbNButtonsX {
@@ -1364,10 +1364,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
      */
     func addButton (x:Int, y:Int, size:Int, color: UIColor, tag:Int) -> MYUIButton {
         let myImage:UIImage = UIImage(named: "transparent.png")!
-        let button = MYUIButton(type: UIButtonType.custom)
+        let button = MYUIButton(type: UIButton.ButtonType.custom)
         let rect = CGRect(x:x,y:y,width:size,height:size)
         button.frame = rect
-        button.setImage(myImage, for: UIControlState.normal)
+        button.setImage(myImage, for: UIControl.State.normal)
         button.backgroundColor = color
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         button.tag = tag
@@ -1390,10 +1390,10 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
         let myImage:UIImage = UIImage(named: "transparent.png")!
         //myImage = UIImage(named: "rect_rose.png")!
         //TBD TBC JUST TO TEST
-        let button = UIButton(type: UIButtonType.custom)
+        let button = UIButton(type: UIButton.ButtonType.custom)
         let rect = CGRect(x:x,y:y+CGFloat(minW),width:width,height:height)
         button.frame = rect
-        button.setImage(myImage, for: UIControlState.normal)
+        button.setImage(myImage, for: UIControl.State.normal)
         button.backgroundColor = color
         button.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
         button.tag = tag
@@ -1711,7 +1711,7 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             }
         }
         
-        var label = view as! UILabel!
+        var label = view as! UILabel?
         if label == nil {
             label = UILabel()
         }
@@ -1798,9 +1798,9 @@ class playViewController: UIViewController ,UIPickerViewDelegate, UIPickerViewDa
             let image = UIImage(named: "Breplace50.png")!
 
             execBut = UIButton(frame: CGRect(x: 20, y: screenHeight-50, width: w, height: h))
-            execBut.setImage(image, for:UIControlState.normal)
+            execBut.setImage(image, for:UIControl.State.normal)
             //execBut = UIButton()
-            execBut?.setTitle("", for: UIControlState.normal)
+            execBut?.setTitle("", for: UIControl.State.normal)
             execBut?.tag = butType.regexp.rawValue
             execBut?.addTarget(self, action: #selector(buttonNBAction), for: .touchUpInside)
 
